@@ -17,6 +17,7 @@
 | `settings.json.example` | `~/.claude/settings.json` 참고본 (플레이스홀더 포함) |
 | `statusline.sh` / `statusline.ps1` | 상태줄 스크립트 |
 | `templates/` | `~/.claude/templates/`로 복사할 파일들 |
+| `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). "저장된 .claudeignore 적용해줘" 시 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
 | `three-man-team-for-others.md` | three-man-team 전체 셋업 (외부 AI용 self-contained 버전) |
 
 ## 사용법

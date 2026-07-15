@@ -1,0 +1,98 @@
+# ============================================================
+# .claudeignore — Global template
+# Source patterns: https://github.com/github/gitignore
+# Purpose: Exclude build artifacts & deps from Claude review
+# Usage: cp ~/.claude/templates/.claudeignore <project-root>/.claudeignore
+# ============================================================
+
+# ── Dependencies ─────────────────────────────────────────────
+node_modules/
+vendor/
+.venv/
+venv/
+env/
+jspm_packages/
+bower_components/
+
+# ── Build outputs ────────────────────────────────────────────
+dist/
+build/
+out/
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.a
+*.o
+
+# ── Python compiled ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+
+# ── Lock files (large, rarely useful for review) ─────────────
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+go.sum
+
+# ── Generated code ───────────────────────────────────────────
+*.pb.go
+*_gen.go
+*_generated.go
+
+# ── Coverage & test artifacts ────────────────────────────────
+coverage/
+.coverage
+coverage.txt
+coverage.out
+htmlcov/
+.nyc_output/
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Cache & build tools ──────────────────────────────────────
+.cache/
+.turbo/
+.next/
+.nuxt/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# ── OS ───────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ── Secrets (never read) ─────────────────────────────────────
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ── IDE ──────────────────────────────────────────────────────
+.idea/
+*.iml
+*.swp
+*.swo

@@ -18,14 +18,17 @@
 | `fragments/00-core.md`, `fragments/10-three-man-team.md` | 글로벌 `~/.claude/CLAUDE.md`의 source of truth |
 | `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md` 생성 |
 | `templates/dev.md` | `~/.claude/templates/dev.md`로 복사 (개발 세션 지침) |
+| `templates/.claudeignore` | `~/.claude/templates/.claudeignore`로 복사 (프로젝트용 ignore 템플릿) |
 | `three-man-team-for-others.md` | three-man-team 전체 셋업 자료 (커스텀 포함, 외부 AI용 self-contained 버전) — 참고용 |
 
 ## 설치 상태 확인 (진행 전 체크)
 
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
 - three-man-team: `~/.claude/skills/three-man-team/` 존재 (upstream: `russelleNVy/three-man-team`)
+- qmd (옵셔널): `settings.json`의 `extensions`에 `qmd` (github `tobi/qmd`). 미설치여도 무방 — `templates/dev.md`의 "qmd 우선" 섹션만 삭제하면 됨
+- karpathy-skills (각자 설치): `settings.json`의 `extensions`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
 
-둘 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지.
+caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (qmd·karpathy는 옵셔널 — 위 노트 참조.)
 
 ---
 
@@ -86,6 +89,7 @@ upstream repo에는 커스텀 규칙(앨리스 이름 치환, karpathy 섹션, �
 ```bash
 mkdir -p ~/.claude/templates
 cp templates/dev.md ~/.claude/templates/dev.md
+cp templates/.claudeignore ~/.claude/templates/.claudeignore
 ./build-claude-md.sh   # fragments/ -> ~/.claude/CLAUDE.md, ~/.claude-personal/CLAUDE.md
 ```
 
@@ -102,7 +106,7 @@ cp templates/dev.md ~/.claude/templates/dev.md
 
 `settings.json.example`의 `permissions.allow`는 원본 머신에서 쓰는 읽기성 명령 허용 목록 — 그대로 써도 무방, 취향껏 조정.
 
-원본에는 이 외에 qmd·karpathy-skills 플러그인, figma·Atlassian MCP 권한도 있으나 이 머신과 무관해서 example에서 제외함.
+원본에는 이 외에 qmd·karpathy-skills 플러그인, figma·Atlassian MCP 권한도 있으나 머신·계정별로 달라 example에서 제외함. qmd·karpathy는 옵셔널 — 설치·등록법은 위 "설치 상태 확인" 노트 참조. MCP 권한은 각 머신에서 취향껏 추가.
 
 ## 검증
 
