@@ -15,7 +15,8 @@
 | `settings.json.example` | `~/.claude/settings.json` 참고본 (플레이스홀더 포함) |
 | `statusline.sh` | 상태줄 스크립트 (Linux/macOS/WSL) — `~/.claude/statusline.sh`로 복사 |
 | `statusline.ps1` | 상태줄 스크립트 (Windows PowerShell 버전, 동일 기능) |
-| `fragments/00-core.md`, `fragments/10-three-man-team.md` | 글로벌 `~/.claude/CLAUDE.md`의 source of truth |
+| `fragments/00-core.md`, `fragments/10-three-man-team.md` | 글로벌 `~/.claude/CLAUDE.md`의 필수 source of truth |
+| `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙 |
 | `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md` 생성 |
 | `templates/dev.md` | `~/.claude/templates/dev.md`로 복사 (개발 세션 지침) |
 | `templates/.claudeignore` | `~/.claude/templates/.claudeignore`로 복사 (프로젝트용 ignore 템플릿) |
@@ -27,6 +28,7 @@
 - three-man-team: `~/.claude/skills/three-man-team/` 존재 (upstream: `russelleNVy/three-man-team`)
 - qmd (옵셔널): `settings.json`의 `extensions`에 `qmd` (github `tobi/qmd`). 미설치여도 무방 — `templates/dev.md`의 "qmd 우선" 섹션만 삭제하면 됨
 - karpathy-skills (각자 설치): `settings.json`의 `extensions`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
+- Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
 
 caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (qmd·karpathy는 옵셔널 — 위 노트 참조.)
 
@@ -92,6 +94,8 @@ cp templates/dev.md ~/.claude/templates/dev.md
 cp templates/.claudeignore ~/.claude/templates/.claudeignore
 ./build-claude-md.sh   # fragments/ -> ~/.claude/CLAUDE.md, ~/.claude-personal/CLAUDE.md
 ```
+
+최초 실행에서 Foreman 포함 여부를 선택한다. 선택은 Git에서 제외되는 `.claude-settings.local`에 저장되며 이후 빌드에서도 재사용된다. 선택을 바꾸려면 이 파일의 값을 수정하거나 삭제 후 다시 실행한다. 비대화형 최초 실행은 `INCLUDE_FOREMAN=true|false ./build-claude-md.sh`처럼 명시한다.
 
 주의: `templates/dev.md`의 "코드베이스 탐색 — qmd 우선" 섹션은 qmd 플러그인 전제 — qmd 미설치면 해당 섹션 삭제.
 

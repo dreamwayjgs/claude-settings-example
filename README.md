@@ -12,7 +12,8 @@
 
 | 경로 | 용도 |
 |---|---|
-| `fragments/00-core.md` | `CLAUDE.md` 앞부분 — arguing 규칙, 개발 세션, Foreman, 템플릿. 자주 바뀜 |
+| `fragments/00-core.md` | `CLAUDE.md` 앞부분 — arguing 규칙, 개발 세션, 템플릿. 자주 바뀜 |
+| `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙. 최초 빌드에서 포함 여부 결정 |
 | `fragments/10-three-man-team.md` | `CLAUDE.md`의 Three Man Team 전체 블록. 안정적, 거의 안 바뀜 |
 | `build-claude-md.sh` | fragments를 순서대로 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`에 씀 |
 | `claude-settings.md` | 다른 머신에 옮길 때 참고 가이드 |
@@ -24,6 +25,6 @@
 
 ## 사용법
 
-**CLAUDE.md 고칠 때:** `~/.claude/CLAUDE.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — 두 위치(`~/.claude`, `~/.claude-personal`)에 동일하게 반영된다.
+**CLAUDE.md 고칠 때:** `~/.claude/CLAUDE.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — 두 위치(`~/.claude`, `~/.claude-personal`)에 동일하게 반영된다. 최초 실행은 Foreman 포함 여부를 묻고 선택을 `.claude-settings.local`에 저장한다. 선택을 바꾸려면 이 파일의 값을 수정하거나 파일을 삭제하고 다시 실행한다.
 
 **다른 머신에 세팅할 때:** `claude-settings.md` 참고. 설치 여부(caveman/three-man-team)는 파일 존재로 확인하고, 없으면 임의 설치하지 말고 사용자에게 확인.

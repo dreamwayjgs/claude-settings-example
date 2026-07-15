@@ -5,10 +5,50 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG="$REPO/.claude-settings.local"
+
+if [[ -f "$CONFIG" ]]; then
+  read -r setting < "$CONFIG"
+  if [[ "$setting" != INCLUDE_FOREMAN=* ]]; then
+    echo "invalid $CONFIG: expected INCLUDE_FOREMAN=true|false" >&2
+    exit 1
+  fi
+  INCLUDE_FOREMAN="${setting#INCLUDE_FOREMAN=}"
+elif [[ -z "${INCLUDE_FOREMAN:-}" ]]; then
+  if [[ ! -t 0 ]]; then
+    echo "first build requires INCLUDE_FOREMAN=true|false" >&2
+    exit 1
+  fi
+  read -r -p "Include Foreman integration? [y/N] " answer
+  case "$answer" in
+    y|Y|yes|YES) INCLUDE_FOREMAN=true ;;
+    *) INCLUDE_FOREMAN=false ;;
+  esac
+fi
+
+case "$INCLUDE_FOREMAN" in
+  true)
+    if ! command -v foreman >/dev/null 2>&1; then
+      echo "Foreman is not installed; install it or choose INCLUDE_FOREMAN=false" >&2
+      exit 1
+    fi
+    ;;
+  false) ;;
+  *)
+    echo "INCLUDE_FOREMAN must be true or false" >&2
+    exit 1
+    ;;
+esac
+
+if [[ ! -f "$CONFIG" ]]; then
+  printf 'INCLUDE_FOREMAN=%s\n' "$INCLUDE_FOREMAN" > "$CONFIG"
+fi
+
 FRAGMENTS=(
   "$REPO/fragments/00-core.md"
-  "$REPO/fragments/10-three-man-team.md"
 )
+[[ "$INCLUDE_FOREMAN" == true ]] && FRAGMENTS+=("$REPO/fragments/05-foreman.md")
+FRAGMENTS+=("$REPO/fragments/10-three-man-team.md")
 
 OUT="$(mktemp)"
 trap 'rm -f "$OUT"' EXIT
