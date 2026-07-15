@@ -6,6 +6,8 @@
 
 **전제:** caveman·three-man-team 설치(각 repo의 기본 설치법)는 새 머신에서 직접 수행. 이 repo는 설치 이후의 설정만 다룬다.
 
+**Foreman 제외:** 이 repo는 설정 export용 — 주간 원장 보고 대상 아님. `foreman register`/`update`/`guide` 돌리지 말 것.
+
 ## 구조
 
 | 경로 | 용도 |
