@@ -17,7 +17,13 @@
       "Bash(tail:*)",
       "Bash(wc:*)",
       "Bash(jq:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(foreman guide)",
+      "Bash(foreman update:*)",
+      "Bash(foreman publish:*)",
+      "Bash(foreman summary:*)",
+      "Bash(foreman stale:*)",
+      "Bash(foreman board:*)"
     ],
     "defaultMode": "auto"
   },
