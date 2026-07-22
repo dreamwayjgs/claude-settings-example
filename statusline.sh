@@ -62,8 +62,9 @@ if [ -n "$remaining" ]; then
   ctx_text="$(awk -v r="$remaining" 'BEGIN{ if(r<0)r=0; printf "Ctx:%.0f%%", r}')"
 fi
 
-# --- Model name ---
+# --- Model name (first 4 chars only) ---
 model_name="$(j '.model.display_name // empty')"
+model_name="${model_name:0:4}"
 
 # --- Rate limit usage (Pro/Max only; absent otherwise) ---
 rl_five_pct="$(j '.rate_limits.five_hour.used_percentage // empty')"
@@ -86,13 +87,13 @@ if [ -n "$rl_week_pct" ] && [ -n "$rl_week_reset" ]; then
   week_text="$(awk -v p="$rl_week_pct" -v reset="$rl_week_reset" -v now="$now" 'BEGIN{
     rem=reset-now; if(rem<0)rem=0
     d=int((rem+43200)/86400)
-    printf "%.0f%% (%dd)", p, d
+    printf "%.0f%%(%dd)", p, d
   }')"
 fi
 
 rl_text=""
 if [ -n "$five_text" ] && [ -n "$week_text" ]; then
-  rl_text="${five_text} / ${week_text}"
+  rl_text="${five_text}/${week_text}"
 else
   rl_text="${five_text}${week_text}"
 fi
@@ -105,7 +106,7 @@ segments+=("${DIM}${dir_name}${RESET}")
 [ -n "$ctx_text" ] && segments+=("${DIM}${ctx_text}${RESET}")
 [ -n "$rl_text" ] && segments+=("${DIM}${rl_text}${RESET}")
 
-sep=" ${DIM}|${RESET} "
+sep="${DIM}|${RESET}"
 out=""
 for i in "${!segments[@]}"; do
   if [ "$i" -eq 0 ]; then out="${segments[$i]}"; else out="${out}${sep}${segments[$i]}"; fi

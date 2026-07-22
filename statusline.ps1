@@ -72,8 +72,9 @@ if ($null -ne $remaining) {
     $ctxText = "Ctx:{0:N0}%" -f $remaining
 }
 
-# --- Model name ---
+# --- Model name (first 4 chars only) ---
 $modelName = if ($data -and $data.model -and $data.model.display_name) { $data.model.display_name } else { $null }
+if ($modelName) { $modelName = $modelName.Substring(0, [Math]::Min(4, $modelName.Length)) }
 
 # --- Rate limit usage (Pro/Max only; absent otherwise) ---
 $rlText = ""
@@ -94,9 +95,9 @@ if ($data -and $data.rate_limits) {
         $rem = [double]$sd.resets_at - $now
         if ($rem -lt 0) { $rem = 0 }
         $d = [math]::Floor(($rem + 43200) / 86400)
-        $weekText = "{0:N0}% ({1}d)" -f [double]$sd.used_percentage, $d
+        $weekText = "{0:N0}%({1}d)" -f [double]$sd.used_percentage, $d
     }
-    if ($fiveText -and $weekText) { $rlText = "$fiveText / $weekText" }
+    if ($fiveText -and $weekText) { $rlText = "$fiveText/$weekText" }
     else { $rlText = "$fiveText$weekText" }
 }
 
@@ -108,4 +109,4 @@ $segments += "${Dim}${dirName}${Reset}"
 if ($ctxText) { $segments += "${Dim}${ctxText}${Reset}" }
 if ($rlText) { $segments += "${Dim}${rlText}${Reset}" }
 
-[Console]::Write(($segments -join " ${Dim}|${Reset} "))
+[Console]::Write(($segments -join "${Dim}|${Reset}"))
