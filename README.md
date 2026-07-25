@@ -22,6 +22,7 @@
 | `templates/` | `~/.claude/templates/`로 복사할 파일들 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). "저장된 .claudeignore 적용해줘" 시 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
 | `three-man-team-for-others.md` | three-man-team 전체 셋업 (외부 AI용 self-contained 버전) |
+| `three-man-team-model-allocation.md` | 4역할 모델 배치 조사·결정 기록 (2026-07). 역할별 지배변수, 확정 라인업, 실측, 다음 검증 |
 
 ## 사용법
 
