@@ -4,9 +4,19 @@
 
 ## 개발 세션
 
-코딩·구현·리팩토링·버그픽스 등 개발 작업 시작 시 `~/.claude/templates/dev.md`를 먼저 읽을 것.
+코딩·구현·리팩토링·버그픽스 시작 전 아래 규칙을 적용한다.
 
-## 템플릿
+```
+스킬이나 메모리에 있으면?        → 신뢰하고 파일 읽기 건너뜀
+추측성 작업이면?                 → 도구 호출 중단
+병렬 실행 가능한 호출이면?        → 병렬화
+20줄 이상 불필요한 결과면?       → 서브에이전트로 라우팅
+사용자 내용을 반복하려 한다면?   → 삭제
+```
 
-- `.claudeignore`: `~/.claude/templates/.claudeignore` — "저장된 .claudeignore 적용해줘" 시 프로젝트 루트에 복사 후 특화 패턴 추가
-- 개발 지침: `~/.claude/templates/dev.md` — Token Rules, qmd 탐색, Three Man Team 구조
+Grep before Read. 한 가지를 찾으려고 파일 전체를 읽지 말 것.
+이미 컨텍스트에 있는 파일은 다시 읽지 말 것.
+
+qmd가 설치되어 있으면 코드베이스 탐색은 `qmd search`를 우선 사용하고, 결과가 부족하거나 qmd가 없을 때만 Grep/Glob/Read로 보완한다. 임베딩 모델이 없는 환경에서는 `qmd vsearch`·`qmd query` 대신 `qmd search`만 사용한다.
+
+`.claudeignore` 템플릿을 적용할 때는 프로젝트 루트에 복사 후 프로젝트 특화 패턴을 추가한다.

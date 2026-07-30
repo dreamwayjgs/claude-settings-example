@@ -161,7 +161,7 @@ Claude Code 고정. skills·hooks·foreman·statusline 커스텀에 종속되므
 
 ## OpenCode Go 플랜
 
-**OpenCode Go는 하니스가 아니라 구독 플랜이다.** 하니스인 OpenCode 본체는 Go 언어로 작성된 무료 오픈소스로, 75+ 프로바이더를 지원하고 `AGENTS.md` 규약을 쓴다 — 로저 파일명이 이미 `AGENTS.md`라 이식 비용이 0이다.
+**OpenCode Go는 하니스가 아니라 구독 플랜이다.** 하니스인 OpenCode 본체는 Go 언어로 작성된 무료 오픈소스로, 75+ 프로바이더를 지원하고 `AGENTS.md` 규약을 쓴다. 프로젝트 `CLAUDE.md`·`AGENTS.md`를 동일한 공통 router로 유지하므로 이식 비용이 낮다.
 
 | 항목 | 내용 |
 |---|---|
@@ -303,9 +303,9 @@ Opus 4.8 메터드($2.10)보다 비싸면서 성능은 아래. **K3는 밥 자�
 
 ### 이식 시 주의
 
-- OpenCode는 `AGENTS.md`를 읽지만 `CLAUDE.md`·skills·hooks는 지원하지 않는다. caveman·karpathy는 OpenCode에 직접 설치하거나 지침을 `AGENTS.md`에 인라인해야 한다.
-- 테스트 검증 정책(밥이 최종 상태로 실행 후 고지, 리처드·로저는 직접 실행 금지)도 `AGENTS.md`에 명시적으로 옮겨야 한다.
-- **모델명을 `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`AGENTS.md`에 하드코딩하지 말 것.** 플랜이 beta라 모델 구성이 갱신되면 4개 파일을 매번 수정해야 한다.
+- OpenCode는 `AGENTS.md`를 기본으로 읽고 `CLAUDE.md`·skills는 Claude 호환 fallback으로 지원한다. 프로젝트 `CLAUDE.md`·`AGENTS.md`를 동일하게 유지하고, caveman·ponytail은 OpenCode에 직접 설치하거나 공통 router에 지침을 둔다.
+- 테스트 검증 정책(밥이 최종 상태로 실행 후 고지, 리처드·로저는 직접 실행 금지)은 공통 `CLAUDE.md`·`AGENTS.md`에 명시한다.
+- **모델명을 `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`ROGER.md`에 하드코딩하지 말 것.** 플랜이 beta라 모델 구성이 갱신되면 역할 파일을 매번 수정해야 한다.
 
 ---
 

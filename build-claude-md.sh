@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Regenerate ~/.claude/CLAUDE.md and ~/.claude-personal/CLAUDE.md from fragments/.
-# Source of truth = fragments/*.md in this repo. Do NOT hand-edit the generated
-# CLAUDE.md files directly -- edit a fragment here and re-run this script.
+# Regenerate identical Claude Code and OpenCode global rules from fragments/.
+# Source of truth = fragments/*.md in this repo. Do NOT hand-edit generated
+# rule files directly -- edit a fragment here and re-run this script.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -58,7 +58,16 @@ for i in "${!FRAGMENTS[@]}"; do
   cat "${FRAGMENTS[$i]}" >> "$OUT"
 done
 
-for dest in "$HOME/.claude/CLAUDE.md" "$HOME/.claude-personal/CLAUDE.md"; do
+for dest in "$HOME/.claude/CLAUDE.md" "$HOME/.claude-personal/CLAUDE.md" "$HOME/.config/opencode/AGENTS.md"; do
+  mkdir -p "$(dirname "$dest")"
   cp "$OUT" "$dest"
   echo "wrote $dest"
+done
+
+for template in project-rules.md OPERATOR.md; do
+  for dest in "$HOME/.claude/templates/$template" "$HOME/.config/opencode/templates/$template"; do
+    mkdir -p "$(dirname "$dest")"
+    cp "$REPO/templates/$template" "$dest"
+    echo "wrote $dest"
+  done
 done
