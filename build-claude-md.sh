@@ -64,7 +64,7 @@ for dest in "$HOME/.claude/CLAUDE.md" "$HOME/.claude-personal/CLAUDE.md" "$HOME/
   echo "wrote $dest"
 done
 
-for template in project-rules.md OPERATOR.md; do
+for template in project-rules.md OPERATOR.md .claudeignore; do
   for dest in "$HOME/.claude/templates/$template" "$HOME/.config/opencode/templates/$template"; do
     mkdir -p "$(dirname "$dest")"
     cp "$REPO/templates/$template" "$dest"

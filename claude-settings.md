@@ -19,17 +19,20 @@
 | `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙 |
 | `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md` 생성 |
 | `build-rules.ps1` | `pwsh`용 동일 생성기. UTF-8 without BOM 출력 |
-| `templates/.claudeignore` | `~/.claude/templates/.claudeignore`로 복사 (프로젝트용 ignore 템플릿) |
+| `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 두 harness의 `templates/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
-| `opencode.json.example` | Ponytail npm plugin을 포함한 OpenCode config 참고본 |
+| `opencode.json.example` | OpenCode global config 참고본 (caveman instructions + Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
+| `opencode-caveman.md` | OpenCode용 caveman 지침 본문 — `~/.config/opencode/caveman.md`로 복사 |
+| `three-man-team-model-allocation.md` | 4역할 모델 배치 조사·결정 기록 (2026-07) |
 
 ## 설치 상태 확인 (진행 전 체크)
 
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
 - three-man-team: `~/.claude/skills/three-man-team/` 존재 (upstream: `russelleNVy/three-man-team`)
 - qmd (옵셔널): 설치되어 있으면 global router가 `qmd search`를 우선 사용하고, 없으면 Grep/Glob/Read로 자동 fallback. 임베딩 모델이 없으면 `qmd search`만 사용
-- karpathy-skills (각자 설치): `settings.json`의 `extensions`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
+- karpathy-skills (각자 설치): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
+- ponytail (옵셔널): Claude Code와 OpenCode의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 npm 플러그인 `@dietrichgebert/ponytail`. 한쪽만 깔면 다른 쪽에는 적용되지 않는다 (§5 참조)
 - Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
 
 caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (qmd·karpathy는 옵셔널 — 위 노트 참조.)
@@ -91,8 +94,6 @@ caveman 배지도 동일 방식 — `hooks/caveman-statusline.ps1` 존재 시에
 upstream repo에는 커스텀 규칙(앨리스 이름 치환, karpathy 섹션, 로저 2차 리뷰어, 한국어 진행)이 없음 — 이 폴더의 fragment가 전부. 설치 확인 후 병합:
 
 ```bash
-mkdir -p ~/.claude/templates
-cp templates/.claudeignore ~/.claude/templates/.claudeignore
 ./build-claude-md.sh   # Bash: fragments/ -> Claude Code·OpenCode global rules
 pwsh -File ./build-rules.ps1  # Windows: same output, UTF-8 without BOM
 ```
@@ -113,7 +114,42 @@ qmd는 선택 사항이다. 설치되면 global router가 우선 사용하고, �
 
 `settings.json.example`의 `permissions.allow`는 원본 머신에서 쓰는 읽기성 명령 허용 목록 — 그대로 써도 무방, 취향껏 조정.
 
-원본에는 이 외에 qmd·karpathy-skills 플러그인, figma·Atlassian MCP 권한도 있으나 머신·계정별로 달라 example에서 제외함. qmd·karpathy는 옵셔널 — 설치·등록법은 위 "설치 상태 확인" 노트 참조. MCP 권한은 각 머신에서 취향껏 추가.
+`enabledPlugins`·`extraKnownMarketplaces`에는 caveman 외에 qmd·karpathy-skills·ponytail이 들어 있다. 셋 다 옵셔널이라 안 쓰면 해당 항목만 지운다. `permissions.allow`의 MCP 항목(Atlassian·qmd·figma)은 해당 MCP 서버를 붙인 머신에서만 의미가 있다.
+
+머신·계정별로 다른 값은 example에서 **제외**했으니 각자 채운다:
+
+- `model` — 계정이 지원하는 모델·컨텍스트에 따라 다름 (원본은 `opus[1m]`)
+- `tui` — 표시 취향 (원본은 `fullscreen`)
+- `skipDangerousModePermissionPrompt` — 권한 우회 모드 진입 시 확인 프롬프트를 없애는 옵션. 기본값(미설정)을 권장하며, 켤 경우 그 머신에서 무엇이 자동 실행되는지 알고 켤 것
+
+## 5. ponytail — harness별 설치 경로
+
+Claude Code와 OpenCode가 서로 다른 배포 채널을 쓴다. 양쪽 다 쓰려면 각각 설치해야 한다.
+
+Claude Code (플러그인 마켓플레이스):
+
+```
+/plugin marketplace add DietrichGebert/ponytail
+/plugin install ponytail@ponytail
+/reload-plugins
+```
+
+결과가 `settings.json`의 `enabledPlugins`·`extraKnownMarketplaces`에 기록된다 (`settings.json.example` 참조).
+
+OpenCode (npm 플러그인): config의 `plugin` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example` 참조).
+
+global router(`fragments/10-three-man-team.md`)는 "Ponytail이 설정된 환경에서는" 조건부로 쓰도록 되어 있어, 미설치 머신에서도 규칙 파일은 그대로 둬도 된다.
+
+## 6. OpenCode 추가 파일
+
+`build-claude-md.sh`가 만들어주지 않는 것:
+
+```bash
+cp opencode-caveman.md ~/.config/opencode/caveman.md
+cp opencode.json.example ~/.config/opencode/opencode.jsonc   # <HOME> 치환 후
+```
+
+`instructions` 항목은 절대경로만 받으므로 `<HOME>`을 치환해야 한다. `opencode.json`·`opencode.jsonc` 둘 다 유효 — 원본 머신은 `.jsonc`를 쓴다. 두 파일을 같이 두지 말 것.
 
 ## 검증
 

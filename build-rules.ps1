@@ -52,7 +52,7 @@ foreach ($destination in $destinations) {
   "wrote $destination"
 }
 
-foreach ($template in @('project-rules.md', 'OPERATOR.md')) {
+foreach ($template in @('project-rules.md', 'OPERATOR.md', '.claudeignore')) {
   $source = Join-Path $repo "templates/$template"
   foreach ($destination in @(
     (Join-Path $TargetHome ".claude/templates/$template"),
