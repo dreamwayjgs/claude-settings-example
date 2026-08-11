@@ -141,6 +141,11 @@ unit suite는 재실행하지 않는다 — Builder가 고지한 결과를 참�
   **버전 관리 밖의 파일은 삭제 대신 이동한다.**
 - 실패를 그대로 보고한다. 스모크가 깨졌으면 깨졌다고 쓴다.
 - 레포 코드에 커밋하지 않는다.
+- **원격 셸에서 `pkill -f <패턴>` 금지.** 패턴이 자기 SSH 명령줄에까지 매칭돼 세션이 스스로 종료된다.
+  `pgrep -af <패턴>`으로 PID를 눈으로 확인한 뒤 `kill <PID>`로 지정 종료할 것.
+  `git`·`docker` 작업 중 강제 종료는 lock을 남기므로 종료 후 `.git/index.lock` 등 잔존 여부를 확인한다.
+- **원격 `git` 조작은 비대화 모드로 고정한다.** 프롬프트 대기로 세션이 멈춘다:
+  `GIT_TERMINAL_PROMPT=0 GIT_SSH_COMMAND="ssh -o BatchMode=yes -o ConnectTimeout=10" git ...`
 
 <!-- karpathy:start -->
 ## Guidelines (Karpathy)
