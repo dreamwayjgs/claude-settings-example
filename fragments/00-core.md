@@ -19,4 +19,6 @@ Grep before Read. 한 가지를 찾으려고 파일 전체를 읽지 말 것.
 
 qmd가 설치되어 있으면 코드베이스 탐색은 `qmd search`를 우선 사용하고, 결과가 부족하거나 qmd가 없을 때만 Grep/Glob/Read로 보완한다. 임베딩 모델이 없는 환경에서는 `qmd vsearch`·`qmd query` 대신 `qmd search`만 사용한다.
 
+세션에서 qmd를 처음 쓰기 전 `qmd status`로 인덱스 신선도를 확인한다. `Updated`가 7일 이상 지났으면 검색 결과를 신뢰하지 말고 `qmd update`를 먼저 실행한다. 재인덱싱이 불가능하면 qmd를 건너뛰고 Grep/Glob로 전환한다. 낡은 인덱스는 결과가 없는 것보다 나쁘다 — 삭제·이동된 파일을 실존하는 것처럼 보고한다.
+
 `.claudeignore` 템플릿을 적용할 때는 프로젝트 루트에 복사 후 프로젝트 특화 패턴을 추가한다.
