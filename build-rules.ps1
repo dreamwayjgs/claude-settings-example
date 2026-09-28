@@ -43,7 +43,8 @@ $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
 $destinations = @(
   (Join-Path $TargetHome '.claude/CLAUDE.md'),
   (Join-Path $TargetHome '.claude-personal/CLAUDE.md'),
-  (Join-Path $TargetHome '.config/opencode/AGENTS.md')
+  (Join-Path $TargetHome '.config/opencode/AGENTS.md'),
+  (Join-Path $TargetHome '.config/AGENTS.md')
 )
 
 foreach ($destination in $destinations) {
@@ -56,7 +57,8 @@ foreach ($template in @('project-rules.md', 'OPERATOR.md', '.claudeignore')) {
   $source = Join-Path $repo "templates/$template"
   foreach ($destination in @(
     (Join-Path $TargetHome ".claude/templates/$template"),
-    (Join-Path $TargetHome ".config/opencode/templates/$template")
+    (Join-Path $TargetHome ".config/opencode/templates/$template"),
+    (Join-Path $TargetHome ".config/crush/templates/$template")
   )) {
     [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($destination)) | Out-Null
     [System.IO.File]::WriteAllText($destination, [System.IO.File]::ReadAllText($source, $utf8NoBom), $utf8NoBom)
