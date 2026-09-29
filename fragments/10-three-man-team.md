@@ -25,7 +25,7 @@
 
 "three-man-team 세팅해줘" 요청 시:
 1. 설치된 three-man-team checkout의 `templates/project-folder/`를 현재 프로젝트 루트에 복사. **upstream checkout은 수정하지 않는다.**
-2. 이름 치환 (복사본만 — upstream 템플릿 무손상): `sed -i 's/\bArch\b/Alice/g' ARCHITECT.md BUILDER.md REVIEWER.md new-setup.md` — 이름 `Arch`→`Alice`, 워드바운더리라 역할명 `Architect`/`ARCHITECT.md`는 보존
+2. 이름 치환 (복사본만 — upstream 템플릿 무손상): `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`new-setup.md`에서 단어 `Arch`를 `Alice`로 대소문자 구분·워드바운더리 치환한다. 역할명 `Architect`/`ARCHITECT.md`는 보존. 현재 셸에 맞는 도구(pwsh `-creplace '\bArch\b'`, bash `sed` 등)나 편집 도구를 쓴다.
 3. 현재 harness의 전역 템플릿 경로에서 `project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. Claude Code는 `~/.claude/templates/`, OpenCode는 `~/.config/opencode/templates/`, omp는 `~/.omp/agent/templates/`, Crush는 `~/.config/crush/templates/`를 사용한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다.
 4. REVIEWER.md 기반으로 `ROGER.md` 생성 (아래 로저 규칙 적용). `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
 5. ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md에 karpathy 섹션 추가 (아래 카파시 규칙 적용)
@@ -33,7 +33,7 @@
 
 "operator 세팅해줘" 요청 시에만 현재 harness의 전역 템플릿 경로에서 `OPERATOR.md`를 프로젝트 루트에 복사한다. Oz는 선택 역할이다. 환경 좌표를 실측으로 채우기 전에는 운영 조작을 수행하지 않는다.
 
-롤백: karpathy `sed -i '/<!-- karpathy:start -->/,/<!-- karpathy:end -->/d' ARCHITECT.md BUILDER.md REVIEWER.md ROGER.md` / 이름 `sed -i 's/\bAlice\b/Arch/g' ARCHITECT.md BUILDER.md REVIEWER.md ROGER.md new-setup.md`
+롤백: karpathy는 ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md에서 `<!-- karpathy:start -->`부터 `<!-- karpathy:end -->`까지(마커 포함) 삭제. 이름은 ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md·new-setup.md에서 단어 `Alice`를 `Arch`로 워드바운더리 치환.
 
 ### 카파시 규칙 (파일별 추가 내용)
 

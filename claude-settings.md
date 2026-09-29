@@ -165,7 +165,7 @@ cp opencode.json.example ~/.config/opencode/opencode.jsonc   # <HOME> 치환 후
 
 - 스킬 복사는 `jq` 필요(Bash). Claude 플러그인이 없는 머신이면 skip — 스킬만 빠지고 나머지는 적용된다.
 - `caveman-stats`(Claude 세션 로그)·`cavecrew`(Claude 서브에이전트)는 omp·Crush에서 동작하지 않는다.
-- Crush는 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`를 둘 다 읽는다 — 공통 router가 두 번 주입된다(짧아서 감수). omp는 `AGENTS.md`만 읽는다.
+- Crush는 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`를 둘 다 읽는다 — 공통 router가 두 번 주입된다(짧아서 감수). omp는 둘 다 찾지만 같은 디렉토리 depth에서는 하나만 주입한다(실측: `AGENTS.md`).
 - Crush 설정에 `global_context_paths`를 직접 넣으면 기본값을 **대체**한다. 넣을 거면 `~/.config/crush/CRUSH.md`를 목록에 다시 포함할 것.
 
 ## 검증
