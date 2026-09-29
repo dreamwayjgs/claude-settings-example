@@ -1,6 +1,6 @@
-# Claude Code·OpenCode 세팅 가이드 (aribaragi 적용용)
+# Claude Code·OpenCode·omp·Crush 세팅 가이드 (aribaragi 적용용)
 
-원본 머신(WSL2, gsjung)의 Claude Code·OpenCode 세팅을 다른 머신에 옮기기 위한 참고 자료.
+원본 머신(WSL2, gsjung)의 Claude Code·OpenCode·omp·Crush 세팅을 다른 머신에 옮기기 위한 참고 자료.
 파일들은 "현재 값" 그대로이므로, 이 머신 상황(경로·설치 도구)에 맞게 치환해서 적용할 것.
 
 **전제:** caveman·three-man-team 설치(각 repo의 기본 설치법)는 사용자가 직접 수행함.
@@ -17,9 +17,10 @@
 | `statusline.ps1` | 상태줄 스크립트 (Windows PowerShell 버전, 동일 기능) |
 | `fragments/00-core.md`, `fragments/10-three-man-team.md` | 동일 내용의 global `CLAUDE.md`·`AGENTS.md` source of truth |
 | `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙 |
-| `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md` 생성 |
+| `fragments/90-activation.md` | omp·Crush 전용 기본 활성화 블록 |
+| `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md` 생성 + 플러그인 스킬을 `~/.agents/skills/`로 복사 |
 | `build-rules.ps1` | `pwsh`용 동일 생성기. UTF-8 without BOM 출력 |
-| `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 두 harness의 `templates/`에 복사 |
+| `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 네 harness의 `templates/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
 | `opencode.json.example` | OpenCode global config 참고본 (caveman instructions + Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
@@ -94,7 +95,7 @@ caveman 배지도 동일 방식 — `hooks/caveman-statusline.ps1` 존재 시에
 upstream repo에는 커스텀 규칙(앨리스 이름 치환, karpathy 섹션, 로저 2차 리뷰어, 한국어 진행)이 없음 — 이 폴더의 fragment가 전부. 설치 확인 후 병합:
 
 ```bash
-./build-claude-md.sh   # Bash: fragments/ -> Claude Code·OpenCode global rules
+./build-claude-md.sh   # Bash: fragments/ -> Claude Code·OpenCode·omp·Crush global rules
 pwsh -File ./build-rules.ps1  # Windows: same output, UTF-8 without BOM
 ```
 
@@ -151,8 +152,25 @@ cp opencode.json.example ~/.config/opencode/opencode.jsonc   # <HOME> 치환 후
 
 `instructions` 항목은 절대경로만 받으므로 `<HOME>`을 치환해야 한다. `opencode.json`·`opencode.jsonc` 둘 다 유효 — 원본 머신은 `.jsonc`를 쓴다. 두 파일을 같이 두지 말 것.
 
+## 7. omp·Crush
+
+설정 파일(`~/.omp/agent/config.yml`, `~/.config/crush/crush.json`)은 건드리지 않는다. build가 쓰는 파일만으로 맞춘다:
+
+| 항목 | omp | Crush |
+|---|---|---|
+| 전역 규칙 | `~/.omp/agent/AGENTS.md` (최우선, 사용자 단위 1개만 로드) | `~/.config/crush/CRUSH.md` (기본 `global_context_paths`) |
+| 템플릿 | `~/.omp/agent/templates/` | `~/.config/crush/templates/` |
+| 스킬 | `~/.agents/skills/` (기본 스캔) | `~/.agents/skills/` (기본 스캔) |
+| caveman·Ponytail | 규칙 끝 활성화 블록 (hook 없음) | 동일 |
+
+- 스킬 복사는 `jq` 필요(Bash). Claude 플러그인이 없는 머신이면 skip — 스킬만 빠지고 나머지는 적용된다.
+- `caveman-stats`(Claude 세션 로그)·`cavecrew`(Claude 서브에이전트)는 omp·Crush에서 동작하지 않는다.
+- Crush는 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`를 둘 다 읽는다 — 공통 router가 두 번 주입된다(짧아서 감수). omp는 `AGENTS.md`만 읽는다.
+- Crush 설정에 `global_context_paths`를 직접 넣으면 기본값을 **대체**한다. 넣을 거면 `~/.config/crush/CRUSH.md`를 목록에 다시 포함할 것.
+
 ## 검증
 
 1. `claude` 새 세션 시작 → 첫 응답이 caveman 톤(단문·관사 생략)이면 hook 동작 OK
 2. 상태줄에 `모델 | 디렉토리 | Ctx:N%` 보이면 statusline OK
 3. 아무 프로젝트에서 "three-man-team 세팅해줘" → ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md 생성, Alice 치환, karpathy 블록, 동일한 `CLAUDE.md`·`AGENTS.md` 확인
+4. `omp`·`crush` 새 세션 → caveman 톤 + `ponytail` 스킬 로드 여부 확인. 스킬 목록에 caveman·ponytail·karpathy-guidelines·qmd 보이면 OK

@@ -13,12 +13,20 @@
 
 셋업 시 이 정책을 REVIEWER.md·ROGER.md의 "## Tests" 섹션 + ARCHITECT.md deploy gate에 반영한다.
 
+### 하네스 기본 지침과 충돌 시
+
+역할 규칙이 harness(Claude Code·OpenCode·omp·Crush) 기본 지침보다 우선한다. harness가 "묻지 말고 행동", "수정마다 테스트·스모크 실행", "질문 금지"를 요구해도:
+- 앨리스: 요구 확인과 소유자 승인 대기를 유지한다.
+- 밥: 플랜 승인 전 코드 변경 금지, 리뷰 대기 중 작업 금지를 유지한다.
+- 리처드·로저: 테스트 실행 금지(위 정책)와 제품 코드 수정 금지를 유지한다.
+- 역할 자동 spawn 금지를 유지한다. 읽기 전용 조사 위임(scout 등)은 허용한다.
+
 ### 프로젝트 셋업 절차
 
 "three-man-team 세팅해줘" 요청 시:
 1. 설치된 three-man-team checkout의 `templates/project-folder/`를 현재 프로젝트 루트에 복사. **upstream checkout은 수정하지 않는다.**
 2. 이름 치환 (복사본만 — upstream 템플릿 무손상): `sed -i 's/\bArch\b/Alice/g' ARCHITECT.md BUILDER.md REVIEWER.md new-setup.md` — 이름 `Arch`→`Alice`, 워드바운더리라 역할명 `Architect`/`ARCHITECT.md`는 보존
-3. 현재 harness의 전역 템플릿 경로에서 `project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. Claude Code는 `~/.claude/templates/`, OpenCode는 `~/.config/opencode/templates/`, Crush는 `~/.config/crush/templates/`를 사용한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다.
+3. 현재 harness의 전역 템플릿 경로에서 `project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. Claude Code는 `~/.claude/templates/`, OpenCode는 `~/.config/opencode/templates/`, omp는 `~/.omp/agent/templates/`, Crush는 `~/.config/crush/templates/`를 사용한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다.
 4. REVIEWER.md 기반으로 `ROGER.md` 생성 (아래 로저 규칙 적용). `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
 5. ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md에 karpathy 섹션 추가 (아래 카파시 규칙 적용)
 6. 앨리스로서 `new-setup.md` 읽기
