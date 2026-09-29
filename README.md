@@ -23,6 +23,7 @@
 | `claude-settings.md` | 다른 머신에 옮길 때 참고 가이드 |
 | `settings.json.example` | `~/.claude/settings.json` 참고본 (플레이스홀더 포함) |
 | `statusline.sh` / `statusline.ps1` | 상태줄 스크립트 |
+| `omp/hooks/pre/openai-personal-warning.ts` | 머신 선택 참고본 (build 대상 아님). omp에서 OpenAI 계열 모델 첫 요청 시 "개인 작업이 맞나요?" Y/N 확인 — 아니오는 취소 후 재질문, 화면 없는 실행(`-p`)은 취소. 개인 OpenAI 로그인을 쓰는 머신만 `~/.omp/agent/hooks/pre/`로 복사 |
 | `templates/` | harness와 무관한 프로젝트 bootstrap 템플릿 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md` 공통 router 템플릿 |
 | `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
