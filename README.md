@@ -15,13 +15,12 @@
 | `fragments/00-core.md` | 공통 global router 앞부분 — arguing 규칙, 개발 세션. 자주 바뀜 |
 | `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙. 최초 빌드에서 포함 여부 결정 |
 | `fragments/10-three-man-team.md` | `CLAUDE.md`의 Three Man Team 전체 블록. 안정적, 거의 안 바뀜 |
-| `fragments/90-activation.md` | omp·Crush 전용 기본 활성화 블록(Ponytail 로드). build가 caveman 지침과 함께 두 harness 규칙 끝에 붙임 |
+| `fragments/90-activation.md` | omp·Crush 전용 블록 — caveman·Ponytail 기본 off, 역할 표로 위임. build가 두 harness 규칙 끝에 붙임 |
 | `build-claude-md.sh` | fragments를 이어붙여 네 harness global rules에 씀 + Claude 플러그인 스킬을 `~/.agents/skills/`로 복사 |
 | `build-rules.ps1` | `pwsh`용 동일 생성기. UTF-8 without BOM 출력 |
-| `opencode.json.example` | OpenCode V1 global config 참고본. caveman instructions + Ponytail npm plugin. 실제 파일명은 `opencode.json`/`opencode.jsonc` |
+| `opencode.json.example` | OpenCode V1 global config 참고본. Ponytail npm plugin. 실제 파일명은 `opencode.json`/`opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본. 로컬 플러그인 폴더(`./plugins/caveman`, `./plugins/ponytail`) 지정 |
 | `opencode-plugins/ponytail-v2/` | ponytail OpenCode V2 임시 패치 (upstream V2 지원까지만 유지, 철수 조건은 내부 README). `index.js` + 설치·확인 절차 |
-| `opencode-caveman.md` | caveman 지침 본문 — OpenCode는 `~/.config/opencode/caveman.md`로 복사, omp·Crush는 build가 규칙에 포함 |
 | `claude-settings.md` | 다른 머신에 옮길 때 참고 가이드 |
 | `settings.json.example` | `~/.claude/settings.json` 참고본 (플레이스홀더 포함) |
 | `statusline.sh` / `statusline.ps1` | 상태줄 스크립트 |

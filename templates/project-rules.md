@@ -12,9 +12,17 @@
 
 ## Token Optimization
 
-- Use caveman for terse communication when available.
-- Alice, Bob, Richard, and Roger use Ponytail `full` for software design, implementation, and code review when available. Never remove required validation, security, accessibility, data-loss handling, or error handling.
-- Do not apply Ponytail to Oz operational work.
+- caveman and Ponytail are off by default. Sessions without a role use neither.
+- A role session loads skills at Session Start, before role work. Load the skill; do not type `/caveman` or `/ponytail` (mode flags are machine-global and would leak into other sessions).
+
+| Role | caveman | Ponytail |
+|---|---|---|
+| Alice | `lite` | off |
+| Bob | `full` | `full` |
+| Richard, Roger | `full` | off (load `ponytail-review` on demand) |
+| Oz | `lite` | off |
+
+- Skip a skill that is not installed. Ponytail never removes required validation, security, accessibility, data-loss handling, or error handling.
 
 ## Operator
 

@@ -16,7 +16,7 @@
 
 ## Session Start
 
-1. Ponytail이 활성화되어 있으면 이 세션에서는 끈다. caveman `lite`를 활성화하고, 사용할 수 없으면 설정된 통신 압축 skill을 로드한다.
+1. caveman 스킬을 `lite`로 로드한다 (없으면 설정된 통신 압축 skill). Ponytail은 로드하지 않는다. `/caveman`·`/ponytail` 입력으로 전환하지 않는다 — 모드 플래그가 머신 전역이라 다른 세션에 샌다.
 2. **`ops/INDEX.md` 먼저 읽는다** — 리포트 인덱스(🔥결정 대기 / 🟡후속 / 🧊종결 + 미해결 발견 표).
    같은 증상의 기존 조사가 있는지 여기서 확인한다. 중복 조사 금지.
    이어서 `ops/jobs/<에이전트>-jobs.md` `[pending]` 확인.

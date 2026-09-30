@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Regenerate Claude Code, OpenCode, omp, and Crush global rules from fragments/.
 # omp and Crush have no session-start hook, so their copy also gets the
-# activation block (Ponytail load + caveman instructions).
+# activation block (caveman/Ponytail off by default, role table loads them).
 # Source of truth = fragments/*.md in this repo. Do NOT hand-edit generated
 # rule files directly -- edit a fragment here and re-run this script.
 set -euo pipefail
@@ -60,7 +60,7 @@ for i in "${!FRAGMENTS[@]}"; do
   [[ "$i" -gt 0 ]] && echo >> "$OUT"
   cat "${FRAGMENTS[$i]}" >> "$OUT"
 done
-{ cat "$OUT"; echo; cat "$REPO/fragments/90-activation.md"; echo; cat "$REPO/opencode-caveman.md"; } > "$ACT"
+{ cat "$OUT"; echo; cat "$REPO/fragments/90-activation.md"; } > "$ACT"
 
 write() { mkdir -p "$(dirname "$2")"; cp "$1" "$2"; echo "wrote $2"; }
 

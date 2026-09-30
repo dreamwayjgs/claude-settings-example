@@ -39,8 +39,8 @@ $fragments += Join-Path $repo 'fragments/10-three-man-team.md'
 $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
 $content = ($fragments | ForEach-Object { [System.IO.File]::ReadAllText($_, $utf8NoBom).TrimEnd("`r", "`n") }) -join "`n`n"
 $content += "`n"
-# omp and Crush have no session-start hook: append activation block + caveman instructions.
-$activation = $content + "`n" + [System.IO.File]::ReadAllText((Join-Path $repo 'fragments/90-activation.md'), $utf8NoBom) + "`n" + [System.IO.File]::ReadAllText((Join-Path $repo 'opencode-caveman.md'), $utf8NoBom)
+# omp and Crush have no session-start hook: append activation block (default off).
+$activation = $content + "`n" + [System.IO.File]::ReadAllText((Join-Path $repo 'fragments/90-activation.md'), $utf8NoBom)
 
 function Write-Out([string]$Destination, [string]$Text) {
   [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($Destination)) | Out-Null

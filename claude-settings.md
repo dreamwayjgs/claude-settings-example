@@ -17,15 +17,14 @@
 | `statusline.ps1` | 상태줄 스크립트 (Windows PowerShell 버전, 동일 기능) |
 | `fragments/00-core.md`, `fragments/10-three-man-team.md` | 동일 내용의 global `CLAUDE.md`·`AGENTS.md` source of truth |
 | `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙 |
-| `fragments/90-activation.md` | omp·Crush 전용 기본 활성화 블록 |
+| `fragments/90-activation.md` | omp·Crush 전용 블록 (caveman·Ponytail 기본 off, 역할 표로 위임) |
 | `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md` 생성 + 플러그인 스킬을 `~/.agents/skills/`로 복사 |
 | `build-rules.ps1` | `pwsh`용 동일 생성기. UTF-8 without BOM 출력 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 네 harness의 `templates/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
-| `opencode.json.example` | OpenCode V1 global config 참고본 (caveman instructions + Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
+| `opencode.json.example` | OpenCode V1 global config 참고본 (Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`). caveman V2 플러그인은 repo 미포함 |
-| `opencode-caveman.md` | OpenCode용 caveman 지침 본문 — `~/.config/opencode/caveman.md`로 복사 |
 | `three-man-team-model-allocation.md` | 4역할 모델 배치 조사·결정 기록 (2026-07) |
 
 ## 설치 상태 확인 (진행 전 체크)
@@ -145,37 +144,39 @@ OpenCode는 머신의 메이저 버전에 맞춰 고른다:
 
 omp·Crush는 스킬 소스를 머신별로 고른다. 한 머신에는 한 방식만 쓴다 (둘 다 쓰면 같은 이름 스킬이 두 경로에 생긴다).
 
-**A. Claude 플러그인 경유** — Claude Code에 ponytail 플러그인이 설치돼 있고 `jq`가 있으면 `./build-claude-md.sh`가 플러그인 스킬을 `~/.agents/skills`로 복사한다 (omp·Crush 기본 경로). 기본 `full` 로드는 build가 규칙 끝에 붙이는 `fragments/90-activation.md`가 담당. 플러그인 업데이트 후 build 재실행.
+**A. Claude 플러그인 경유** — Claude Code에 ponytail 플러그인이 설치돼 있고 `jq`가 있으면 `./build-claude-md.sh`가 플러그인 스킬을 `~/.agents/skills`로 복사한다 (omp·Crush 기본 경로). 기본 off — build가 규칙 끝에 붙이는 `fragments/90-activation.md`가 역할 표로 위임. 플러그인 업데이트 후 build 재실행.
 
-**B. 단독 clone (Claude 불필요)** — Crush 전용. build를 돌리는 머신이면 `90-activation.md`가 이미 `CRUSH.md`에 있으므로 `global-context-path`·`ponytail-default.md`는 생략 가능:
+**B. 단독 clone (Claude 불필요)** — Crush 전용. 스킬 경로만 등록한다 (기본 off, 역할 세션이 로드):
 
 ```bash
 git clone https://github.com/DietrichGebert/ponytail ~/.config/crush/ponytail
-cat >> ~/.config/crush/crushrc <<'EOF'
-option skill-path "$HOME/.config/crush/ponytail/skills"
-option global-context-path "$HOME/.config/crush/ponytail-default.md"
-EOF
-cat > ~/.config/crush/ponytail-default.md <<'EOF'
-# Ponytail Default Mode
-
-For coding tasks, use Ponytail `full` mode by default. Load the `ponytail` skill before acting. Apply its simplicity ladder after understanding the relevant code and request. Do not apply Ponytail to non-coding tasks or Oz/operator work. "stop ponytail" or "normal mode" disables it for the session.
-EOF
+echo 'option skill-path "$HOME/.config/crush/ponytail/skills"' >> ~/.config/crush/crushrc
 ```
 
 Crush 공통 제약 (A·B 동일): `ponytail`과 `ponytail-review`는 스킬 frontmatter에 `user-invocable: true`가 없어 `/ponytail`·`/ponytail-review` 명령으로 직접 실행할 수 없다. Crush는 `PreToolUse`만 지원하므로 Claude Code와 같은 세션 상태 추적 훅은 적용하지 않는다.
 
-global router(`fragments/10-three-man-team.md`)는 "Ponytail이 설정된 환경에서는" 조건부로 쓰도록 되어 있어, 미설치 머신에서도 규칙 파일은 그대로 둬도 된다.
+## 5-1. caveman·Ponytail 기본 off
+
+역할 없는 세션은 둘 다 미적용, 역할 세션만 `templates/project-rules.md` 표대로 스킬 로드. hook·plugin 기본값을 끈다 (Claude Code·OpenCode 공통, env `CAVEMAN_DEFAULT_MODE`·`PONYTAIL_DEFAULT_MODE`가 있으면 그게 우선):
+
+```bash
+mkdir -p ~/.config/caveman ~/.config/ponytail
+echo '{"defaultMode":"off"}' > ~/.config/caveman/config.json
+echo '{"defaultMode":"off"}' > ~/.config/ponytail/config.json
+```
+
+`/caveman`·`/ponytail` 입력은 모드 플래그(`~/.claude/.caveman-active` 등)를 머신 전역으로 바꿔 동시 세션에 샌다. 역할 세션은 스킬 로드만 쓴다. 스킬 미설치면 건너뛴다.
 
 ## 6. OpenCode 추가 파일
 
 `build-claude-md.sh`가 만들어주지 않는 것:
 
 ```bash
-cp opencode-caveman.md ~/.config/opencode/caveman.md
-cp opencode.json.example ~/.config/opencode/opencode.jsonc   # <HOME> 치환 후
+cp opencode.json.example ~/.config/opencode/opencode.jsonc      # V1
+cp opencode.v2.json.example ~/.config/opencode/opencode.json    # V2
 ```
 
-`instructions` 항목은 절대경로만 받으므로 `<HOME>`을 치환해야 한다. `opencode.json`·`opencode.jsonc` 둘 다 유효 — 원본 머신은 `.jsonc`를 쓴다. 두 파일을 같이 두지 말 것.
+caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, §5-1). `opencode.json`·`opencode.jsonc` 둘 다 유효 — 원본 머신은 `.jsonc`를 쓴다. 두 파일을 같이 두지 말 것.
 
 ## 7. omp·Crush
 
@@ -186,7 +187,7 @@ cp opencode.json.example ~/.config/opencode/opencode.jsonc   # <HOME> 치환 후
 | 전역 규칙 | `~/.omp/agent/AGENTS.md` (최우선, 사용자 단위 1개만 로드) | `~/.config/crush/CRUSH.md` (기본 `global_context_paths`) |
 | 템플릿 | `~/.omp/agent/templates/` | `~/.config/crush/templates/` |
 | 스킬 | `~/.agents/skills/` (기본 스캔) | `~/.agents/skills/` (기본 스캔) |
-| caveman·Ponytail | 규칙 끝 활성화 블록 (hook 없음) | 동일 |
+| caveman·Ponytail | 기본 off, 규칙 끝 블록이 역할 표로 위임 (hook 없음) | 동일 |
 
 - 스킬 복사는 `jq` 필요(Bash). Claude 플러그인이 없는 머신이면 skip — 스킬만 빠지고 나머지는 적용된다.
 - `caveman-stats`(Claude 세션 로그)·`cavecrew`(Claude 서브에이전트)는 omp·Crush에서 동작하지 않는다.
@@ -195,7 +196,7 @@ cp opencode.json.example ~/.config/opencode/opencode.jsonc   # <HOME> 치환 후
 
 ## 검증
 
-1. `claude` 새 세션 시작 → 첫 응답이 caveman 톤(단문·관사 생략)이면 hook 동작 OK
+1. 역할 없는 새 세션 → caveman 톤·Ponytail 주입 없음. 역할 세션(예: 밥) → 표대로 스킬 로드
 2. 상태줄에 `모델 | 디렉토리 | Ctx:N%` 보이면 statusline OK
 3. 아무 프로젝트에서 "three-man-team 세팅해줘" → ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md 생성, Alice 치환, karpathy 블록, 동일한 `CLAUDE.md`·`AGENTS.md` 확인
 4. `omp`·`crush` 새 세션 → caveman 톤 + `ponytail` 스킬 로드 여부 확인. 스킬 목록에 caveman·ponytail·karpathy-guidelines·qmd 보이면 OK
