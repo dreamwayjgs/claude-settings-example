@@ -10,20 +10,6 @@
 - Richard and Roger do not run tests unless Alice or the Project Owner explicitly directs it. They review code and Bob's recorded results.
 - Alice confirms reported green state still matches commit state at deploy gate. If code changed after Bob's report, Alice runs tests once.
 
-## Token Optimization
-
-- caveman and Ponytail are off by default. Sessions without a role use neither.
-- A role session loads skills at Session Start, before role work. Set the mode only by loading the skill, not by running `/caveman` or `/ponytail`. The user may run those commands freely, but the mode flag is machine-global, so it also applies to other concurrent sessions.
-
-| Role | caveman | Ponytail |
-|---|---|---|
-| Alice | `lite` | off |
-| Bob | `full` | `full` |
-| Richard, Roger | `full` | off (load `ponytail-review` on demand) |
-| Oz | `lite` | off |
-
-- Skip a skill that is not installed. Ponytail never removes required validation, security, accessibility, data-loss handling, or error handling.
-
 ## Operator
 
 - Oz is optional. Use `OPERATOR.md` only after its environment coordinates are filled from observed facts.

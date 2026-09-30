@@ -157,7 +157,7 @@ Crush 공통 제약 (A·B 동일): `ponytail`과 `ponytail-review`는 스킬 fro
 
 ## 5-1. caveman·Ponytail 기본 off
 
-역할 없는 세션은 둘 다 미적용, 역할 세션만 `templates/project-rules.md` 표대로 스킬 로드. hook·plugin 기본값을 끈다 (Claude Code·OpenCode 공통, env `CAVEMAN_DEFAULT_MODE`·`PONYTAIL_DEFAULT_MODE`가 있으면 그게 우선):
+역할 없는 세션은 둘 다 미적용, 역할 세션만 전역 규칙(`fragments/10-three-man-team.md`)의 역할별 표대로 스킬 로드. 표는 프로젝트에 복사하지 않는다. hook·plugin 기본값을 끈다 (Claude Code·OpenCode 공통, env `CAVEMAN_DEFAULT_MODE`·`PONYTAIL_DEFAULT_MODE`가 있으면 그게 우선):
 
 ```bash
 mkdir -p ~/.config/caveman ~/.config/ponytail

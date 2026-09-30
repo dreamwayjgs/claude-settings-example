@@ -99,11 +99,11 @@ When writing REVIEW-FEEDBACK.md:
 - Set Ready for Builder: NO if either Richard or Roger has Must Fix items.
 ```
 
-### 토큰 최적화 스킬
+### 토큰 최적화 스킬 (역할별 로드)
 
-세팅 시 사용할 토큰 옵티마이저를 결정한다.
+이 표는 전역 규칙에만 둔다. 프로젝트 `CLAUDE.md`·`AGENTS.md`에 복사하지 않는다 — 표가 바뀌면 build 재실행만으로 모든 프로젝트에 적용된다. 프로젝트 지침에 옛 Token Optimization 절이 남아 있으면 이 표가 우선한다.
 
-**기본값:** caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.config/ponytail/config.json`의 `defaultMode: off`). 역할 없는 세션은 둘 다 미적용. 역할 세션의 Session Start는 스킬 로드로만 모드를 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다:
+caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.config/ponytail/config.json`의 `defaultMode: off`). 역할 없는 세션은 둘 다 미적용. 역할 세션은 Session Start에서, 역할 작업 전에 아래 표대로 스킬을 로드한다. 스킬이 없으면 건너뛴다.
 
 | 역할 | caveman | Ponytail |
 |---|---|---|
@@ -112,10 +112,9 @@ When writing REVIEW-FEEDBACK.md:
 | 리처드·로저 | full | off (`ponytail-review` 필요 시 로드) |
 | Oz | lite | off |
 
-프로젝트 `CLAUDE.md`·`AGENTS.md`(`project-rules.md`)에 이 표가 들어간다. 세팅 완료 후 앨리스가 알린다:
-> "토큰 옵티마이저: 역할별 caveman/Ponytail 표대로 진행합니다. 다른 스킬 원하시면 말씀해주세요."
+모드는 스킬 로드로만 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다.
 
 caveman은 응답을 줄이고 Ponytail은 필요한 구현만 남긴다. 필수 검증·보안·접근성·오류 처리는 줄이지 않는다.
 
 **사용자가 세팅 시 특정 옵티마이저 지정한 경우:**
-프로젝트 루트 CLAUDE.md·AGENTS.md와 역할 파일의 `## Session Start` 섹션에 해당 스킬 로드 지시를 같은 의미로 추가한다.
+그 프로젝트에 한해 루트 CLAUDE.md·AGENTS.md와 역할 파일의 `## Session Start` 섹션에 해당 스킬 로드 지시를 같은 의미로 추가한다 (이 표보다 우선).
