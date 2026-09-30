@@ -33,7 +33,7 @@
 - three-man-team: `~/.claude/skills/three-man-team/` 존재 (upstream: `russelleNVy/three-man-team`)
 - qmd (옵셔널): 설치되어 있으면 global router가 `qmd search`를 우선 사용하고, 없으면 Grep/Glob/Read로 자동 fallback. 임베딩 모델이 없으면 `qmd search`만 사용
 - karpathy-skills (각자 설치): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
-- ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 npm 플러그인 `@dietrichgebert/ponytail`, Crush는 스킬 경로와 전역 컨텍스트를 직접 등록한다. 한 harness에만 설치하면 다른 harness에는 적용되지 않는다 (§5 참조)
+- ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 npm 플러그인 `@dietrichgebert/ponytail`, omp·Crush는 Claude 플러그인 스킬 복사(A) 또는 단독 clone(B) 중 머신별 선택. 한 harness에만 설치하면 다른 harness에는 적용되지 않는다 (§5 참조)
 - Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
 
 caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (qmd·karpathy는 옵셔널 — 위 노트 참조.)
@@ -139,7 +139,11 @@ Claude Code (플러그인 마켓플레이스):
 
 OpenCode (npm 플러그인): config의 `plugin` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example` 참조).
 
-Crush (스킬 + 기본 `full` 모드):
+omp·Crush는 스킬 소스를 머신별로 고른다. 한 머신에는 한 방식만 쓴다 (둘 다 쓰면 같은 이름 스킬이 두 경로에 생긴다).
+
+**A. Claude 플러그인 경유** — Claude Code에 ponytail 플러그인이 설치돼 있고 `jq`가 있으면 `./build-claude-md.sh`가 플러그인 스킬을 `~/.agents/skills`로 복사한다 (omp·Crush 기본 경로). 기본 `full` 로드는 build가 규칙 끝에 붙이는 `fragments/90-activation.md`가 담당. 플러그인 업데이트 후 build 재실행.
+
+**B. 단독 clone (Claude 불필요)** — Crush 전용. build를 돌리는 머신이면 `90-activation.md`가 이미 `CRUSH.md`에 있으므로 `global-context-path`·`ponytail-default.md`는 생략 가능:
 
 ```bash
 git clone https://github.com/DietrichGebert/ponytail ~/.config/crush/ponytail
@@ -154,7 +158,7 @@ For coding tasks, use Ponytail `full` mode by default. Load the `ponytail` skill
 EOF
 ```
 
-Crush를 새로 시작하면 코딩 요청에서 `ponytail` 스킬을 사용할 수 있고 기본 `full` 규칙이 적용된다. `ponytail`과 `ponytail-review`는 스킬 frontmatter에 `user-invocable: true`가 없어 `/ponytail`·`/ponytail-review` 명령으로 직접 실행할 수 없다. Crush는 `PreToolUse`만 지원하므로 Claude Code와 같은 세션 상태 추적 훅은 적용하지 않는다.
+Crush 공통 제약 (A·B 동일): `ponytail`과 `ponytail-review`는 스킬 frontmatter에 `user-invocable: true`가 없어 `/ponytail`·`/ponytail-review` 명령으로 직접 실행할 수 없다. Crush는 `PreToolUse`만 지원하므로 Claude Code와 같은 세션 상태 추적 훅은 적용하지 않는다.
 
 global router(`fragments/10-three-man-team.md`)는 "Ponytail이 설정된 환경에서는" 조건부로 쓰도록 되어 있어, 미설치 머신에서도 규칙 파일은 그대로 둬도 된다.
 
