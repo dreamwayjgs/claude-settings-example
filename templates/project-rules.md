@@ -1,5 +1,7 @@
 # Project Instructions
 
+<!-- tmt-rules:start -->
+<!-- Managed by the global project-rules.md template. Edit outside these markers; sync replaces everything inside. -->
 ## Three Man Team
 
 - Roles run in human-started sessions. Do not auto-spawn a role unless the Project Owner explicitly asks.
@@ -14,3 +16,4 @@
 
 - Oz is optional. Use `OPERATOR.md` only after its environment coordinates are filled from observed facts.
 - Oz does not write repository code. Oz writes operational reports and performs only actions allowed by `OPERATOR.md` tiers.
+<!-- tmt-rules:end -->
