@@ -23,7 +23,8 @@
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 네 harness의 `templates/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
-| `opencode.json.example` | OpenCode global config 참고본 (caveman instructions + Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
+| `opencode.json.example` | OpenCode V1 global config 참고본 (caveman instructions + Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
+| `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`). caveman V2 플러그인은 repo 미포함 |
 | `opencode-caveman.md` | OpenCode용 caveman 지침 본문 — `~/.config/opencode/caveman.md`로 복사 |
 | `three-man-team-model-allocation.md` | 4역할 모델 배치 조사·결정 기록 (2026-07) |
 
@@ -137,7 +138,10 @@ Claude Code (플러그인 마켓플레이스):
 
 결과가 `settings.json`의 `enabledPlugins`·`extraKnownMarketplaces`에 기록된다 (`settings.json.example` 참조).
 
-OpenCode (npm 플러그인): config의 `plugins` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example` 참조). 단, upstream이 OpenCode V2를 공식 지원하기 전까지는 `opencode-plugins/ponytail-v2/`의 임시 패치를 `~/.config/opencode/plugins/ponytail/index.js`에 덮어쓴다 (철수 조건은 해당 README).
+OpenCode는 머신의 메이저 버전에 맞춰 고른다:
+
+- **V1 (npm 플러그인)** — config의 `plugin` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example`).
+- **V2 (로컬 임시 패치)** — upstream `ponytail.mjs`는 V1 API 전용이라 V2에서 기동 시 크래시한다. upstream이 V2를 지원할 때까지 `opencode-plugins/ponytail-v2/`의 패치를 로컬 플러그인으로 설치하고 `plugins`에 `./plugins/ponytail`을 지정한다 (`opencode.v2.json.example`, 설치·철수 조건은 해당 README).
 
 omp·Crush는 스킬 소스를 머신별로 고른다. 한 머신에는 한 방식만 쓴다 (둘 다 쓰면 같은 이름 스킬이 두 경로에 생긴다).
 

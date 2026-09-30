@@ -32,11 +32,18 @@ https://opencode.ai/v2/docs/build/plugins/migrate-v1/
 
 ## 설치 (다른 머신 / 다른 agent)
 
+`index.js`는 같은 폴더의 `node_modules/@dietrichgebert/ponytail`(upstream 스킬·커맨드·hooks)을 읽는다. 복사만 하면 로드 실패.
+
 ```sh
-cp opencode-plugins/ponytail-v2/index.js ~/.config/opencode/plugins/ponytail/index.js
+mkdir -p ~/.config/opencode/plugins/ponytail && cd ~/.config/opencode/plugins/ponytail
+cat > package.json <<'EOF'
+{ "name": "ponytail-opencode-plugin", "version": "0.1.0", "type": "module", "main": "index.js", "private": true }
+EOF
+npm install --no-save @dietrichgebert/ponytail
+cp <repo>/opencode-plugins/ponytail-v2/index.js ./index.js
 ```
 
-`~/.config/opencode/opencode.json`의 `plugins`에 `"./plugins/ponytail"`이 있어야 한다.
+`~/.config/opencode/opencode.json`의 `plugins`에 `"./plugins/ponytail"`이 있어야 한다 (repo `opencode.v2.json.example`).
 확인:
 
 ```sh
