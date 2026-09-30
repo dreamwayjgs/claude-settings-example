@@ -3,5 +3,5 @@
   "instructions": [
     "<HOME>/.config/opencode/caveman.md"
   ],
-  "plugin": ["@dietrichgebert/ponytail"]
+  "plugins": ["@dietrichgebert/ponytail"]
 }

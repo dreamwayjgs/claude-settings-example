@@ -137,7 +137,7 @@ Claude Code (플러그인 마켓플레이스):
 
 결과가 `settings.json`의 `enabledPlugins`·`extraKnownMarketplaces`에 기록된다 (`settings.json.example` 참조).
 
-OpenCode (npm 플러그인): config의 `plugin` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example` 참조).
+OpenCode (npm 플러그인): config의 `plugins` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example` 참조). 단, upstream이 OpenCode V2를 공식 지원하기 전까지는 `opencode-plugins/ponytail-v2/`의 임시 패치를 `~/.config/opencode/plugins/ponytail/index.js`에 덮어쓴다 (철수 조건은 해당 README).
 
 omp·Crush는 스킬 소스를 머신별로 고른다. 한 머신에는 한 방식만 쓴다 (둘 다 쓰면 같은 이름 스킬이 두 경로에 생긴다).
 
