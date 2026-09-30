@@ -165,7 +165,7 @@ echo '{"defaultMode":"off"}' > ~/.config/caveman/config.json
 echo '{"defaultMode":"off"}' > ~/.config/ponytail/config.json
 ```
 
-`/caveman`·`/ponytail` 입력은 모드 플래그(`~/.claude/.caveman-active` 등)를 머신 전역으로 바꿔 동시 세션에 샌다. 역할 세션은 스킬 로드만 쓴다. 스킬 미설치면 건너뛴다.
+역할 세션의 Session Start는 스킬 로드로만 모드를 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그(`~/.claude/.caveman-active` 등)가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다. 스킬 미설치면 건너뛴다.
 
 ## 6. OpenCode 추가 파일
 

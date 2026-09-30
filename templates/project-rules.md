@@ -13,7 +13,7 @@
 ## Token Optimization
 
 - caveman and Ponytail are off by default. Sessions without a role use neither.
-- A role session loads skills at Session Start, before role work. Load the skill; do not type `/caveman` or `/ponytail` (mode flags are machine-global and would leak into other sessions).
+- A role session loads skills at Session Start, before role work. Set the mode only by loading the skill, not by running `/caveman` or `/ponytail`. The user may run those commands freely, but the mode flag is machine-global, so it also applies to other concurrent sessions.
 
 | Role | caveman | Ponytail |
 |---|---|---|

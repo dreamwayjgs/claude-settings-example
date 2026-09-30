@@ -103,7 +103,7 @@ When writing REVIEW-FEEDBACK.md:
 
 세팅 시 사용할 토큰 옵티마이저를 결정한다.
 
-**기본값:** caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.config/ponytail/config.json`의 `defaultMode: off`). 역할 없는 세션은 둘 다 미적용. 역할 세션은 Session Start에서 스킬을 로드한다 (`/caveman`·`/ponytail` 입력 금지 — 모드 플래그가 머신 전역이라 다른 세션에 샌다):
+**기본값:** caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.config/ponytail/config.json`의 `defaultMode: off`). 역할 없는 세션은 둘 다 미적용. 역할 세션의 Session Start는 스킬 로드로만 모드를 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다:
 
 | 역할 | caveman | Ponytail |
 |---|---|---|
