@@ -194,6 +194,16 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
 - Crush는 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`를 둘 다 읽는다 — 공통 router가 두 번 주입된다(짧아서 감수). omp는 둘 다 찾지만 같은 디렉토리 depth에서는 하나만 주입한다(실측: `AGENTS.md`).
 - Crush 설정에 `global_context_paths`를 직접 넣으면 기본값을 **대체**한다. 넣을 거면 `~/.config/crush/CRUSH.md`를 목록에 다시 포함할 것.
 
+## 8. 옵션 (머신별 취향)
+
+필수 아님. 쓰는 머신에만 적용한다.
+
+- **Crush yolo alias** — Crush는 설정 파일로 yolo 기본값을 둘 수 없고 `--yolo` 플래그만 있다. 승인 분류기가 번거로우면 별칭을 따로 둔다 (원래 `crush`는 승인 모드로 유지):
+  ```bash
+  echo "alias crusy='crush --yolo'" >> ~/.bashrc
+  ```
+  모든 승인이 사라지므로 리뷰어 역할의 테스트·코드 수정 금지는 역할 지침만으로 지켜진다. 외부 콘텐츠(fetch·남의 repo)를 읽는 세션에서는 쓰지 않는다. 일부만 자동 승인하려면 대신 `~/.config/crush/crushrc`에 `permissions allow view ls grep glob edit multiedit write fetch`.
+
 ## 검증
 
 1. 역할 없는 새 세션 → caveman 톤·Ponytail 주입 없음. 역할 세션(예: 밥) → 표대로 스킬 로드
