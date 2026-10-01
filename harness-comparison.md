@@ -68,7 +68,7 @@ omp `browser`(Chromium 탭·`tab.run`·시각 증거) 내장 → UI 검증은 om
 - **[추론]** 아래 역할 추천은 도구·권한·역할 규칙의 적합성에 대한 잠정 판정이다. **네 하네스에서 동일 GPT로 구현/리뷰를 완주한 대조 실험은 아직 없다.**
 - **잠정 요약:** GPT 구현의 기준선은 **Codex**, 역할별 권한·모델 운용을 한 도구로 정리하려면 **OpenCode**, 도구가 많은 구현 환경 후보는 **omp**, 가벼운 수동 리뷰 세션 후보는 **Crush**. 단 Crush 기본 행동 지침은 리뷰 역할과 충돌하므로 그대로 채택하지 않는다.
 
-기존 [모델 배치 조사](three-man-team-model-allocation.md)의 앨리스=Claude Code 고정과 앞 절의 앨리스=omp 권고는 범위·전제가 다르다. 여기서는 **GPT를 그 역할에 배치한다면**을 비교하며 기존 배치를 덮어쓰지 않는다. v3의 로저=Codex 고정도 프로젝트 정책이지 GPT 전체에 대한 하네스 우승 판정은 아니다.
+[모델 배치](three-man-team-model-allocation.md)는 등급·벤더 기준만 다루고 하네스는 정하지 않는다. 여기서는 **GPT를 그 역할에 배치한다면**을 비교하며 기존 배치를 덮어쓰지 않는다. v3의 로저=Codex 고정도 프로젝트 정책이지 GPT 전체에 대한 하네스 우승 판정은 아니다.
 
 ### Three Man Team에서 중요한 비교축
 
@@ -142,7 +142,7 @@ omp `browser`(Chromium 탭·`tab.run`·시각 증거) 내장 → UI 검증은 om
 
 ### GPT 비교 출처와 재현
 
-- **역할 원본:** [공통 역할 규칙](fragments/10-three-man-team.md), [역할별 모델 선택 기준](three-man-team-model-allocation.md#역할별-지배변수). 리처드·로저 테스트 금지, 수동 호출, Roger Additions 보존 규칙을 기준으로 삼았다.
+- **역할 원본:** [공통 역할 규칙](fragments/10-three-man-team.md), [역할별 모델 선택 기준](three-man-team-model-allocation.md#역할별-기준). 리처드·로저 테스트 금지, 수동 호출, Roger Additions 보존 규칙을 기준으로 삼았다.
 - **Codex:** 설치 패키지 `@openai/codex/README.md:58-66`의 ChatGPT/API 인증, `codex --help`의 sandbox·approval·profile·resume/fork. [공식 문서](https://developers.openai.com/codex).
 - **OpenCode:** [Agents](https://opencode.ai/docs/agents/), [Permissions](https://opencode.ai/docs/permissions/), [Rules](https://opencode.ai/docs/rules/), [Providers](https://opencode.ai/docs/providers/), [Zen](https://opencode.ai/docs/zen/). Plan의 ask와 deny, primary와 subagent, provider와 gateway를 구분했다.
 - **omp:** [공식 README](https://github.com/can1357/oh-my-pi#readme), `omp --help`; 설치 패키지 `@oh-my-pi/pi-coding-agent@18.4.2`의 `src/edit/hashline-compact.md:1-21`, `src/prompts/tools/lsp.md:5-17`, `src/prompts/system/plan-mode-active.md:3-9`, `CHANGELOG.md:1428`. plan 프롬프트만으로 OS 격리를 입증하지 않았다.

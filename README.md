@@ -30,7 +30,7 @@
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md` 공통 router 템플릿 |
 | `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). build가 네 harness의 `templates/`에 배치 → "저장된 .claudeignore 적용해줘" 시 거기서 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
-| `three-man-team-model-allocation.md` | 4역할 모델 배치 조사·결정 기록 (2026-07). 역할별 지배변수, 확정 라인업, 실측, 다음 검증 |
+| `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
 
 ## 사용법
 
