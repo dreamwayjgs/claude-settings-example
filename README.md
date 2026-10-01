@@ -17,7 +17,7 @@
 | `fragments/10-three-man-team.md` | `CLAUDE.md`의 Three Man Team 전체 블록. 안정적, 거의 안 바뀜 |
 | `fragments/90-activation.md` | omp·Crush 전용 블록 — caveman·Ponytail 기본 off, 역할 표로 위임. build가 두 harness 규칙 끝에 붙임 |
 | `build-claude-md.sh` | fragments를 이어붙여 네 harness global rules에 씀 + Claude 플러그인 스킬을 `~/.agents/skills/`로 복사 |
-| `build-rules.ps1` | `pwsh`용 동일 생성기. UTF-8 without BOM 출력 |
+| `build-rules.ps1` | `pwsh` 7용 동일 생성기 (Windows PowerShell 5 미지원). UTF-8 without BOM 출력 |
 | `opencode.json.example` | OpenCode V1 global config 참고본. Ponytail npm plugin. 실제 파일명은 `opencode.json`/`opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본. 로컬 플러그인 폴더(`./plugins/caveman`, `./plugins/ponytail`) 지정 |
 | `opencode-plugins/ponytail-v2/` | ponytail OpenCode V2 임시 패치 (upstream V2 지원까지만 유지, 철수 조건은 내부 README). `index.js` + 설치·확인 절차 |

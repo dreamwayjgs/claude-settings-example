@@ -6,7 +6,7 @@
 
 ```
 이 머신의 three-man-team checkout을 개인 포크로 전환하고 전역 규칙을 다시 빌드해줘. 단계마다 결과를 짧게 보고하고, 막히면 멈추고 물어봐.
-Windows면 PowerShell 기준으로 바꿔 실행한다. 아래 `~`는 `$HOME`(`C:\Users\<user>`)이고, 하위 경로는 Linux와 같다.
+Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지원하지 않는다). 아래 `~`는 `$HOME`(`C:\Users\<user>`)이고, 하위 경로는 Linux와 같다.
 
 1. claude-settings-example repo를 찾아 `git pull`. 워킹트리가 더러우면 멈추고 보고.
 2. three-man-team checkout을 **전부** 찾는다. Claude 계정 분리(`CLAUDE_CONFIG_DIR`)를 쓰면 계정 폴더마다 따로 있다.
@@ -23,7 +23,7 @@ Windows면 PowerShell 기준으로 바꿔 실행한다. 아래 `~`는 `$HOME`(`C
 5. 전역 규칙 빌드 (claude-settings-example 루트에서):
    - Linux·macOS·WSL: `./build-claude-md.sh`
    - Windows: `pwsh -File .\build-rules.ps1`. bash 셸에서 실행 중이어도(예: Claude Code의 Git Bash) ps1을 쓴다.
-     pwsh 7이 없으면 `powershell -ExecutionPolicy Bypass -File .\build-rules.ps1`. 실행 정책 오류가 나면 pwsh에도 `-ExecutionPolicy Bypass`를 붙인다.
+     pwsh 7이 없으면 멈추고 보고. 실행 정책 오류가 나면 `-ExecutionPolicy Bypass`를 붙인다.
    - Foreman 질문이 나오면 나에게 물어봐.
    - 빌드는 계정 폴더 중 `~/.claude`·`~/.claude-personal`에만 CLAUDE.md를 쓴다. 다른 계정 폴더(예: `~/.claude-admin`)가 있으면 `~/.claude/CLAUDE.md`를 그 폴더에 복사한다.
 6. 옛 사본 정리: 아래 경로에 `OPERATOR.md`가 있으면 삭제한다. 빌드가 더는 이 파일을 쓰지 않고, 이제 포크의 `templates/optional/OPERATOR.md`가 원본이다.
