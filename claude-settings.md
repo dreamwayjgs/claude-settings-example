@@ -22,7 +22,6 @@
 | `build-rules.ps1` | `pwsh`용 동일 생성기. UTF-8 without BOM 출력 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 네 harness의 `templates/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
-| `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
 | `opencode.json.example` | OpenCode V1 global config 참고본 (Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`). caveman V2 플러그인은 repo 미포함 |
 | `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
@@ -30,7 +29,7 @@
 ## 설치 상태 확인 (진행 전 체크)
 
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
-- three-man-team: `~/.claude/skills/three-man-team/` 존재 (upstream: `russelleNVy/three-man-team`)
+- three-man-team: `~/.claude/skills/three-man-team/` 존재. 개인 포크 `dreamwayjgs/three-man-team`을 clone한다 (원본 `russelleNVy/three-man-team`은 `upstream` remote)
 - qmd (옵셔널): 설치되어 있으면 global router가 `qmd search`를 우선 사용하고, 없으면 Grep/Glob/Read로 자동 fallback. 임베딩 모델이 없으면 `qmd search`만 사용
 - karpathy-skills (각자 설치): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
 - ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 npm 플러그인 `@dietrichgebert/ponytail`, omp·Crush는 Claude 플러그인 스킬 복사(A) 또는 단독 clone(B) 중 머신별 선택. 한 harness에만 설치하면 다른 harness에는 적용되지 않는다 (§5 참조)
@@ -92,7 +91,7 @@ caveman 배지도 동일 방식 — `hooks/caveman-statusline.ps1` 존재 시에
 
 ## 3. three-man-team — 설치 후 설정
 
-upstream repo에는 커스텀 규칙(앨리스 이름 치환, karpathy 섹션, 로저 2차 리뷰어, 한국어 진행)이 없음 — 이 폴더의 fragment가 전부. 설치 확인 후 병합:
+역할 파일 커스텀(로저 2차 리뷰어, Oz, karpathy 섹션, 테스트 정책, 리뷰어 규칙)은 포크 템플릿에 있고, 전역 규칙(앨리스 이름 치환, 한국어 진행, 셋업 절차)은 이 폴더의 fragment에 있다. 설치 확인 후 병합:
 
 ```bash
 ./build-claude-md.sh   # Bash: fragments/ -> Claude Code·OpenCode·omp·Crush global rules
@@ -105,7 +104,7 @@ qmd는 선택 사항이다. 설치되면 global router가 우선 사용하고, �
 
 사용법:
 
-- 프로젝트 루트에서 "three-man-team 세팅해줘" → fragment의 셋업 절차 실행 (upstream 템플릿 복사, Alice 치환, karpathy 블록 추가, 공통 `CLAUDE.md`·`AGENTS.md`, `ROGER.md` 생성)
+- 프로젝트 루트에서 "three-man-team 세팅해줘" → fragment의 셋업 절차 실행 (포크 템플릿 복사, Alice 치환, 공통 `CLAUDE.md`·`AGENTS.md`)
 - "operator 세팅해줘" → 선택적으로 Oz `OPERATOR.md` 추가. 환경 좌표를 실측으로 채우기 전에는 운영 조작 금지
 - 역할: 앨리스(설계)·밥(구현)·리처드(1차 리뷰)·로저(2차 리뷰)·선택적 Oz(운영) — 대화는 한국어
 - handoff 파일은 BUILD-LOG.md 제외하고 매 스텝 덮어쓰기

@@ -55,7 +55,7 @@ foreach ($rel in @('.omp/agent/AGENTS.md', '.config/crush/CRUSH.md')) {
   Write-Out (Join-Path $TargetHome $rel) $activation
 }
 
-foreach ($template in @('project-rules.md', 'OPERATOR.md', '.claudeignore')) {
+foreach ($template in @('project-rules.md', '.claudeignore')) {
   $text = [System.IO.File]::ReadAllText((Join-Path $repo "templates/$template"), $utf8NoBom)
   foreach ($dir in @('.claude/templates', '.config/opencode/templates', '.omp/agent/templates', '.config/crush/templates')) {
     Write-Out (Join-Path $TargetHome "$dir/$template") $text

@@ -28,12 +28,11 @@
 | `omp/hooks/pre/openai-personal-warning.ts` | 머신 선택 참고본 (build 대상 아님). omp에서 OpenAI 계열 모델 첫 요청 시 "개인 작업이 맞나요?" Y/N 확인 — 아니오는 취소 후 재질문, 화면 없는 실행(`-p`)은 취소. 개인 OpenAI 로그인을 쓰는 머신만 `~/.omp/agent/hooks/pre/`로 복사 |
 | `templates/` | harness와 무관한 프로젝트 bootstrap 템플릿 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md` 공통 router 템플릿 |
-| `templates/OPERATOR.md` | 선택적 Oz 운영 역할 템플릿 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). build가 네 harness의 `templates/`에 배치 → "저장된 .claudeignore 적용해줘" 시 거기서 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
 | `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
 
 ## 사용법
 
-**global rules 고칠 때:** 생성된 `CLAUDE.md`·`AGENTS.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`에 동일하게, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md`에는 같은 내용 + 활성화 블록(세션 시작 hook이 없어서)으로 반영된다. `project-rules.md`·`OPERATOR.md`·`.claudeignore`는 네 harness의 template 경로(`~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`)에 복사된다. Claude 플러그인(caveman·ponytail·karpathy·qmd) 스킬은 `~/.agents/skills/`로 복사된다 — omp·Crush가 기본으로 읽는 경로. 플러그인 업데이트 후 build 재실행. 최초 실행은 Foreman 포함 여부를 묻고 선택을 `.claude-settings.local`에 저장한다. 선택을 바꾸려면 이 파일의 값을 수정하거나 파일을 삭제하고 다시 실행한다.
+**global rules 고칠 때:** 생성된 `CLAUDE.md`·`AGENTS.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`에 동일하게, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md`에는 같은 내용 + 활성화 블록(세션 시작 hook이 없어서)으로 반영된다. `project-rules.md`·`.claudeignore`는 네 harness의 template 경로(`~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`)에 복사된다. Claude 플러그인(caveman·ponytail·karpathy·qmd) 스킬은 `~/.agents/skills/`로 복사된다 — omp·Crush가 기본으로 읽는 경로. 플러그인 업데이트 후 build 재실행. 최초 실행은 Foreman 포함 여부를 묻고 선택을 `.claude-settings.local`에 저장한다. 선택을 바꾸려면 이 파일의 값을 수정하거나 파일을 삭제하고 다시 실행한다.
 
 **다른 머신에 세팅할 때:** `claude-settings.md` 참고. 설치 여부(caveman/three-man-team)는 파일 존재로 확인하고, 없으면 임의 설치하지 말고 사용자에게 확인.

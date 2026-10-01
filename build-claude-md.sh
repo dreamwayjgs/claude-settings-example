@@ -71,7 +71,7 @@ for dest in "$HOME/.omp/agent/AGENTS.md" "$HOME/.config/crush/CRUSH.md"; do
   write "$ACT" "$dest"
 done
 
-for template in project-rules.md OPERATOR.md .claudeignore; do
+for template in project-rules.md .claudeignore; do
   for dir in "$HOME/.claude/templates" "$HOME/.config/opencode/templates" "$HOME/.omp/agent/templates" "$HOME/.config/crush/templates"; do
     write "$REPO/templates/$template" "$dir/$template"
   done
