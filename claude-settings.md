@@ -165,6 +165,12 @@ echo '{"defaultMode":"off"}' > ~/.config/caveman/config.json
 echo '{"defaultMode":"off"}' > ~/.config/ponytail/config.json
 ```
 
+Windows는 경로가 `%APPDATA%\caveman\config.json`·`%APPDATA%\ponytail\config.json`이다 (두 플러그인 모두 win32에서 APPDATA 사용):
+
+```powershell
+foreach ($t in 'caveman','ponytail') { New-Item -ItemType Directory -Force "$env:APPDATA\$t" | Out-Null; '{"defaultMode":"off"}' | Set-Content -Encoding utf8NoBOM "$env:APPDATA\$t\config.json" }
+```
+
 역할 세션의 Session Start는 스킬 로드로만 모드를 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그(`~/.claude/.caveman-active` 등)가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다. 스킬 미설치면 건너뛴다.
 
 ## 6. OpenCode 추가 파일
@@ -200,13 +206,23 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
 
 - **Crush yolo alias** — Crush는 설정 파일로 yolo 기본값을 둘 수 없고 `--yolo` 플래그만 있다. 승인 분류기가 번거로우면 별칭을 따로 둔다 (원래 `crush`는 승인 모드로 유지):
   ```bash
-  echo "alias crusy='crush --yolo'" >> ~/.bashrc
+  echo "alias crusy='crush --yolo'" >> ~/.bash_aliases
   ```
   모든 승인이 사라지므로 리뷰어 역할의 테스트·코드 수정 금지는 역할 지침만으로 지켜진다. 외부 콘텐츠(fetch·남의 repo)를 읽는 세션에서는 쓰지 않는다. 일부만 자동 승인하려면 대신 `~/.config/crush/crushrc`에 `permissions allow view ls grep glob edit multiedit write fetch`.
 
-- **Claude 계정 분리 (`pclaude`·`aclaude` 등)** — 계정마다 설정 폴더를 따로 두고 `CLAUDE_CONFIG_DIR`로 바꿔 띄운다. alias보다 함수가 인자 전달이 깔끔하다 (이 머신 `~/.bash_aliases`):
+- **Claude 계정 분리 (`pclaude`·`aclaude` 등)** — 계정마다 설정 폴더를 따로 두고 `CLAUDE_CONFIG_DIR`로 바꿔 띄운다. alias보다 함수가 인자 전달이 깔끔하다. 별칭·함수는 `~/.bash_aliases`에 모은다 (Ubuntu 기본 `.bashrc`가 자동 로드):
   ```bash
   pclaude() { CLAUDE_CONFIG_DIR="$HOME/.claude-personal" command claude "$@"; }
+  ```
+  Windows pwsh (`$PROFILE`, 원래 값 복원):
+  ```powershell
+  function pclaude {
+      $old = $env:CLAUDE_CONFIG_DIR
+      $env:CLAUDE_CONFIG_DIR = "$HOME\.claude-personal"
+      try { claude @args } finally {
+          if ($null -eq $old) { Remove-Item Env:\CLAUDE_CONFIG_DIR } else { $env:CLAUDE_CONFIG_DIR = $old }
+      }
+  }
   ```
   - 폴더는 완전히 독립 — 인증(`.credentials.json`)·`settings.json`·플러그인·스킬·세션 이력을 따로 가진다. 첫 실행에서 로그인하고, 플러그인(caveman·ponytail 등)은 그 계정으로 다시 설치한다.
   - `build-claude-md.sh`·`build-rules.ps1`은 `~/.claude-personal/CLAUDE.md`만 대상으로 쓴다. 다른 폴더명(예: works 서버의 `aclaude` → `~/.claude-admin`)을 쓰면 build 대상에 추가하거나 `~/.claude/CLAUDE.md`를 복사한다.
