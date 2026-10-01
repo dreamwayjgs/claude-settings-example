@@ -209,7 +209,7 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   pclaude() { CLAUDE_CONFIG_DIR="$HOME/.claude-personal" command claude "$@"; }
   ```
   - 폴더는 완전히 독립 — 인증(`.credentials.json`)·`settings.json`·플러그인·스킬·세션 이력을 따로 가진다. 첫 실행에서 로그인하고, 플러그인(caveman·ponytail 등)은 그 계정으로 다시 설치한다.
-  - `build-claude-md.sh`·`build-rules.ps1`은 `~/.claude-personal/CLAUDE.md`만 대상으로 쓴다. 다른 폴더명(예: `aclaude`용)을 쓰면 build 대상에 추가하거나 `~/.claude/CLAUDE.md`를 복사한다.
+  - `build-claude-md.sh`·`build-rules.ps1`은 `~/.claude-personal/CLAUDE.md`만 대상으로 쓴다. 다른 폴더명(예: works 서버의 `aclaude` → `~/.claude-admin`)을 쓰면 build 대상에 추가하거나 `~/.claude/CLAUDE.md`를 복사한다.
   - statusline과 caveman·Ponytail 모드 플래그는 `CLAUDE_CONFIG_DIR`을 따른다 — 계정 폴더 사이에서는 모드가 새지 않는다.
 
 ## 검증
