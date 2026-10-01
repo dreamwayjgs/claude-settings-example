@@ -23,11 +23,11 @@
 
 ### 프로젝트 셋업 절차
 
-three-man-team checkout은 개인 포크(`dreamwayjgs/three-man-team`, `origin`)이고 원본은 `upstream`이다. 로저·Oz·karpathy 블록·테스트 정책·리뷰어 규칙은 포크 템플릿에 들어 있다. 프로젝트 셋업 중에는 checkout을 수정하지 않는다.
+three-man-team checkout(`~/.claude/skills/three-man-team`, 계정 분리면 `$CLAUDE_CONFIG_DIR/skills/three-man-team`)은 개인 포크(`dreamwayjgs/three-man-team`, `origin`)이고 원본은 `upstream`이다. 로저·Oz·karpathy 블록·테스트 정책·리뷰어 규칙은 포크 템플릿에 들어 있다. 프로젝트 셋업 중에는 checkout을 수정하지 않는다.
 
 "three-man-team 세팅해줘" 요청 시:
 1. checkout의 `templates/project-folder/`를 현재 프로젝트 루트에 복사.
-2. 이름 치환 (복사본만): `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`ROGER.md`·`new-setup.md`에서 단어 `Arch`를 `Alice`로 대소문자 구분·워드바운더리 치환한다. 역할명 `Architect`/`ARCHITECT.md`는 보존. 현재 셸에 맞는 도구(pwsh `-creplace '\bArch\b'`, bash `sed` 등)나 편집 도구를 쓴다.
+2. 이름 치환 (복사본만): `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`ROGER.md`·`new-setup.md`에서 단어 `Arch`를 `Alice`로 대소문자 구분·워드바운더리 치환한다. 역할명 `Architect`/`ARCHITECT.md`는 보존. 현재 셸에 맞는 도구(pwsh 7 `-creplace '\bArch\b'` + `Set-Content -Encoding utf8NoBOM`, bash `sed` 등)나 편집 도구를 쓴다. Windows PowerShell 5.1은 UTF-8을 깨뜨리므로 편집 도구를 쓴다.
 3. 현재 harness의 전역 템플릿 경로에서 `project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. Claude Code는 `~/.claude/templates/`, OpenCode는 `~/.config/opencode/templates/`, omp는 `~/.omp/agent/templates/`, Crush는 `~/.config/crush/templates/`를 사용한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다. 템플릿의 `<!-- tmt-rules:start -->`~`<!-- tmt-rules:end -->` 마커를 그대로 유지하고, 프로젝트 고유 지침은 마커 밖에 둔다. `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
 4. 앨리스로서 `new-setup.md` 읽기
 

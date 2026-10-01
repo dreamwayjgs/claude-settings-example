@@ -9,7 +9,7 @@
 이 프로젝트의 three-man-team 역할 파일에 개인 포크 템플릿의 변경을 반영해줘. 덮어쓰지 말고 필요한 부분만 넣는다. 커밋은 내가 diff를 본 뒤에 한다.
 
 준비
-1. three-man-team checkout(기본 `~/.claude/skills/three-man-team`)의 origin이 `dreamwayjgs/three-man-team`이고 최신인지 확인한다. 아니면 멈추고 "머신 전환 먼저"라고 보고.
+1. 이 세션이 쓰는 three-man-team checkout(기본 `~/.claude/skills/three-man-team`, 계정 분리면 `$CLAUDE_CONFIG_DIR/skills/three-man-team`)의 origin이 `dreamwayjgs/three-man-team`이고 최신인지 확인한다. 아니면 멈추고 "머신 전환 먼저"라고 보고.
 2. 진행 중인 리뷰가 있는지 확인한다: handoff 디렉터리(세션 스코프면 `handoff-*`도)의 REVIEW-REQUEST가 `Ready for Review: YES`인데 REVIEW-FEEDBACK이 아직 없으면 멈추고 보고.
 3. 역할 파일 목록을 확정한다: 프로젝트 루트(또는 manifest.md)에서 ARCHITECT·BUILDER·REVIEWER·ROGER·OPERATOR에 해당하는 파일과 각 역할 이름(기본 Alice·Bob·Richard·Roger·Oz, 한국어 이름일 수 있다)을 찾는다. 파일이 여러 세트(v2/v3 등)면 세트별로 진행한다.
 
@@ -22,6 +22,7 @@
    - 템플릿의 이름(Arch·Bob·Richard)은 그 프로젝트의 이름으로 바꾼다.
    - 경로(`handoff/`)는 그 프로젝트의 handoff 경로로 바꾼다.
    - 템플릿 문장은 영어 그대로 넣는다. 다음 동기화 때 diff가 맞아야 한다.
+   - 파일의 기존 인코딩(UTF-8)과 줄바꿈(CRLF/LF)을 유지한다. Windows에서는 셸 치환 대신 편집 도구를 쓴다.
    - 이미 같은 의미의 문장이 있으면 넣지 않고 "이미 있음"으로 보고한다.
    - 프로젝트 고유 내용(환경 메모, 하위 repo 메모, 프로젝트 전용 규칙)은 지우거나 바꾸지 않는다.
    - 템플릿 문구와 충돌하는 프로젝트 고유 문구가 있으면 고치지 말고 목록으로 보고한다.
