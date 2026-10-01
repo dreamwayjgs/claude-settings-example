@@ -204,6 +204,14 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   ```
   모든 승인이 사라지므로 리뷰어 역할의 테스트·코드 수정 금지는 역할 지침만으로 지켜진다. 외부 콘텐츠(fetch·남의 repo)를 읽는 세션에서는 쓰지 않는다. 일부만 자동 승인하려면 대신 `~/.config/crush/crushrc`에 `permissions allow view ls grep glob edit multiedit write fetch`.
 
+- **Claude 계정 분리 (`pclaude`·`aclaude` 등)** — 계정마다 설정 폴더를 따로 두고 `CLAUDE_CONFIG_DIR`로 바꿔 띄운다. alias보다 함수가 인자 전달이 깔끔하다 (이 머신 `~/.bash_aliases`):
+  ```bash
+  pclaude() { CLAUDE_CONFIG_DIR="$HOME/.claude-personal" command claude "$@"; }
+  ```
+  - 폴더는 완전히 독립 — 인증(`.credentials.json`)·`settings.json`·플러그인·스킬·세션 이력을 따로 가진다. 첫 실행에서 로그인하고, 플러그인(caveman·ponytail 등)은 그 계정으로 다시 설치한다.
+  - `build-claude-md.sh`·`build-rules.ps1`은 `~/.claude-personal/CLAUDE.md`만 대상으로 쓴다. 다른 폴더명(예: `aclaude`용)을 쓰면 build 대상에 추가하거나 `~/.claude/CLAUDE.md`를 복사한다.
+  - statusline과 caveman·Ponytail 모드 플래그는 `CLAUDE_CONFIG_DIR`을 따른다 — 계정 폴더 사이에서는 모드가 새지 않는다.
+
 ## 검증
 
 1. 역할 없는 새 세션 → caveman 톤·Ponytail 주입 없음. 역할 세션(예: 밥) → 표대로 스킬 로드
