@@ -29,7 +29,7 @@
 | `templates/` | harness와 무관한 프로젝트 bootstrap 템플릿 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md` 공통 router 템플릿 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). build가 네 harness의 `templates/`에 배치 → "저장된 .claudeignore 적용해줘" 시 거기서 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
-| `prompts/` | 필요할 때 다른 모델에 붙여 넣는 일회성 프롬프트. 빌드 대상 아님 (`translation-review.md`: 번역 교차검증) |
+| `prompts/` | 필요할 때 다른 모델에 붙여 넣는 일회성 프롬프트. 빌드 대상 아님 (`translation-review.md`: 번역 교차검증 · `tmt-machine-migrate.md`: 머신별 tmt 포크 전환 · `tmt-project-sync.md`: 기존 프로젝트 역할 파일 동기화) |
 | `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
 
 ## 사용법
