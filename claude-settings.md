@@ -203,11 +203,30 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
 
 필수 아님. 쓰는 머신에만 적용한다.
 
-- **Crush yolo alias** — Crush는 설정 파일로 yolo 기본값을 둘 수 없고 `--yolo` 플래그만 있다. 승인 분류기가 번거로우면 별칭을 따로 둔다 (원래 `crush`는 승인 모드로 유지):
+- **Crush yolo 함수** — Crush는 설정 파일로 yolo 기본값을 둘 수 없고 `--yolo` 플래그만 있다. 승인 분류기가 번거로우면 함수를 따로 둔다 (원래 `crush`는 승인 모드로 유지). 인자 전달이 깔끔해서 alias 대신 함수를 쓴다:
   ```bash
-  echo "alias crusy='crush --yolo'" >> ~/.bash_aliases
+  # ~/.bash_aliases
+  crusy() { command crush --yolo "$@"; }
+  ```
+  Windows pwsh (`$PROFILE`):
+  ```powershell
+  function crusy { crush --yolo @args }
   ```
   모든 승인이 사라지므로 리뷰어 역할의 테스트·코드 수정 금지는 역할 지침만으로 지켜진다. 외부 콘텐츠(fetch·남의 repo)를 읽는 세션에서는 쓰지 않는다. 일부만 자동 승인하려면 대신 `~/.config/crush/crushrc`에 `permissions allow view ls grep glob edit multiedit write fetch`.
+
+- **Claude 모델 선택 함수 (`claudef`·`claudeo`·`claudes`)** — `--model` 별칭(`fable`·`opus`·`sonnet`)은 항상 최신 버전으로 풀리므로 버전을 고정하지 않는다. 접미사는 모델 머리글자다. 계정 분리 함수와 독립이고, 조합하려면 `pclaude --model opus`처럼 인자로 붙인다:
+  ```bash
+  # ~/.bash_aliases
+  claudef() { command claude --model fable "$@"; }
+  claudeo() { command claude --model opus "$@"; }
+  claudes() { command claude --model sonnet "$@"; }
+  ```
+  Windows pwsh (`$PROFILE`):
+  ```powershell
+  function claudef { claude --model fable @args }
+  function claudeo { claude --model opus @args }
+  function claudes { claude --model sonnet @args }
+  ```
 
 - **Claude 계정 분리 (`pclaude`·`aclaude` 등)** — 계정마다 설정 폴더를 따로 두고 `CLAUDE_CONFIG_DIR`로 바꿔 띄운다. alias보다 함수가 인자 전달이 깔끔하다. 별칭·함수는 `~/.bash_aliases`에 모은다 (Ubuntu 기본 `.bashrc`가 자동 로드):
   ```bash
