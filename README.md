@@ -37,3 +37,9 @@
 **global rules 고칠 때:** 생성된 `CLAUDE.md`·`AGENTS.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`에 동일하게, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md`에는 같은 내용 + 활성화 블록(세션 시작 hook이 없어서)으로 반영된다. `project-rules.md`·`.claudeignore`는 네 harness의 template 경로(`~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`)에 복사된다. Claude 플러그인(caveman·ponytail·karpathy·qmd) 스킬은 `~/.agents/skills/`로 복사된다 — omp·Crush가 기본으로 읽는 경로. 플러그인 업데이트 후 build 재실행. 최초 실행은 Foreman 포함 여부를 묻고 선택을 `.claude-settings.local`에 저장한다. 선택을 바꾸려면 이 파일의 값을 수정하거나 파일을 삭제하고 다시 실행한다.
 
 **다른 머신에 세팅할 때:** `claude-settings.md` 참고. 설치 여부(caveman/three-man-team)는 파일 존재로 확인하고, 없으면 임의 설치하지 말고 사용자에게 확인.
+
+**원격 머신에서 omp·Crush 로그인할 때:** 일부 도구(omp, Crush 등)는 OAuth 인증을 `localhost` 콜백 서버로 받는다. 원격에서 돌리면 브라우저(내 PC)의 `localhost`와 달라 콜백이 실패하므로, 내 PC에서 포트를 터널링해 둔 채 로그인한다. 포트는 도구마다 다르니 로그인 출력의 redirect URI에서 확인. Windows는 PowerShell에서 같은 명령(OpenSSH 클라이언트 필요).
+
+```bash
+ssh -N -L <PORT>:localhost:<PORT> <user>@<remote-host>
+```
