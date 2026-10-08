@@ -228,7 +228,7 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   function claudes { claude --model sonnet @args }
   ```
 
-- **omp 모델 선택 함수 (`ompcf`·`ompco`·`ompcs`, `ompga`·`ompgs`·`ompgt`·`ompgl`)** — `c`=Claude(Fable·Opus·Sonnet), `g`=GPT(Astra·Sol·Terra·Luna), 끝 글자는 모델 머리글자다. omp `--model`은 최신 버전 별칭이 없어 ID를 고정하므로, 새 모델이 나오면 `omp models`로 확인해 아래 ID만 고친다 (2026-10 기준). GPT는 `OPENAI_API_KEY`가 환경변수로 있어야 목록에 나온다 (`~/.config/secrets/env.sh`를 `.bashrc`에서 source). 인자는 그대로 전달되므로 `ompgs -p "..."`처럼 쓴다:
+- **omp 모델 선택 함수 (`ompcf`·`ompco`·`ompcs`, `ompga`·`ompgs`·`ompgt`·`ompgl`)** — `c`=Claude(Fable·Opus·Sonnet), `g`=GPT(Astra·Sol·Terra·Luna), 끝 글자는 모델 머리글자다. omp `--model`은 최신 버전 별칭이 없어 ID를 고정하므로, 새 모델이 나오면 `omp models`로 확인해 아래 ID만 고친다 (2026-10 기준). GPT 모델은 인증이 있어야 목록에 나온다. 머신마다 한 방식을 고른다: (a) ChatGPT 구독이면 `omp login`에서 1번(`openai-codex`, 헤드리스는 12번), (b) 개발자 API 키면 `omp login` 목록에 OpenAI 항목이 없으므로 `~/.omp/agent/.env`(chmod 600)에 `OPENAI_API_KEY=...`를 직접 적는다. omp만 읽는 파일이라 셸 전역 export보다 자식 프로세스 노출이 적다. 키는 repo에 두지 않는다. 인자는 그대로 전달되므로 `ompgs -p "..."`처럼 쓴다:
   ```bash
   # ~/.bash_aliases
   ompcf() { command omp --model claude-fable-5-1 "$@"; }
