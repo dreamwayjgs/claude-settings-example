@@ -228,6 +228,29 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   function claudes { claude --model sonnet @args }
   ```
 
+- **omp 모델 선택 함수 (`ompcf`·`ompco`·`ompcs`, `ompga`·`ompgs`·`ompgt`·`ompgl`)** — `c`=Claude(Fable·Opus·Sonnet), `g`=GPT(Astra·Sol·Terra·Luna), 끝 글자는 모델 머리글자다. omp `--model`은 최신 버전 별칭이 없어 ID를 고정하므로, 새 모델이 나오면 `omp models`로 확인해 아래 ID만 고친다 (2026-10 기준). GPT는 `OPENAI_API_KEY`가 환경변수로 있어야 목록에 나온다 (`~/.config/secrets/env.sh`를 `.bashrc`에서 source). 인자는 그대로 전달되므로 `ompgs -p "..."`처럼 쓴다:
+  ```bash
+  # ~/.bash_aliases
+  ompcf() { command omp --model claude-fable-5-1 "$@"; }
+  ompco() { command omp --model claude-opus-5-5 "$@"; }
+  ompcs() { command omp --model claude-sonnet-5-5 "$@"; }
+  ompga() { command omp --model gpt-6-astra "$@"; }
+  ompgs() { command omp --model gpt-6.1-sol "$@"; }
+  ompgt() { command omp --model gpt-5.6-terra "$@"; }
+  ompgl() { command omp --model gpt-6-luna "$@"; }
+  ```
+  Windows pwsh (`$PROFILE`):
+  ```powershell
+  function ompcf { omp --model claude-fable-5-1 @args }
+  function ompco { omp --model claude-opus-5-5 @args }
+  function ompcs { omp --model claude-sonnet-5-5 @args }
+  function ompga { omp --model gpt-6-astra @args }
+  function ompgs { omp --model gpt-6.1-sol @args }
+  function ompgt { omp --model gpt-5.6-terra @args }
+  function ompgl { omp --model gpt-6-luna @args }
+  ```
+  `-pro` 변형(`gpt-5.6-sol-pro` 등)은 함수를 만들지 않았다. 필요하면 `omp --model gpt-5.6-sol-pro`로 직접 쓴다.
+
 - **Claude 계정 분리 (`pclaude`·`aclaude` 등)** — 계정마다 설정 폴더를 따로 두고 `CLAUDE_CONFIG_DIR`로 바꿔 띄운다. alias보다 함수가 인자 전달이 깔끔하다. 별칭·함수는 `~/.bash_aliases`에 모은다 (Ubuntu 기본 `.bashrc`가 자동 로드):
   ```bash
   pclaude() { CLAUDE_CONFIG_DIR="$HOME/.claude-personal" command claude "$@"; }
