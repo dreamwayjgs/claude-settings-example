@@ -20,6 +20,7 @@
 | `build-rules.ps1` | `pwsh` 7용 동일 생성기 (Windows PowerShell 5 미지원). UTF-8 without BOM 출력 |
 | `opencode.json.example` | OpenCode V1 global config 참고본. Ponytail npm plugin. 실제 파일명은 `opencode.json`/`opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본. 로컬 플러그인 폴더(`./plugins/caveman`, `./plugins/ponytail`) 지정 |
+| `opencode-plugins/caveman-v2/` | caveman OpenCode V2 임시 패치 (upstream V2 지원까지만 유지). 기존 helper·스킬 필요, 설치·제약·철수 조건은 내부 README |
 | `opencode-plugins/ponytail-v2/` | ponytail OpenCode V2 임시 패치 (upstream V2 지원까지만 유지, 철수 조건은 내부 README). `index.js` + 설치·확인 절차 |
 | `opencode-v2-migration.md` | OpenCode V1→V2 전환 절차·머신별 상태·RAM 실측 |
 | `claude-settings.md` | 다른 머신에 옮길 때 참고 가이드 |

@@ -27,7 +27,7 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
 | 항목 | V1 | V2 |
 |---|---|---|
 | config | `opencode.json.example` (`plugin`) | `opencode.v2.json.example` (`plugins`, 로컬 플러그인 폴더) |
-| caveman | `plugins/caveman/plugin.js` (V1) | upstream 설치기 재실행 → V2 `index.js` 생성 |
+| caveman | `plugins/caveman/plugin.js` (V1) | `opencode-plugins/caveman-v2/` 임시 패치 (기존 upstream helper·스킬 필요) |
 | ponytail | npm `@dietrichgebert/ponytail` (V1 API, V2에서 크래시) | `opencode-plugins/ponytail-v2/` 임시 패치 |
 | `commands/*.md` | `description`만 사용 | 변경 없음 (`subtask` 미사용) |
 | `AGENTS.md`·스킬 | | 변경 없음 |
@@ -45,10 +45,10 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
    curl -fsSL https://opencode.ai/v2/install | bash
    opencode --version   # 2.x
    ```
-4. caveman — upstream이 V2 호스트를 감지해 V2 플러그인을 생성 (서버에서 사용한 명령):
-   ```bash
-   npx -y github:JuliusBrussee/caveman -- --only opencode --force
-   ```
+4. caveman — `opencode-plugins/caveman-v2/README.md` 설치 절차. 기존 helper·스킬을 보존하고
+   repo의 `index.js`·`package.json`을 설치한다. 2026-10-08 upstream `main` (`2e08b91`)은
+   V1 API이며 설치기도 V2 `index.js`를 생성하지 않는다. upstream 설치기 재실행만으로
+   전환하지 말 것. 이 패치는 `/caveman` prompt 파싱을 생략하며 역할 모드는 스킬 로드로 적용한다.
 5. ponytail — `opencode-plugins/ponytail-v2/README.md` 설치 절차.
 6. config — `opencode.v2.json.example`을 `~/.config/opencode/opencode.json`으로. 기존 `opencode.jsonc`는 제거 (둘 다 두지 말 것).
 7. caveman·Ponytail 기본 off 유지 확인: `~/.config/{caveman,ponytail}/config.json` = `{"defaultMode":"off"}` (`claude-settings.md` §5-1).

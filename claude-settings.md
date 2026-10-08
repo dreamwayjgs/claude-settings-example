@@ -23,7 +23,8 @@
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 네 harness의 `templates/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `opencode.json.example` | OpenCode V1 global config 참고본 (Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
-| `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`). caveman V2 플러그인은 repo 미포함 |
+| `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`) |
+| `opencode-plugins/caveman-v2/` | caveman V2 임시 패치. 기존 upstream helper·스킬 위에 설치 (설치·제약·철수 조건은 내부 README) |
 | `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
 
 ## 설치 상태 확인 (진행 전 체크)
