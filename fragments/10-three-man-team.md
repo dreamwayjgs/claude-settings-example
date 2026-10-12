@@ -52,6 +52,8 @@ caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.con
 
 모드는 스킬 로드로만 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다.
 
+스킬 경로를 적을 땐 `~/.agents/skills/<name>/SKILL.md`를 쓴다 (build가 유지, omp·Crush·OpenCode v2 기본 스캔). 이름으로 못 찾으면 `~/.agents/skills/` → `~/.claude/skills/` → `~/.config/opencode/skills/` → `~/.claude/plugins/cache/<plugin>/*/skills/<name>/` 순으로 직접 읽고, 찾은 경로를 세션 보고에 한 줄로 남긴다.
+
 caveman은 응답을 줄이고 Ponytail은 필요한 구현만 남긴다. 필수 검증·보안·접근성·오류 처리는 줄이지 않는다.
 
 **사용자가 세팅 시 특정 옵티마이저 지정한 경우:**
