@@ -29,7 +29,7 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - 빌드는 계정 폴더 중 `~/.claude`·`~/.claude-personal`에만 CLAUDE.md를 쓴다. 다른 계정 폴더(예: `~/.claude-admin`)가 있으면 `~/.claude/CLAUDE.md`를 그 폴더에 복사한다.
 6. 옛 사본 정리: 아래 경로에 `OPERATOR.md`가 있으면 삭제한다. 빌드가 더는 이 파일을 쓰지 않고, 이제 포크의 `templates/optional/OPERATOR.md`가 원본이다.
    `~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`
-   qmd 폐기(2026-10-13, 세션 규칙에서 제외): Claude Code에 `qmd@qmd` 플러그인이 있으면 `claude plugin disable qmd@qmd`로 끄고, `~/.claude/settings.json`의 `permissions.allow`에서 `mcp__plugin_qmd_qmd__*` 항목을 지운다. `~/.agents/skills/qmd`가 있으면 삭제한다(build가 더는 만들지 않는 잔여물). qmd CLI 자체와 인덱스는 지우지 않는다 — 레포 밖 문서 검색용으로 `~/ops/CLAUDE.md`에서만 안내한다.
+   qmd 폐기(2026-10-13, 세션 규칙에서 제외): Claude Code에 `qmd@qmd` 플러그인이 있으면 `claude plugin disable qmd@qmd`로 끄고, `~/.claude/settings.json`의 `permissions.allow`에서 `mcp__plugin_qmd_qmd__*` 항목을 지운다. 계정 분리 폴더(`~/.claude-personal` 등)와 워커 폴더(`~/.claude-worker`)의 `settings.json`도 같은 항목을 확인한다. `enabledPlugins`의 `"qmd@qmd": false`와 `extraKnownMarketplaces`의 `qmd`는 비활성 기록이라 남겨도 된다. `~/.agents/skills/qmd`가 있으면 삭제한다(build가 더는 만들지 않는 잔여물). qmd CLI 자체와 인덱스는 지우지 않는다 — 레포 밖 문서 검색용으로 `~/ops/CLAUDE.md`에서만 안내한다.
    - checkout마다 `git -C <checkout> remote -v`: origin = 포크, upstream = 원본
    - checkout마다 `git -C <checkout> status -sb`: `main...origin/main`, ahead/behind 없음
    - `templates/project-folder/ROGER.md`, `templates/optional/OPERATOR.md` 존재
