@@ -30,6 +30,7 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - 빌드는 계정 폴더 중 `~/.claude`·`~/.claude-personal`에만 CLAUDE.md를 쓴다. 다른 계정 폴더(예: `~/.claude-admin`)가 있으면 `~/.claude/CLAUDE.md`를 그 폴더에 복사한다.
 6. 옛 사본 정리: 아래 경로에 `OPERATOR.md`가 있으면 삭제한다. 빌드가 더는 이 파일을 쓰지 않고, 이제 포크의 `templates/optional/OPERATOR.md`가 원본이다.
    `~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`
+   omp 마켓플레이스 플러그인 정리(2026-10-13): `omp plugin list`에 `ponytail@ponytail`·`caveman@...` 같은 스킬 플러그인이 있으면 `omp plugin uninstall <id>`로 지운다. 스킬 소스는 `agent-skills.txt` 하나이고, omp 플러그인 사본이 있으면 `~/.agents/skills`와 name collision을 내며 bare 이름을 가져간다. `omp plugin doctor`의 `package_manifest: Not created yet`는 정보성 경고라 그대로 둔다.
    qmd 폐기(2026-10-13, 세션 규칙에서 제외): Claude Code에 `qmd@qmd` 플러그인이 있으면 `claude plugin disable qmd@qmd`로 끄고, `~/.claude/settings.json`의 `permissions.allow`에서 `mcp__plugin_qmd_qmd__*` 항목을 지운다. 계정 분리 폴더(`~/.claude-personal` 등)와 워커 폴더(`~/.claude-worker`)의 `settings.json`도 같은 항목을 확인한다. `enabledPlugins`의 `"qmd@qmd": false`와 `extraKnownMarketplaces`의 `qmd`는 비활성 기록이라 남겨도 된다. `~/.agents/skills/qmd`가 있으면 삭제한다(build가 더는 만들지 않는 잔여물). qmd CLI 자체와 인덱스는 지우지 않는다 — 레포 밖 문서 검색용으로 `~/ops/CLAUDE.md`에서만 안내한다.
    - checkout마다 `git -C <checkout> remote -v`: origin = 포크, upstream = 원본
    - checkout마다 `git -C <checkout> status -sb`: `main...origin/main`, ahead/behind 없음
@@ -37,6 +38,7 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - 생성된 전역 규칙 파일(이 harness 것)에 `templates/optional/OPERATOR.md` 문자열이 있음
    - `~/.agents/skills`에 caveman 7개·ponytail 6개·karpathy-guidelines가 있고(qmd 없음), `~/.agents/.skill-lock.json`의 각 `ref`가 repo `agent-skills.txt`의 ref와 같음
    - 생성된 전역 규칙 파일 네 개와 `~/.claude/settings.json`에 `qmd` 문자열이 없음(`enabledPlugins`의 `"qmd@qmd": false`는 허용)
+   - `omp plugin list`가 비어 있고 `omp skill list` 출력에 `name collision`이 없음
    - `~/.agents/.skill-lock.json`의 caveman ref가 `v3.2.0`, `~/.agents/skills/caveman/SKILL.md`에 lite/full 강도 표가 없음, `settings.json`에 caveman 훅 없음, 토큰 최적화 표의 caveman 열이 `caveman`
    결과를 표로 보고.
 ```
