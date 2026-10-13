@@ -7,7 +7,7 @@
 | 머신 | 버전 | 비고 |
 |---|---|---|
 | aribaragi (서버, 8GB) | V2 2.0.20 | 2026-09-30 전환 완료 |
-| 로컬 WSL (32GB) | V1 1.18.33 | 보류. 신규 셋업만 V2 |
+| 로컬 WSL (32GB) | V2 2.0.27 | 2026-10-13 전환 완료 (V1 1.18.35에서, 백업 `~/opencode-v1-backup-2026-10-13.tgz`·`~/.opencode/bin/opencode-v1`) |
 
 ## 왜 V2
 
@@ -40,9 +40,10 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
    tar czf ~/opencode-v1-backup-$(date +%F).tgz -C ~ .config/opencode .local/share/opencode .opencode/bin
    cp ~/.opencode/bin/opencode ~/.opencode/bin/opencode-v1
    ```
-3. V2 설치 (curl 설치기가 `~/.opencode/bin/opencode`를 덮어씀):
+3. V2 설치 (curl 설치기가 `~/.opencode/bin/opencode`를 덮어씀). 최신 버전 조회(`opencode.ai/update/api`)가 503을 내면 버전을 명시한다 (npm registry에서 받는다):
    ```bash
-   curl -fsSL https://opencode.ai/v2/install | bash
+   curl -fsSL https://opencode.ai/v2/install | bash                      # 최신
+   curl -fsSL https://opencode.ai/v2/install | bash -s -- --version 2.0.27  # 고정
    opencode --version   # 2.x
    ```
 4. caveman — `opencode-plugins/caveman-v2/README.md` 설치 절차. 기존 helper·스킬을 보존하고
@@ -55,15 +56,28 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
 
 ## 검증
 
-- `opencode plugin list` → caveman·ponytail 둘 다 failed 없이 표시
+- 플러그인 로드: `opencode debug config`에 `plugins` 두 개가 보이고, 서버 로그 `~/.local/share/opencode/log/opencode.log`에 `loading plugin id=.../plugins/caveman`·`.../plugins/ponytail`이 찍힌다. **`opencode plugin list`는 2.0.27에서 `cli.json`(`plugin add`로 등록한 것)만 보여 주므로 config 경로 플러그인 확인에 쓸 수 없다.**
 - 역할 없는 `opencode run` → `~/.config/opencode/.caveman-active`·`.ponytail-active` 생성 안 됨, 응답 평문
 - 역할 세션(예: 밥) → caveman·ponytail full 로드
 - 1일 이상 사용 후 위 표와 같은 방식으로 RSS 측정: `ps -eo pid,rss,etime,args | grep '[o]pencode'`
+
+### 로컬 WSL 실측 — 2026-10-13, V2 2.0.27, `openai/gpt-5-nano`, 새 세션마다 `opencode run`
+
+| 시나리오 | 결과 |
+|---|---|
+| 역할 없는 평문 요청 | 응답 `ok`, 플래그 파일 둘 다 없음 |
+| 스킬 목록 질의 | `~/.agents/skills`의 caveman 계열·ponytail 계열·karpathy-guidelines·qmd·find-skills 전부 보임 → V2가 `~/.agents/skills`를 스캔한다. ponytail 어댑터의 `editor.get` 가드 덕에 중복 경고 없음 |
+| `/ponytail` (기본 off, 플래그 없음) | `.ponytail-active=full`, 응답에 Ponytail 서명(Skipped/Risk 꼬리) |
+| `/ponytail off` | `.ponytail-active=off` |
+| 플래그 `full`·`off`·없음에서 "시스템 프롬프트에 `PONYTAIL MODE ACTIVE`가 있나" | full → 있음(서명 포함 응답), off·없음 → `no` |
+
+확인 후 플래그 파일은 삭제해 기본 off로 되돌렸다. 질문에 'ponytail'만 쓰면 스킬 설명 때문에 항상 yes가 나오므로 주입 마커로 물어야 한다.
 
 ## 미확인
 
 - V1 세션 기록이 V2에서 보이는지
 - 서버 V2의 실제 응답 톤 (크레딧 부족으로 모델 호출 실패, 플러그인·플래그 수준만 확인)
+- caveman 어댑터의 ruleset 주입: 로컬·서버의 upstream helper `caveman-config.cjs`(5-26·7-03 설치본) 모두 `loadFilteredRuleset`이 없어 배너만 주입된다. 기본 off라 실사용 영향은 없음. 서버의 `plugins/caveman/index.js`(9-30, 9057B)는 repo `caveman-v2/index.js`(10-08, 6407B)와 다른 구현이라 정본 확정이 필요하다.
 
 ## 롤백
 
