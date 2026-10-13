@@ -61,6 +61,14 @@ function writeMode(mode) {
   } catch (e) {}
 }
 
+// Bare /ponytail (upstream #639): already on -> keep the level (null = no write);
+// off -> the default level, or full when the default is off too.
+function bareMode() {
+  if (readMode() !== 'off') return null;
+  const fallback = getDefaultMode();
+  return fallback === 'off' ? 'full' : fallback;
+}
+
 // Parse a prompt for /ponytail commands. Returns the new mode to write, or null.
 function parseModeChange(promptRaw) {
   let prompt = (promptRaw || '').trim();
@@ -72,7 +80,7 @@ function parseModeChange(promptRaw) {
   if (prompt.startsWith('/ponytail')) {
     const parts = prompt.split(/\s+/);
     const arg = parts[1] || '';
-    if (!arg) return getDefaultMode();
+    if (!arg) return bareMode();
     if (arg === 'off' || arg === 'stop' || arg === 'disable') return 'off';
     const mode = normalizePersistedMode(arg);
     return mode || null;
@@ -157,7 +165,7 @@ export default {
             execute: async ({ sessionID, prompt, delivery }) => {
               const args = argsFromPrompt(prompt && prompt.text, d.name);
               if (d.name === 'ponytail') {
-                const mode = args ? normalizePersistedMode(args) : getDefaultMode();
+                const mode = args ? normalizePersistedMode(args) : bareMode();
                 if (mode) writeMode(mode);
               }
               const text = d.template.replaceAll('$ARGUMENTS', args);

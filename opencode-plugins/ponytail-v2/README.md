@@ -27,8 +27,9 @@ https://opencode.ai/v2/docs/build/plugins/migrate-v1/
 - `createRequire(import.meta.url)` → `createRequire(target)` + 직접 eval 로딩.
   Bun 컴파일 바이너리는 on-disk `require()`를 거부하므로 caveman과 같은 패턴 사용.
 - `prompt` + `context/compaction/generate/title` 훅은 그대로 유지.
-- 원본 소스: `~/.config/opencode/plugins/ponytail/index.js`와 byte-identical 유지.
-  고칠 때는 설치본을 고치고 검증한 뒤 여기로 복사한다.
+- 이 repo 사본이 source-of-truth. 설치본 `~/.config/opencode/plugins/ponytail/index.js`와 byte-identical 유지.
+  고칠 때는 여기를 고치고 설치본에 복사한 뒤 검증한다 (`claude-settings.md` 정본 출처 절).
+- 무인자 `/ponytail`: 켜져 있으면 레벨 유지, off면 기본 레벨(기본도 off면 full). upstream #639와 같다.
 
 ## 설치 (다른 머신 / 다른 agent)
 
