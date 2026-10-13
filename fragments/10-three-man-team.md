@@ -45,12 +45,12 @@ caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.con
 
 | 역할 | caveman | Ponytail |
 |---|---|---|
-| 앨리스 | lite | off |
-| 밥 | full | full |
-| 리처드·로저 | full | off (`ponytail-review` 필요 시 로드) |
-| Oz | lite | off |
+| 앨리스 | caveman | off |
+| 밥 | caveman | full |
+| 리처드·로저 | caveman | off (`ponytail-review` 필요 시 로드) |
+| Oz | caveman | off |
 
-모드는 스킬 로드로만 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다.
+caveman v3부터 강도 레벨(lite·full·ultra)이 없고 `caveman`·`ultracave`·`megacave` 세 스킬이다. 역할 세션은 `caveman` 하나만 로드한다. 모드는 스킬 로드로만 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, Ponytail 플래그와 OpenCode 어댑터의 caveman 플래그는 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다 (Claude Code의 caveman v3만 세션별 상태).
 
 스킬 경로를 적을 땐 `~/.agents/skills/<name>/SKILL.md`를 쓴다 (build가 유지, omp·Crush·OpenCode v2 기본 스캔). 이름으로 못 찾으면 `~/.agents/skills/` → `~/.claude/skills/` → `~/.config/opencode/skills/` → `~/.claude/plugins/cache/<plugin>/*/skills/<name>/` 순으로 직접 읽고, 찾은 경로를 세션 보고에 한 줄로 남긴다. Ponytail은 `DietrichGebert/ponytail`, Karpathy는 `multica-ai/andrej-karpathy-skills` 정본에서 가져온 스킬이다. tmt-cli 워커(`~/.claude-worker`)도 같은 파일 경로로 읽으므로 워커 디렉터리에 플러그인은 필요 없다.
 

@@ -26,6 +26,7 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
      pwsh 7이 없으면 멈추고 보고. 실행 정책 오류가 나면 `-ExecutionPolicy Bypass`를 붙인다.
    - Foreman 질문이 나오면 나에게 물어봐.
    - 빌드 마지막 단계가 `agent-skills.txt`의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다 (node·네트워크 필요, Claude 불필요). `npx`가 없거나 설치가 실패하면 멈추고 출력 전체를 보고. 예전 방식(Claude 플러그인 캐시 복사)은 없어졌으니 `~/.config/opencode/skills`·`~/.config/crush/skills`에 남은 caveman·ponytail 사본이 있으면 목록만 보고하고 지우지 않는다.
+   - caveman v3 (2026-10-13): 빌드 전에 Claude 머신이면 `claude plugin update caveman@caveman`으로 3.2.0 이상으로 올린다. `~/.claude/settings.json`(계정 분리·워커 폴더 포함)의 `hooks`에 `caveman-activate.js`·`caveman-mode-tracker.js`를 부르는 항목이 있으면 전부 지운다 — 플러그인 manifest가 같은 훅을 등록하므로 중복이다. 그 뒤 `~/.claude/plugins/cache/caveman/caveman/<version>/src/hooks/`에서 `caveman-activate.js`·`caveman-config.js`·`caveman-mode-tracker.js`·`caveman-stats.js`·`caveman-statusline.sh`·`caveman-statusline.ps1`를 `~/.claude/hooks/`에 덮어쓴다 (statusline 배지용).
    - 빌드는 계정 폴더 중 `~/.claude`·`~/.claude-personal`에만 CLAUDE.md를 쓴다. 다른 계정 폴더(예: `~/.claude-admin`)가 있으면 `~/.claude/CLAUDE.md`를 그 폴더에 복사한다.
 6. 옛 사본 정리: 아래 경로에 `OPERATOR.md`가 있으면 삭제한다. 빌드가 더는 이 파일을 쓰지 않고, 이제 포크의 `templates/optional/OPERATOR.md`가 원본이다.
    `~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`
@@ -36,5 +37,6 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - 생성된 전역 규칙 파일(이 harness 것)에 `templates/optional/OPERATOR.md` 문자열이 있음
    - `~/.agents/skills`에 caveman 7개·ponytail 6개·karpathy-guidelines가 있고(qmd 없음), `~/.agents/.skill-lock.json`의 각 `ref`가 repo `agent-skills.txt`의 ref와 같음
    - 생성된 전역 규칙 파일 네 개와 `~/.claude/settings.json`에 `qmd` 문자열이 없음(`enabledPlugins`의 `"qmd@qmd": false`는 허용)
+   - `~/.agents/.skill-lock.json`의 caveman ref가 `v3.2.0`, `~/.agents/skills/caveman/SKILL.md`에 lite/full 강도 표가 없음, `settings.json`에 caveman 훅 없음, 토큰 최적화 표의 caveman 열이 `caveman`
    결과를 표로 보고.
 ```

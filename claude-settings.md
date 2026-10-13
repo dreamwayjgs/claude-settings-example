@@ -45,14 +45,15 @@ caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 �
 
 원본 머신 기준 설치 후 상태 (`settings.json.example` 참조):
 
-- `SessionStart` / `UserPromptSubmit` hooks가 `~/.claude/hooks/caveman-*.js`를 node로 실행
-- hooks의 node 경로는 절대경로 필수 — nvm 환경이면 hook 실행 시 로그인 셸이 아닐 수 있어 `node`만으로는 못 찾음. `<NODE_BIN>` → `which node` 결과로 치환
-- `<HOME>` → 홈 디렉토리 절대경로로 치환
+- 훅(`SessionStart`·`SubagentStart`·`UserPromptSubmit`)은 플러그인 manifest가 등록한다. `settings.json`에 caveman 훅을 따로 넣지 않는다 — 2026-10-13까지 같은 훅이 `~/.claude/hooks/` 사본으로 중복 등록돼 있었고, v3 업그레이드 때 제거했다. 플러그인 훅은 `node`를 PATH에서 찾으니 nvm 환경에서는 nvm이 로드된 셸에서 Claude를 띄운다 (없으면 조용히 건너뛴다).
+- `~/.claude/hooks/caveman-*`는 statusline 배지(`statusline.sh` → `hooks/caveman-statusline.sh`)만 쓴다. 플러그인 업데이트 뒤 `~/.claude/plugins/cache/caveman/caveman/<version>/src/hooks/`의 `caveman-activate.js`·`caveman-config.js`·`caveman-mode-tracker.js`·`caveman-stats.js`·`caveman-statusline.sh`·`caveman-statusline.ps1`를 다시 복사한다.
+- `<HOME>` → 홈 디렉토리 절대경로로 치환 (statusLine)
+- 버전: 플러그인 3.2.0 (2026-10-13). `agent-skills.txt`의 caveman ref와 같이 올린다.
 
 사용법:
 
-- 세션 시작 시 자동 활성 (기본 `full` 레벨)
-- 레벨 전환: `/caveman lite|full|ultra`
+- 세션 시작 시 기본 off (`~/.config/caveman/config.json`의 `defaultMode: off`, §5-1)
+- 모드: `/caveman` = `caveman`(기본), `/caveman ultracave`, `/caveman megacave`(문언문). v3부터 lite·full·ultra 레벨은 없고 옛 이름은 별칭으로만 남아 있다. 상태는 세션별(`.caveman-sessions/<id>/`)
 - 해제: "stop caveman" / "normal mode"
 - 통계: `/caveman-stats`, 도움말: `/caveman-help`
 - 커밋 메시지: `/caveman-commit`, 리뷰: `/caveman-review`
