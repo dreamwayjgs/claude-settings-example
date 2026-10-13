@@ -25,6 +25,7 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - Windows: `pwsh -File .\build-rules.ps1`. bash 셸에서 실행 중이어도(예: Claude Code의 Git Bash) ps1을 쓴다.
      pwsh 7이 없으면 멈추고 보고. 실행 정책 오류가 나면 `-ExecutionPolicy Bypass`를 붙인다.
    - Foreman 질문이 나오면 나에게 물어봐.
+   - 빌드 마지막 단계가 `agent-skills.txt`의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다 (node·네트워크 필요, Claude 불필요). `npx`가 없거나 설치가 실패하면 멈추고 출력 전체를 보고. 예전 방식(Claude 플러그인 캐시 복사)은 없어졌으니 `~/.config/opencode/skills`·`~/.config/crush/skills`에 남은 caveman·ponytail 사본이 있으면 목록만 보고하고 지우지 않는다.
    - 빌드는 계정 폴더 중 `~/.claude`·`~/.claude-personal`에만 CLAUDE.md를 쓴다. 다른 계정 폴더(예: `~/.claude-admin`)가 있으면 `~/.claude/CLAUDE.md`를 그 폴더에 복사한다.
 6. 옛 사본 정리: 아래 경로에 `OPERATOR.md`가 있으면 삭제한다. 빌드가 더는 이 파일을 쓰지 않고, 이제 포크의 `templates/optional/OPERATOR.md`가 원본이다.
    `~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`
@@ -33,5 +34,6 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - checkout마다 `git -C <checkout> status -sb`: `main...origin/main`, ahead/behind 없음
    - `templates/project-folder/ROGER.md`, `templates/optional/OPERATOR.md` 존재
    - 생성된 전역 규칙 파일(이 harness 것)에 `templates/optional/OPERATOR.md` 문자열이 있음
+   - `~/.agents/skills`에 caveman 7개·ponytail 6개·karpathy-guidelines가 있고, `~/.agents/.skill-lock.json`의 각 `ref`가 repo `agent-skills.txt`의 ref와 같음
    결과를 표로 보고.
 ```

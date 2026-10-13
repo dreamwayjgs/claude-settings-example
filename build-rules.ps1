@@ -63,26 +63,22 @@ foreach ($template in @('project-rules.md', '.claudeignore')) {
   }
 }
 
-# Claude plugin skills -> ~/.agents/skills (read by omp and Crush by default).
-# Re-run after a Claude plugin update: install paths carry the version.
-$plugins = Join-Path $TargetHome '.claude/plugins/installed_plugins.json'
-$skipSkills = @('qmd@qmd/release')
-if (Test-Path -LiteralPath $plugins) {
-  $skillsRoot = Join-Path $TargetHome '.agents/skills'
-  $installed = (Get-Content -LiteralPath $plugins -Raw -Encoding utf8 | ConvertFrom-Json).plugins
-  foreach ($plugin in $installed.PSObject.Properties) {
-    $skillsDir = Join-Path $plugin.Value[0].installPath 'skills'
-    if (-not (Test-Path -LiteralPath $skillsDir)) { continue }
-    foreach ($skill in Get-ChildItem -LiteralPath $skillsDir -Directory) {
-      if (-not (Test-Path -LiteralPath (Join-Path $skill.FullName 'SKILL.md'))) { continue }
-      if ($skipSkills -contains "$($plugin.Name)/$($skill.Name)") { continue }
-      $dest = Join-Path $skillsRoot $skill.Name
-      if (Test-Path -LiteralPath $dest) { Remove-Item -LiteralPath $dest -Recurse -Force }
-      New-Item -ItemType Directory -Force -Path $skillsRoot | Out-Null
-      Copy-Item -LiteralPath $skill.FullName -Destination $dest -Recurse
-      "wrote $dest"
-    }
+# Agent skills -> ~/.agents/skills (read by OpenCode v2, omp, and Crush; Claude Code
+# uses its own plugins). Source = agent-skills.txt, fetched at the pinned ref with the
+# `skills` CLI (needs node + network). Provenance: ~/.agents/.skill-lock.json.
+# Note: the skills CLI always targets the real $HOME; -TargetHome only affects rule files.
+$skillsCli = 'skills@1.7.2'
+if (Get-Command npx -ErrorAction SilentlyContinue) {
+  foreach ($line in Get-Content -LiteralPath (Join-Path $repo 'agent-skills.txt') -Encoding utf8) {
+    $line = $line.Trim()
+    if (-not $line -or $line.StartsWith('#')) { continue }
+    $parts = $line -split '\s+'
+    $source = $parts[0]; $ref = $parts[1]; $names = $parts[2..($parts.Length - 1)]
+    $skillArgs = @($names | ForEach-Object { '-s'; $_ })
+    $log = & npx -y $skillsCli add "https://github.com/$source/tree/$ref" -g -a pi @skillArgs -y 2>&1
+    if ($LASTEXITCODE -ne 0) { $log | Write-Host; throw "skills add failed for $source@$ref" }
+    "installed $source@${ref}: $($names -join ' ')"
   }
 } else {
-  "skip skills: $plugins not found"
+  'skip skills: npx not found'
 }

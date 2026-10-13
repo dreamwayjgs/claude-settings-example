@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Regenerate Claude Code, OpenCode, omp, and Crush global rules from fragments/.
+# Regenerate Claude Code, OpenCode, omp, and Crush global rules from fragments/,
+# and install the pinned agent skills from agent-skills.txt into ~/.agents/skills.
 # omp and Crush have no session-start hook, so their copy also gets the
 # activation block (caveman/Ponytail off by default, role table loads them).
 # Source of truth = fragments/*.md in this repo. Do NOT hand-edit generated
@@ -77,22 +78,20 @@ for template in project-rules.md .claudeignore; do
   done
 done
 
-# Claude plugin skills -> ~/.agents/skills (read by omp and Crush by default).
-# Re-run after a Claude plugin update: install paths carry the version.
-PLUGINS="$HOME/.claude/plugins/installed_plugins.json"
-SKIP_SKILLS=" qmd@qmd/release "
-if [[ -f "$PLUGINS" ]] && command -v jq >/dev/null; then
-  while IFS=$'\t' read -r plugin path; do
-    for skill in "$path"/skills/*/; do
-      [[ -f "$skill/SKILL.md" ]] || continue
-      name="$(basename "$skill")"
-      [[ "$SKIP_SKILLS" == *" $plugin/$name "* ]] && continue
-      rm -rf "$HOME/.agents/skills/$name"
-      mkdir -p "$HOME/.agents/skills"
-      cp -r "$skill" "$HOME/.agents/skills/$name"
-      echo "wrote $HOME/.agents/skills/$name"
-    done
-  done < <(jq -r '.plugins | to_entries[] | "\(.key)\t\(.value[0].installPath)"' "$PLUGINS")
+# Agent skills -> ~/.agents/skills (read by OpenCode v2, omp, and Crush; Claude Code
+# uses its own plugins). Source = agent-skills.txt, fetched at the pinned ref with the
+# `skills` CLI (needs node + network). Provenance: ~/.agents/.skill-lock.json.
+SKILLS_CLI="skills@1.7.2"
+if command -v npx >/dev/null; then
+  while read -r repo ref names; do
+    [[ -z "$repo" || "$repo" == \#* ]] && continue
+    args=()
+    for n in $names; do args+=(-s "$n"); done
+    if ! npx -y "$SKILLS_CLI" add "https://github.com/$repo/tree/$ref" -g -a pi "${args[@]}" -y >"$OUT" 2>&1 </dev/null; then
+      cat "$OUT" >&2; echo "skills add failed for $repo@$ref" >&2; exit 1
+    fi
+    echo "installed $repo@$ref: $names"
+  done < "$REPO/agent-skills.txt"
 else
-  echo "skip skills: need $PLUGINS and jq"
+  echo "skip skills: need npx (node)"
 fi

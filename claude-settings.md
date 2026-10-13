@@ -32,8 +32,8 @@
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
 - three-man-team: `~/.claude/skills/three-man-team/` 존재. 개인 포크 `dreamwayjgs/three-man-team`을 clone한다 (원본 `russelleNVy/three-man-team`은 `upstream` remote)
 - qmd (옵셔널): 설치되어 있으면 global router가 `qmd search`를 우선 사용하고, 없으면 Grep/Glob/Read로 자동 fallback. 임베딩 모델이 없으면 `qmd search`만 사용
-- karpathy-skills (옵셔널): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills`. 역할별 Karpathy 적용은 포크 템플릿 역할 파일의 karpathy 블록이 담당하므로 플러그인은 omp·Crush용 스킬 복사(build)의 소스일 뿐이다
-- ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 V1이면 npm 플러그인 `@dietrichgebert/ponytail`, V2면 `opencode-plugins/ponytail-v2` 로컬 패치, omp·Crush는 Claude 플러그인 스킬 복사(A) 또는 단독 clone(B) 중 머신별 선택. 한 harness에만 설치하면 다른 harness에는 적용되지 않는다 (§5 참조)
+- karpathy-skills (옵셔널): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills`. 역할별 Karpathy 적용은 포크 템플릿 역할 파일의 karpathy 블록이 담당한다. 플러그인은 Claude Code 전용이고, 다른 하네스용 스킬은 build가 `agent-skills.txt`로 설치한다
+- ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 V1이면 npm 플러그인 `@dietrichgebert/ponytail`, V2면 `opencode-plugins/ponytail-v2` 로컬 패치, omp·Crush·OpenCode V2가 읽는 `~/.agents/skills`는 build가 `agent-skills.txt`에서 설치한다 (§5 참조). Claude 플러그인은 Claude Code에만 적용된다
 - Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
 
 caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (qmd·karpathy는 옵셔널 — 위 노트 참조.)
@@ -101,6 +101,8 @@ caveman 배지도 동일 방식 — `hooks/caveman-statusline.ps1` 존재 시에
 pwsh -File ./build-rules.ps1  # Windows: same output, UTF-8 without BOM
 ```
 
+build는 마지막에 `agent-skills.txt`(repo·ref·스킬 이름)의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다. node와 네트워크가 필요하고, Claude Code 설치 여부와 무관하다. ref는 full commit sha 또는 태그만 된다(CLI가 `git clone --branch <ref>`를 쓴다). 설치 출처·ref·해시는 `~/.agents/.skill-lock.json`에 남는다. ref를 올릴 땐 매니페스트 수정 → 모든 머신에서 build, Claude 머신은 `claude plugin update`도 같이.
+
 최초 실행에서 Foreman 포함 여부를 선택한다. 선택은 Git에서 제외되는 `.claude-settings.local`에 저장되며 이후 빌드에서도 재사용된다. 선택을 바꾸려면 이 파일의 값을 수정하거나 삭제 후 다시 실행한다. 비대화형 최초 실행은 `INCLUDE_FOREMAN=true|false ./build-claude-md.sh`처럼 명시한다.
 
 qmd는 선택 사항이다. 설치되면 global router가 우선 사용하고, 없으면 Grep/Glob/Read로 fallback한다.
@@ -144,16 +146,7 @@ OpenCode는 머신의 메이저 버전에 맞춰 고른다:
 - **V1 (npm 플러그인)** — config의 `plugin` 배열에 `@dietrichgebert/ponytail`을 넣으면 기동 시 자동 설치된다 (`opencode.json.example`).
 - **V2 (로컬 임시 패치)** — upstream `ponytail.mjs`는 V1 API 전용이라 V2에서 기동 시 크래시한다. upstream이 V2를 지원할 때까지 `opencode-plugins/ponytail-v2/`의 패치를 로컬 플러그인으로 설치하고 `plugins`에 `./plugins/ponytail`을 지정한다 (`opencode.v2.json.example`, 설치·철수 조건은 해당 README).
 
-omp·Crush는 스킬 소스를 머신별로 고른다. 한 머신에는 한 방식만 쓴다 (둘 다 쓰면 같은 이름 스킬이 두 경로에 생긴다).
-
-**A. Claude 플러그인 경유** — Claude Code에 ponytail 플러그인이 설치돼 있고 `jq`가 있으면 `./build-claude-md.sh`가 플러그인 스킬을 `~/.agents/skills`로 복사한다 (omp·Crush 기본 경로). 기본 off — build가 규칙 끝에 붙이는 `fragments/90-activation.md`가 역할 표로 위임. 플러그인 업데이트 후 build 재실행.
-
-**B. 단독 clone (Claude 불필요)** — Crush 전용. 스킬 경로만 등록한다 (기본 off, 역할 세션이 로드):
-
-```bash
-git clone https://github.com/DietrichGebert/ponytail ~/.config/crush/ponytail
-echo 'option skill-path "$HOME/.config/crush/ponytail/skills"' >> ~/.config/crush/crushrc
-```
+omp·Crush·OpenCode V2용 스킬은 build가 `agent-skills.txt`의 고정 ref로 `~/.agents/skills`에 설치한다 (세 하네스가 기본으로 읽는 경로, §3). Claude 유무와 무관하다. 기본 off — build가 규칙 끝에 붙이는 `fragments/90-activation.md`가 역할 표로 위임. 다른 경로(`~/.config/crush/skills`, `~/.claude/skills`, `~/.config/opencode/skills`)에 같은 이름을 두지 말 것 — 하네스마다 우선순위가 달라 어느 사본이 이기는지 갈린다.
 
 Crush 공통 제약 (A·B 동일): `ponytail`과 `ponytail-review`는 스킬 frontmatter에 `user-invocable: true`가 없어 `/ponytail`·`/ponytail-review` 명령으로 직접 실행할 수 없다. Crush는 `PreToolUse`만 지원하므로 Claude Code와 같은 세션 상태 추적 훅은 적용하지 않는다.
 
@@ -286,4 +279,4 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
 1. 역할 없는 새 세션 → caveman 톤·Ponytail 주입 없음. 역할 세션(예: 밥) → 표대로 스킬 로드
 2. 상태줄에 `모델 | 디렉토리 | Ctx:N%` 보이면 statusline OK
 3. 아무 프로젝트에서 "three-man-team 세팅해줘" → ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md 생성, Alice 치환, karpathy 블록, 동일한 `CLAUDE.md`·`AGENTS.md` 확인
-4. `omp`·`crush` 새 세션 → caveman 톤 + `ponytail` 스킬 로드 여부 확인. 스킬 목록에 caveman·ponytail·karpathy-guidelines·qmd 보이면 OK
+4. `omp`·`crush` 새 세션 → caveman 톤 + `ponytail` 스킬 로드 여부 확인. 스킬 목록에 caveman·ponytail·karpathy-guidelines 보이면 OK (`~/.agents/.skill-lock.json`의 ref가 `agent-skills.txt`와 같은지도 확인)
