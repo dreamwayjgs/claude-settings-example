@@ -28,7 +28,6 @@
       "mcp__claude_ai_Atlassian__getConfluencePage",
       "mcp__claude_ai_Atlassian__searchConfluenceUsingCql",
       "mcp__claude_ai_Atlassian__getConfluenceSpaces",
-      "mcp__plugin_qmd_qmd__query",
       "mcp__figma-remote-mcp__get_design_context"
     ],
     "defaultMode": "auto"
@@ -64,18 +63,11 @@
     "command": "bash <HOME>/.claude/statusline.sh"
   },
   "enabledPlugins": {
-    "qmd@qmd": true,
     "andrej-karpathy-skills@karpathy-skills": true,
     "caveman@caveman": true,
     "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
-    "qmd": {
-      "source": {
-        "source": "github",
-        "repo": "tobi/qmd"
-      }
-    },
     "karpathy-skills": {
       "source": {
         "source": "github",
