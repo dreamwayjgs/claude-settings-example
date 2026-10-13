@@ -31,7 +31,7 @@
 
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
 - three-man-team: `~/.claude/skills/three-man-team/` 존재. 개인 포크 `dreamwayjgs/three-man-team`을 clone한다 (원본 `russelleNVy/three-man-team`은 `upstream` remote)
-- qmd (옵셔널): 설치되어 있으면 global router가 `qmd search`를 우선 사용하고, 없으면 Grep/Glob/Read로 자동 fallback. 임베딩 모델이 없으면 `qmd search`만 사용
+- qmd (옵셔널, 세션 규칙 아님): `~/development` 전체 같은 레포 밖 md 말뭉치를 뒤질 때 쓰는 CLI. 전역 규칙·역할 파일에는 넣지 않는다 (2026-10-13, 세션 170개에서 사용 0회). 크로스 레포 검색을 시키는 폴더(예: `~/ops`)의 CLAUDE.md에만 한 줄 둔다
 - karpathy-skills (옵셔널): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills`. 역할별 Karpathy 적용은 포크 템플릿 역할 파일의 karpathy 블록이 담당한다. 플러그인은 Claude Code 전용이고, 다른 하네스용 스킬은 build가 `agent-skills.txt`로 설치한다
 - ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 V1이면 npm 플러그인 `@dietrichgebert/ponytail`, V2면 `opencode-plugins/ponytail-v2` 로컬 패치, omp·Crush·OpenCode V2가 읽는 `~/.agents/skills`는 build가 `agent-skills.txt`에서 설치한다 (§5 참조). Claude 플러그인은 Claude Code에만 적용된다
 - Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
@@ -104,8 +104,6 @@ pwsh -File ./build-rules.ps1  # Windows: same output, UTF-8 without BOM
 build는 마지막에 `agent-skills.txt`(repo·ref·스킬 이름)의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다. node와 네트워크가 필요하고, Claude Code 설치 여부와 무관하다. ref는 full commit sha 또는 태그만 된다(CLI가 `git clone --branch <ref>`를 쓴다). 설치 출처·ref·해시는 `~/.agents/.skill-lock.json`에 남는다. ref를 올릴 땐 매니페스트 수정 → 모든 머신에서 build, Claude 머신은 `claude plugin update`도 같이.
 
 최초 실행에서 Foreman 포함 여부를 선택한다. 선택은 Git에서 제외되는 `.claude-settings.local`에 저장되며 이후 빌드에서도 재사용된다. 선택을 바꾸려면 이 파일의 값을 수정하거나 삭제 후 다시 실행한다. 비대화형 최초 실행은 `INCLUDE_FOREMAN=true|false ./build-claude-md.sh`처럼 명시한다.
-
-qmd는 선택 사항이다. 설치되면 global router가 우선 사용하고, 없으면 Grep/Glob/Read로 fallback한다.
 
 사용법:
 
