@@ -10,6 +10,14 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$REPO/.claude-settings.local"
 
+# Skills are installed with the `skills` CLI via npx; without it the build would
+# leave ~/.agents/skills stale, so fail before writing anything (including the
+# first-run config file).
+if ! command -v npx >/dev/null; then
+  echo "npx (node) is required to install agent skills; nothing written" >&2
+  exit 1
+fi
+
 if [[ -f "$CONFIG" ]]; then
   read -r setting < "$CONFIG"
   if [[ "$setting" != INCLUDE_FOREMAN=* ]]; then
@@ -45,13 +53,6 @@ esac
 
 if [[ ! -f "$CONFIG" ]]; then
   printf 'INCLUDE_FOREMAN=%s\n' "$INCLUDE_FOREMAN" > "$CONFIG"
-fi
-
-# Skills are installed with the `skills` CLI via npx; without it the build would
-# leave ~/.agents/skills stale, so fail before writing anything.
-if ! command -v npx >/dev/null; then
-  echo "npx (node) is required to install agent skills; nothing written" >&2
-  exit 1
 fi
 
 FRAGMENTS=(

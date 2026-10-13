@@ -14,6 +14,13 @@ $ErrorActionPreference = 'Stop'
 $repo = $PSScriptRoot
 $config = Join-Path $repo '.claude-settings.local'
 
+# Skills are installed with the `skills` CLI via npx; without it the build would
+# leave ~/.agents/skills stale, so fail before writing anything (including the
+# first-run config file).
+if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
+  throw 'npx (node) is required to install agent skills; nothing written'
+}
+
 if (Test-Path -LiteralPath $config) {
   $setting = (Get-Content -LiteralPath $config -Raw -Encoding utf8).Trim()
   if ($setting -notmatch '^INCLUDE_FOREMAN=(true|false)$') {
@@ -30,12 +37,6 @@ if ($IncludeForeman -eq 'true' -and -not (Get-Command foreman -ErrorAction Silen
 
 if (-not (Test-Path -LiteralPath $config)) {
   [System.IO.File]::WriteAllText($config, "INCLUDE_FOREMAN=$IncludeForeman`n", [System.Text.UTF8Encoding]::new($false))
-}
-
-# Skills are installed with the `skills` CLI via npx; without it the build would
-# leave ~/.agents/skills stale, so fail before writing anything.
-if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
-  throw 'npx (node) is required to install agent skills; nothing written'
 }
 
 $fragments = @(
