@@ -4,7 +4,7 @@
 <!-- Managed by the global project-rules.md template. Edit outside these markers; sync replaces everything inside. -->
 ## Three Man Team
 
-- Roles run in human-started sessions. Do not auto-spawn a role unless the Project Owner explicitly asks.
+- Roles run in human-started sessions. Do not auto-spawn or CLI-invoke a role unless the Project Owner explicitly asks.
 - Role personas live only in `ARCHITECT.md`, `BUILDER.md`, `REVIEWER.md`, `ROGER.md`, and optional `OPERATOR.md`.
 - Before role work, read only that role file and its required handoff files.
 - Handoff files overwrite each step except `handoff/BUILD-LOG.md`, which is append-only.

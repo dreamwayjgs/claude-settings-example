@@ -1,6 +1,6 @@
 # 하네스 비교 — Three Man Team 관점
 
-작성일: 2026-09-29, 갱신: 2026-09-30. 대상 프로젝트: oasis-mmm (v2 엔진 / v3 라이브) — 역할 배치 중 프로젝트 정책(예: 로저=Codex)은 이 프로젝트 한정이며 전역 템플릿 규칙이 아니다. omp 는 실제 세션에서 실측.
+작성일: 2026-09-29, 갱신: 2026-10-13. 대상 프로젝트: oasis-mmm (v2 엔진 / v3 라이브) — 역할 배치 중 프로젝트 정책(예: 로저=Codex)은 이 프로젝트 한정이며 전역 템플릿 규칙이 아니다. omp 는 실제 세션에서 실측.
 
 **범위 확장 (2026-09-29):** 기존 본문은 **Claude를 호출하는 하네스** 조사로 보존한다. 뒤에 **GPT × Codex·OpenCode·omp·Crush** 비교를 추가했다. 바로 아래 결론은 Claude 조사에만 해당한다. GPT 비교는 [GPT 하네스 비교](#gpt-하네스-비교) 참조.
 
@@ -155,3 +155,27 @@ codex --version; opencode --version; omp --version; crush --version
 codex --help; opencode --help; omp --help; crush --help
 crush login --help
 ```
+
+## tmt-cli 2R 기록 재검토 — 2026-10-13
+
+**범위:** 2026-10-12의 oasis-mmm 리뷰 기록(저장소 `.tmt/runs/`)을 읽기 전용으로 재집계했다. 수동 호출과 CLI 호출의 대조 실험이 아니며, 역할·모델 배치나 리뷰 정책을 변경하는 근거로 쓰지 않는다. 집계 방법과 수치는 아래 tmt-cli 이슈에 고정했다. 4개 기록은 두 세션의 probe/export 쌍이며 모델 호출 4회가 아니다.
+
+| 역할 / adapter | probe run | export run |
+|---|---|---|
+| Richard / omp | `run_20261012063930691_2c4209` | `run_20261012063936198_6f860a` |
+| Roger / claude | `run_20261012064135463_906ea1` | `run_20261012064140960_70c9ef` |
+
+### 정정한 판단
+
+- 리처드 도구 호출 수(write 4·bash 10)는 이름 출현 횟수를 호출로 센 수치였다. `tool_execution_start` 기준 실제 호출은 36회다 ([#4](https://github.com/dreamwayjgs/tmt-cli/issues/4)).
+- 824K는 단일 프롬프트 크기나 금액이 아니라 24번의 모델 호출에 걸친 cacheRead + cacheWrite 누적량이다 ([#2](https://github.com/dreamwayjgs/tmt-cli/issues/2)).
+- "Claude는 파일 수준 감사만 가능"은 철회한다. 기존 export에 도구 요청·결과가 있다 ([#3](https://github.com/dreamwayjgs/tmt-cli/issues/3)).
+- "29줄 증분에 824K, 전부 프롬프트 과다 때문"이라는 인과 단정은 철회한다. 근거가 있는 개선 후보는 짧은 reviewer 턴의 todo 전용 왕복 감소뿐이며 ([#5](https://github.com/dreamwayjgs/tmt-cli/issues/5)), prelude 효과와 새 세션/재개 비용 차이는 미검증 가설이다 (#2).
+
+### 결정
+
+- 비용 절감을 이유로 증분 전용 리뷰, 로저 재검 금지, 전역 todo 금지를 도입하지 않는다.
+- 책임 경계: 전역 지침은 호출 승인과 기존 정책 준수, 역할 템플릿은 리뷰 범위·독립 검증, tmt-cli는 실행 프로토콜·관측 방법을 맡는다. 업무상 적합성 판단은 앨리스에게 남고, 원장 감사는 필요한 프로젝트가 정한다.
+- 후속 비교는 같은 모델·코드·역할 지침·필수 검토 범위에서 세션·캐시 조건을 기록하고, 사용량·모델/도구 호출 수·발견 품질을 함께 본다.
+
+CLI 구현 변경이나 비교 실험은 이번 기록 정리에 포함하지 않았다.
