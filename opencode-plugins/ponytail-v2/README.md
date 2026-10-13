@@ -48,7 +48,8 @@ cp <repo>/opencode-plugins/ponytail-v2/index.js ./index.js
 확인:
 
 ```sh
-opencode plugin list   # ponytail failed 없이 표시되면 OK
+grep 'loading plugin' ~/.local/share/opencode/log/opencode.log | grep ponytail   # 서버 로그에 로드 기록
+opencode debug config   # plugins에 ./plugins/ponytail 표시. `opencode plugin list`는 2.0.27에서 config 경로 플러그인을 안 보여 준다
 ```
 
 ## 철수 조건

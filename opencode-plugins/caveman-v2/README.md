@@ -15,14 +15,13 @@
 ## 이 패치가 하는 일
 
 - V1 훅 객체 대신 `id`·`setup(ctx)` 진입점 사용.
-- `ctx.event.subscribe`의 `session.created`에서 머신 기본 모드 플래그 재설정.
-- `ctx.session.hook('context', ...)`에서 활성 모드의 ruleset 주입.
-- 설치된 upstream `caveman-config.cjs`를 읽어 모드·플래그·ruleset 처리 재사용.
-- 로컬 설치본 `~/.config/opencode/plugins/caveman/index.js`와 동일한 사본 보관.
+- `ctx.event.subscribe`의 `session.created`(와 setup 시점)에서 머신 기본 모드 플래그 재설정.
+- `ctx.session.hook('prompt', ...)`에서 `/caveman [level|off]`·`/caveman-commit` 등 슬래시 명령과 자연어 토글을 파싱해 플래그 갱신.
+- `context`·`compaction`·`generate`·`title` 네 요청 종류에 활성 모드의 reinforcement 한 줄 주입.
+- 설치된 upstream `caveman-config.cjs`를 읽어 모드·플래그 처리 재사용.
+- 이 repo 사본이 source-of-truth. 설치본 `~/.config/opencode/plugins/caveman/index.js`와 byte-identical 유지. 고칠 때는 여기를 고치고 설치본에 복사한 뒤 검증한다. (2026-10-13 통일: 9-30부터 서버에서 돌던 파싱 포함 버전을 채택. 이전 repo 사본은 파싱을 뺀 축소판이었고 "상시 ruleset은 AGENTS.md가 덮는다"는 전제가 틀려 폐기.)
 
-**전체 upstream 기능의 이식은 아니다.** `/caveman` 입력을 파싱하는 `prompt` 훅과
-`compaction`·`generate`·`title` 훅은 등록하지 않는다. 역할별 모드는 전역 규칙에 따라
-스킬 로드로 적용한다. 머신 기본 모드는 `off` 유지.
+**ruleset 본문은 주입하지 않는다.** 플래그가 켜져도 모델에는 "CAVEMAN MODE ACTIVE (<mode>). Drop articles…" 한 줄만 들어간다. upstream v3.2.0 helper의 `loadRuleset`(skills/<id>/SKILL.md 본문)은 설치본 helper(5-26·7-03)에 없고, upstream은 모드를 lite/full/ultra에서 caveman/ultracave/megacave 스킬로 재편했다. 역할 세션은 `~/.agents/skills/caveman/SKILL.md`를 직접 읽어 적용하므로 영향 없음. 명령으로 켜는 건 정책상 쓰지 않는다. 머신 기본 모드는 `off` 유지.
 
 ## 설치 (기존 caveman 설치에 덮어쓰기)
 
@@ -57,7 +56,7 @@ cp opencode-plugins/caveman-v2/index.js opencode-plugins/caveman-v2/package.json
 
 ## 검증·철수 조건
 
-- `opencode plugin list`에서 caveman이 failed 없이 표시되는지 확인.
+- 서버 로그(`~/.local/share/opencode/log/opencode.log`)에 `loading plugin id=.../plugins/caveman`이 찍히고 `opencode debug config`에 `plugins`로 보이는지 확인. `opencode plugin list`는 2.0.27에서 config 경로 플러그인을 보여 주지 않는다.
 - `~/.config/caveman/config.json`의 `defaultMode`가 `off`인지 확인.
 - 역할 없는 세션에서 `.caveman-active`가 생성되지 않는지 확인.
 - 역할 세션에서는 지정된 스킬을 로드해 모드 적용 확인.
