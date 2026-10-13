@@ -31,6 +31,7 @@
    - OPERATOR.md: 환경 좌표가 채워진 프로젝트 파일이다. 템플릿으로 덮지 않는다. 템플릿 변경 중 규칙에 해당하는 것만 제안 목록으로 보고하고 적용하지 않는다.
    - ARCHITECT.md 버전 체크: 포크는 비활성화했다. 프로젝트에 upstream 버전 체크 단계가 있으면 같은 한 줄("disabled in this fork. Skip.")로 바꾼다.
    - 프로젝트에 `_temp/ARCHITECT.md`가 있으면 삭제를 제안만 한다.
+   - qmd 잔재 점검: 프로젝트 `CLAUDE.md`·`AGENTS.md`·역할 파일에서 `qmd`를 grep한다. 옛 전역 규칙("qmd search 우선", `qmd status` 신선도 확인)이 복사돼 있으면 그 문장만 지운다(2026-10-13 전역 규칙에서 폐기). 프로젝트가 자체 용도로 qmd를 쓰는 문장이면 지우지 말고 보고한다.
    - 스킬 경로 점검: 프로젝트 지침·역할 파일에서 `SKILL.md`·`skills/` 경로를 grep한다. 실존하지 않거나 harness 전용 경로(`~/.claude/skills/<name>`, `~/.claude/plugins/cache/...` 등)면 `~/.agents/skills/<name>/SKILL.md`로 바꾼다. 그 경로에도 없는 스킬이면 바꾸지 말고 보고한다.
 7. manifest.md: 이번 반영 기준인 포크 커밋 해시(`git -C <checkout> rev-parse --short origin/main`)를 `version`에 기록한다. 없으면 포크 `templates/project-folder/new-setup.md`의 manifest 형식으로 만든다. 이 값이 다음 동기화의 `<base>`다.
 
