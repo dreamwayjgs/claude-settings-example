@@ -47,6 +47,13 @@ if [[ ! -f "$CONFIG" ]]; then
   printf 'INCLUDE_FOREMAN=%s\n' "$INCLUDE_FOREMAN" > "$CONFIG"
 fi
 
+# Skills are installed with the `skills` CLI via npx; without it the build would
+# leave ~/.agents/skills stale, so fail before writing anything.
+if ! command -v npx >/dev/null; then
+  echo "npx (node) is required to install agent skills; nothing written" >&2
+  exit 1
+fi
+
 FRAGMENTS=(
   "$REPO/fragments/00-core.md"
 )
@@ -82,16 +89,12 @@ done
 # uses its own plugins). Source = agent-skills.txt, fetched at the pinned ref with the
 # `skills` CLI (needs node + network). Provenance: ~/.agents/.skill-lock.json.
 SKILLS_CLI="skills@1.7.2"
-if command -v npx >/dev/null; then
-  while read -r repo ref names; do
-    [[ -z "$repo" || "$repo" == \#* ]] && continue
-    args=()
-    for n in $names; do args+=(-s "$n"); done
-    if ! npx -y "$SKILLS_CLI" add "https://github.com/$repo/tree/$ref" -g -a pi "${args[@]}" -y >"$OUT" 2>&1 </dev/null; then
-      cat "$OUT" >&2; echo "skills add failed for $repo@$ref" >&2; exit 1
-    fi
-    echo "installed $repo@$ref: $names"
-  done < "$REPO/agent-skills.txt"
-else
-  echo "skip skills: need npx (node)"
-fi
+while read -r repo ref names; do
+  [[ -z "$repo" || "$repo" == \#* ]] && continue
+  args=()
+  for n in $names; do args+=(-s "$n"); done
+  if ! npx -y "$SKILLS_CLI" add "https://github.com/$repo/tree/$ref" -g -a pi "${args[@]}" -y >"$OUT" 2>&1 </dev/null; then
+    cat "$OUT" >&2; echo "skills add failed for $repo@$ref" >&2; exit 1
+  fi
+  echo "installed $repo@$ref: $names"
+done < "$REPO/agent-skills.txt"

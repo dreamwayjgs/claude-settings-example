@@ -101,7 +101,7 @@ caveman 배지도 동일 방식 — `hooks/caveman-statusline.ps1` 존재 시에
 pwsh -File ./build-rules.ps1  # Windows: same output, UTF-8 without BOM
 ```
 
-build는 마지막에 `agent-skills.txt`(repo·ref·스킬 이름)의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다. node와 네트워크가 필요하고, Claude Code 설치 여부와 무관하다. ref는 full commit sha 또는 태그만 된다(CLI가 `git clone --branch <ref>`를 쓴다). 설치 출처·ref·해시는 `~/.agents/.skill-lock.json`에 남는다. ref를 올릴 땐 매니페스트 수정 → 모든 머신에서 build, Claude 머신은 `claude plugin update`도 같이.
+build는 마지막에 `agent-skills.txt`(repo·ref·스킬 이름)의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다. node와 네트워크가 필요하고, Claude Code 설치 여부와 무관하다. `npx`가 없으면 규칙 파일을 쓰기 전에 실패한다. `build-rules.ps1 -TargetHome <경로>`는 규칙·템플릿만 그 경로에 쓰고 스킬 설치는 건너뛴다(skills CLI가 실제 HOME에만 설치하므로). ref는 full commit sha 또는 태그만 된다(CLI가 `git clone --branch <ref>`를 쓴다). 설치 출처·ref·해시는 `~/.agents/.skill-lock.json`에 남는다. ref와 Claude 플러그인 버전은 같게 유지한다. `claude plugin update`는 항상 마켓플레이스 최신으로 가므로, 올릴 땐 이 repo 세션에서 매니페스트 ref를 먼저 그 버전으로 바꿔 커밋하고, 각 머신에서 `claude plugin update` + build를 한다. 플러그인만 앞서 있으면 매니페스트를 따라 올리는 커밋을 같이 하고, 매니페스트만 올리고 플러그인을 안 올리는 상태는 두지 않는다.
 
 최초 실행에서 Foreman 포함 여부를 선택한다. 선택은 Git에서 제외되는 `.claude-settings.local`에 저장되며 이후 빌드에서도 재사용된다. 선택을 바꾸려면 이 파일의 값을 수정하거나 삭제 후 다시 실행한다. 비대화형 최초 실행은 `INCLUDE_FOREMAN=true|false ./build-claude-md.sh`처럼 명시한다.
 

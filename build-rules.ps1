@@ -3,6 +3,9 @@
 param(
   [ValidateSet('true', 'false')]
   [string]$IncludeForeman,
+  # Rule files and templates go under -TargetHome. Agent skills are installed by the
+  # `skills` CLI, which only targets the real $HOME; when -TargetHome differs the
+  # skills step is skipped and reported, so an isolated run never touches $HOME.
   [string]$TargetHome = $HOME
 )
 
@@ -27,6 +30,12 @@ if ($IncludeForeman -eq 'true' -and -not (Get-Command foreman -ErrorAction Silen
 
 if (-not (Test-Path -LiteralPath $config)) {
   [System.IO.File]::WriteAllText($config, "INCLUDE_FOREMAN=$IncludeForeman`n", [System.Text.UTF8Encoding]::new($false))
+}
+
+# Skills are installed with the `skills` CLI via npx; without it the build would
+# leave ~/.agents/skills stale, so fail before writing anything.
+if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
+  throw 'npx (node) is required to install agent skills; nothing written'
 }
 
 $fragments = @(
@@ -66,9 +75,11 @@ foreach ($template in @('project-rules.md', '.claudeignore')) {
 # Agent skills -> ~/.agents/skills (read by OpenCode v2, omp, and Crush; Claude Code
 # uses its own plugins). Source = agent-skills.txt, fetched at the pinned ref with the
 # `skills` CLI (needs node + network). Provenance: ~/.agents/.skill-lock.json.
-# Note: the skills CLI always targets the real $HOME; -TargetHome only affects rule files.
 $skillsCli = 'skills@1.7.2'
-if (Get-Command npx -ErrorAction SilentlyContinue) {
+$isolated = [System.IO.Path]::GetFullPath($TargetHome).TrimEnd('\', '/') -ne [System.IO.Path]::GetFullPath($HOME).TrimEnd('\', '/')
+if ($isolated) {
+  "skip skills: -TargetHome '$TargetHome' differs from HOME; the skills CLI only installs to the real HOME"
+} else {
   foreach ($line in Get-Content -LiteralPath (Join-Path $repo 'agent-skills.txt') -Encoding utf8) {
     $line = $line.Trim()
     if (-not $line -or $line.StartsWith('#')) { continue }
@@ -79,6 +90,4 @@ if (Get-Command npx -ErrorAction SilentlyContinue) {
     if ($LASTEXITCODE -ne 0) { $log | Write-Host; throw "skills add failed for $source@$ref" }
     "installed $source@${ref}: $($names -join ' ')"
   }
-} else {
-  'skip skills: npx not found'
 }

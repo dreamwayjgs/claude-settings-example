@@ -25,20 +25,22 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    - Windows: `pwsh -File .\build-rules.ps1`. bash 셸에서 실행 중이어도(예: Claude Code의 Git Bash) ps1을 쓴다.
      pwsh 7이 없으면 멈추고 보고. 실행 정책 오류가 나면 `-ExecutionPolicy Bypass`를 붙인다.
    - Foreman 질문이 나오면 나에게 물어봐.
-   - 빌드 마지막 단계가 `agent-skills.txt`의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다 (node·네트워크 필요, Claude 불필요). `npx`가 없거나 설치가 실패하면 멈추고 출력 전체를 보고. 예전 방식(Claude 플러그인 캐시 복사)은 없어졌으니 `~/.config/opencode/skills`·`~/.config/crush/skills`에 남은 caveman·ponytail 사본이 있으면 목록만 보고하고 지우지 않는다.
-   - caveman v3 (2026-10-13): 빌드 전에 Claude 머신이면 `claude plugin update caveman@caveman`으로 3.2.0 이상으로 올린다. `~/.claude/settings.json`(계정 분리·워커 폴더 포함)의 `hooks`에 `caveman-activate.js`·`caveman-mode-tracker.js`를 부르는 항목이 있으면 전부 지운다 — 플러그인 manifest가 같은 훅을 등록하므로 중복이다. 그 뒤 `~/.claude/plugins/cache/caveman/caveman/<version>/src/hooks/`에서 `caveman-activate.js`·`caveman-config.js`·`caveman-mode-tracker.js`·`caveman-stats.js`·`caveman-statusline.sh`·`caveman-statusline.ps1`를 `~/.claude/hooks/`에 덮어쓴다 (statusline 배지용).
+   - 빌드 마지막 단계가 `agent-skills.txt`의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다 (node·네트워크 필요, Claude 불필요). `npx`가 없으면 빌드가 아무것도 쓰지 않고 실패하고, 설치가 실패하면 규칙은 써진 뒤 멈춘다. 어느 쪽이든 멈추고 출력 전체를 보고. `build-rules.ps1 -TargetHome <다른 경로>`는 규칙·템플릿만 그 경로에 쓰고 스킬 설치는 건너뛴다(격리 검증용). 예전 방식(Claude 플러그인 캐시 복사)은 없어졌으니 `~/.config/opencode/skills`·`~/.config/crush/skills`에 남은 caveman·ponytail 사본이 있으면 목록만 보고하고 지우지 않는다.
+   - caveman v3 (2026-10-13): Claude 머신이면 빌드 전에 `claude plugin update caveman@caveman`을 실행하고, 설치된 플러그인 버전이 `agent-skills.txt`의 caveman ref(`v<버전>`)와 같은지 확인한다. 플러그인이 더 새 버전이면 멈추고 보고 — 매니페스트 ref는 소유자 세션(claude-settings-example)에서만 올린다. `~/.claude/settings.json`(계정 분리·워커 폴더 포함)의 `hooks`에 `caveman-activate.js`·`caveman-mode-tracker.js`를 부르는 **activation·mode-tracker 훅 등록**이 있으면 지운다 — 플러그인 manifest가 같은 훅을 등록하므로 중복이다 (statusline 설정과 `~/.claude/hooks/` 파일은 건드리지 않는다). 그 뒤 `~/.claude/plugins/cache/caveman/caveman/<version>/src/hooks/`에서 `caveman-activate.js`·`caveman-config.js`·`caveman-mode-tracker.js`·`caveman-stats.js`·`caveman-statusline.sh`·`caveman-statusline.ps1`를 `~/.claude/hooks/`에 덮어쓴다 (statusline 배지용).
    - 빌드는 계정 폴더 중 `~/.claude`·`~/.claude-personal`에만 CLAUDE.md를 쓴다. 다른 계정 폴더(예: `~/.claude-admin`)가 있으면 `~/.claude/CLAUDE.md`를 그 폴더에 복사한다.
+   - OpenCode가 설치된 머신(`opencode --version`이 2.x)이면 `opencode-plugins/caveman-v2/README.md`·`ponytail-v2/README.md`의 설치 절차로 로컬 어댑터와 의존 파일(`caveman-config.cjs`, `node_modules/@dietrichgebert/ponytail`)을 repo 사본과 맞추고, `opencode-v2-migration.md`의 "검증" 절(서버 로그 `loading plugin`, 역할 없는 run에 플래그 없음)을 돌린다. OpenCode가 없으면 생략.
 6. 옛 사본 정리: 아래 경로에 `OPERATOR.md`가 있으면 삭제한다. 빌드가 더는 이 파일을 쓰지 않고, 이제 포크의 `templates/optional/OPERATOR.md`가 원본이다.
    `~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`
    omp 마켓플레이스 플러그인 정리(2026-10-13): `omp plugin list`에 `ponytail@ponytail`·`caveman@...` 같은 스킬 플러그인이 있으면 `omp plugin uninstall <id>`로 지운다. 스킬 소스는 `agent-skills.txt` 하나이고, omp 플러그인 사본이 있으면 `~/.agents/skills`와 name collision을 내며 bare 이름을 가져간다. `omp plugin doctor`의 `package_manifest: Not created yet`는 정보성 경고라 그대로 둔다.
    qmd 폐기(2026-10-13, 세션 규칙에서 제외): Claude Code에 `qmd@qmd` 플러그인이 있으면 `claude plugin disable qmd@qmd`로 끄고, `~/.claude/settings.json`의 `permissions.allow`에서 `mcp__plugin_qmd_qmd__*` 항목을 지운다. 계정 분리 폴더(`~/.claude-personal` 등)와 워커 폴더(`~/.claude-worker`)의 `settings.json`도 같은 항목을 확인한다. `enabledPlugins`의 `"qmd@qmd": false`와 `extraKnownMarketplaces`의 `qmd`는 비활성 기록이라 남겨도 된다. `~/.agents/skills/qmd`가 있으면 삭제한다(build가 더는 만들지 않는 잔여물). qmd CLI 자체와 인덱스는 지우지 않는다 — 레포 밖 문서 검색용으로 `~/ops/CLAUDE.md`에서만 안내한다.
+7. 검증:
    - checkout마다 `git -C <checkout> remote -v`: origin = 포크, upstream = 원본
    - checkout마다 `git -C <checkout> status -sb`: `main...origin/main`, ahead/behind 없음
    - `templates/project-folder/ROGER.md`, `templates/optional/OPERATOR.md` 존재
    - 생성된 전역 규칙 파일(이 harness 것)에 `templates/optional/OPERATOR.md` 문자열이 있음
-   - `~/.agents/skills`에 caveman 7개·ponytail 6개·karpathy-guidelines가 있고(qmd 없음), `~/.agents/.skill-lock.json`의 각 `ref`가 repo `agent-skills.txt`의 ref와 같음
+   - repo `agent-skills.txt`의 각 줄(repo, ref, 스킬 이름들)에 대해 `~/.agents/skills/<이름>/SKILL.md`가 있고 `~/.agents/.skill-lock.json`의 그 스킬 `ref`가 줄의 ref와 같음. 개수·버전을 따로 외우지 말고 매니페스트에서 읽는다. `~/.agents/skills/qmd` 없음
    - 생성된 전역 규칙 파일 네 개와 `~/.claude/settings.json`에 `qmd` 문자열이 없음(`enabledPlugins`의 `"qmd@qmd": false`는 허용)
-   - `omp plugin list`가 비어 있고 `omp skill list` 출력에 `name collision`이 없음
-   - `~/.agents/.skill-lock.json`의 caveman ref가 `v3.2.0`, `~/.agents/skills/caveman/SKILL.md`에 lite/full 강도 표가 없음, `settings.json`에 caveman 훅 없음, 토큰 최적화 표의 caveman 열이 `caveman`
+   - `omp plugin list`에 매니페스트 스킬과 겹치는 플러그인(ponytail·caveman·karpathy 계열)이 없고, `omp skill list` 출력에 `name collision`이 없음. 다른 omp 플러그인은 있어도 된다
+   - Claude 머신: 설치된 caveman 플러그인 버전이 매니페스트 caveman ref와 같음, `~/.agents/skills/caveman/SKILL.md`에 lite/full 강도 표가 없음, `settings.json`들에 caveman activation·mode-tracker 훅 등록이 없음(statusLine은 그대로), 토큰 최적화 표의 caveman 열이 `caveman`
    결과를 표로 보고.
 ```
