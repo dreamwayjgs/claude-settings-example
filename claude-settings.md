@@ -32,11 +32,13 @@
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
 - three-man-team: `~/.claude/skills/three-man-team/` 존재. 개인 포크 `dreamwayjgs/three-man-team`을 clone한다 (원본 `russelleNVy/three-man-team`은 `upstream` remote)
 - qmd (옵셔널): 설치되어 있으면 global router가 `qmd search`를 우선 사용하고, 없으면 Grep/Glob/Read로 자동 fallback. 임베딩 모델이 없으면 `qmd search`만 사용
-- karpathy-skills (각자 설치): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills` (github `forrestchang/andrej-karpathy-skills`). 셋업 시 넣는 karpathy 블록은 `fragments/10-three-man-team.md`에 이미 박혀 있어 플러그인과 무관 — 플러그인은 등록만 하면 끝
+- karpathy-skills (옵셔널): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills`. 역할별 Karpathy 적용은 포크 템플릿 역할 파일의 karpathy 블록이 담당하므로 플러그인은 omp·Crush용 스킬 복사(build)의 소스일 뿐이다
 - ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 npm 플러그인 `@dietrichgebert/ponytail`, omp·Crush는 Claude 플러그인 스킬 복사(A) 또는 단독 clone(B) 중 머신별 선택. 한 harness에만 설치하면 다른 harness에는 적용되지 않는다 (§5 참조)
 - Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
 
 caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (qmd·karpathy는 옵셔널 — 위 노트 참조.)
+
+정본 출처 — three-man-team만 개인 포크(`dreamwayjgs/three-man-team`)이고 나머지는 원본을 쓴다: caveman `JuliusBrussee/caveman`, ponytail `DietrichGebert/ponytail`, karpathy `multica-ai/andrej-karpathy-skills` (구 `forrestchang/andrej-karpathy-skills`, GitHub 리다이렉트로 같은 레포). `opencode-plugins/caveman-v2`·`ponytail-v2`는 이 repo가 관리하는 OpenCode V2 로컬 호환 패치이지 upstream이 아니다 — 재설치·업데이트 때 upstream 설치기로 덮어쓰지 말고 각 README의 절차와 철수 조건을 따른다. 순서는 repo 패치 수정 → 설치 → 검증.
 
 ---
 
@@ -269,6 +271,15 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   - 폴더는 완전히 독립 — 인증(`.credentials.json`)·`settings.json`·플러그인·스킬·세션 이력을 따로 가진다. 첫 실행에서 로그인하고, 플러그인(caveman·ponytail 등)은 그 계정으로 다시 설치한다.
   - `build-claude-md.sh`·`build-rules.ps1`은 `~/.claude-personal/CLAUDE.md`만 대상으로 쓴다. 다른 폴더명(예: works 서버의 `aclaude` → `~/.claude-admin`)을 쓰면 build 대상에 추가하거나 `~/.claude/CLAUDE.md`를 복사한다.
   - statusline과 caveman·Ponytail 모드 플래그는 `CLAUDE_CONFIG_DIR`을 따른다 — 계정 폴더 사이에서는 모드가 새지 않는다.
+
+- **Claude 워커 디렉터리 (`wclaude`, tmt-cli 전용)** — 앨리스가 CLI로 밥·리처드·로저를 호출할 때 쓰는 두 번째 설정 폴더. 계정 분리와 같은 `CLAUDE_CONFIG_DIR` 방식이지만 계정은 같다. 목적은 워커 첫 호출 컨텍스트 축소(tmt-cli Step K 실측 -27%, 비용은 중립)이며 statusLine·플러그인·소유자용 지침이 빠진다:
+  ```bash
+  wclaude() { CLAUDE_CONFIG_DIR="$HOME/.claude-worker" command claude "$@"; }
+  ```
+  - 생성: `mkdir ~/.claude-worker` 후 `settings.json.example`을 `~/.claude-worker/settings.json`으로 복사하고 `statusLine` 삭제, `enabledPlugins`를 `{}`, `extraKnownMarketplaces` 삭제(플러그인을 안 쓰는데 마켓플레이스 캐시만 받아온다). `model`·`tui`는 두지 않는다. permissions·hooks·autoMode·effortLevel 등 나머지는 본 `~/.claude/settings.json`과 같게 둔다 — hooks 경로는 `~/.claude/hooks/`를 그대로 가리킨다. 플러그인 캐시 복사는 불필요하다. 워커는 스킬을 `~/.agents/skills/<name>/SKILL.md` 파일로 읽는다.
+  - `wclaude login`으로 한 번 로그인한다. `.credentials.json`을 복사하지 않는다 (refresh token 공유).
+  - `~/.claude-worker/CLAUDE.md`를 두지 않는다. `$HOME` 아래 레포에서는 `~/.claude/CLAUDE.md`가 조상 Project 파일로 로드되므로(haiku `-p` 실측) 두면 중복만 된다. `$HOME` 밖 레포(`/mnt/c/...` 등)에서는 로드되지 않으니 거기서는 워커를 쓰지 않는다.
+  - build 대상이 아니다. `build-claude-md.sh`·`build-rules.ps1`에 추가하지 않는다.
 
 ## 검증
 

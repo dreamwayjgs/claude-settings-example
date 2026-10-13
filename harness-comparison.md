@@ -179,3 +179,14 @@ crush login --help
 - 후속 비교는 같은 모델·코드·역할 지침·필수 검토 범위에서 세션·캐시 조건을 기록하고, 사용량·모델/도구 호출 수·발견 품질을 함께 본다.
 
 CLI 구현 변경이나 비교 실험은 이번 기록 정리에 포함하지 않았다.
+
+## tmt-cli Step I~K 교훈 — 2026-10-13
+
+Step I~K(README 보강·todo 억제 지침·`CLAUDE_CONFIG_DIR` 지원)에서 앨리스가 CLI로 역할을 호출하며 관찰한 것. 통제 비교가 아니라 운용 기록이며, 위 "결정"의 후속 비교 조건을 대신하지 않는다. 원기록은 tmt-cli `handoff/BUILD-LOG.md`와 `ARCHITECT.md`의 워커 프롬프트 규칙.
+
+- **omp**: `-p --mode json` 출력은 이벤트 스트림이라 파싱이 필요하고, 도구 호출 수는 `tool_execution_start` 기준으로 센다. bash 출력이 240줄에서 잘리고 모델이 artifact 조각으로 다시 읽으므로 긴 diff는 호출 수를 늘린다.
+- **claude -p**: 결과 객체 하나에 비용·세션 ID·permission_denials가 들어 있어 후처리가 없다.
+- **재개 턴 비용**: claude 재개 턴은 cacheRead가 턴당 420~440k로 세션 누적 컨텍스트를 매번 읽는다. Step K 밥 3턴(새 세션 $0.74 → 재개 $1.04 → $1.27, 합계 $3.05)이 omp 같은 모델 턴($0.12~0.46)보다 높았다. 같은 과제의 대조가 아니므로 방향만 참고한다.
+- **워커 디렉터리**: `~/.claude-worker`로 첫 호출 컨텍스트 -27%, 쓰기·재개·export 정상, 비용 중립 (`claude-settings.md` §8 워커 절).
+- **todo 억제 지침**: 짧은 리뷰어 턴에서만 todo 전용 왕복 감소가 확인됐다. 긴 구현 턴에서는 미확인.
+- **리뷰어 프롬프트**: base 커밋과 handoff 제외를 포함한 diff 명령(`git diff <base> -- . ':!handoff'`)을 명시한다. 없으면 handoff diff를 리뷰 대상으로 잡거나 잘린 출력을 다시 읽는다.

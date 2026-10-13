@@ -52,9 +52,9 @@ caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.con
 
 모드는 스킬 로드로만 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다.
 
-스킬 경로를 적을 땐 `~/.agents/skills/<name>/SKILL.md`를 쓴다 (build가 유지, omp·Crush·OpenCode v2 기본 스캔). 이름으로 못 찾으면 `~/.agents/skills/` → `~/.claude/skills/` → `~/.config/opencode/skills/` → `~/.claude/plugins/cache/<plugin>/*/skills/<name>/` 순으로 직접 읽고, 찾은 경로를 세션 보고에 한 줄로 남긴다.
+스킬 경로를 적을 땐 `~/.agents/skills/<name>/SKILL.md`를 쓴다 (build가 유지, omp·Crush·OpenCode v2 기본 스캔). 이름으로 못 찾으면 `~/.agents/skills/` → `~/.claude/skills/` → `~/.config/opencode/skills/` → `~/.claude/plugins/cache/<plugin>/*/skills/<name>/` 순으로 직접 읽고, 찾은 경로를 세션 보고에 한 줄로 남긴다. Ponytail은 `DietrichGebert/ponytail`, Karpathy는 `multica-ai/andrej-karpathy-skills` 정본에서 가져온 스킬이다. tmt-cli 워커(`~/.claude-worker`)도 같은 파일 경로로 읽으므로 워커 디렉터리에 플러그인은 필요 없다.
 
-caveman은 응답을 줄이고 Ponytail은 필요한 구현만 남긴다. 필수 검증·보안·접근성·오류 처리는 줄이지 않는다.
+caveman은 응답을 줄이고 Ponytail은 필요한 구현만 남긴다. 필수 검증·보안·접근성·오류 처리는 줄이지 않는다. Karpathy는 역할 파일의 karpathy 블록으로 적용되며 별도 스킬 로드는 하지 않는다.
 
 **사용자가 세팅 시 특정 옵티마이저 지정한 경우:**
 그 프로젝트에 한해 루트 CLAUDE.md·AGENTS.md와 역할 파일의 `## Session Start` 섹션에 해당 스킬 로드 지시를 같은 의미로 추가한다 (이 표보다 우선).
@@ -66,4 +66,5 @@ caveman은 응답을 줄이고 Ponytail은 필요한 구현만 남긴다. 필수
 - 이번 턴의 작업·변경점·기대 산출물을 간결히 전달한다. 고정 프로토콜의 중복 설명은 줄이되 필요한 역할 지침을 생략하지 않는다.
 - 리뷰 범위·독립 검증·중복 발견 보고 기준은 역할 정책, 테스트는 위 테스트 검증 정책을 따른다. 호출 방식이나 비용 최적화를 이유로 바꾸지 않는다.
 - 턴 후 **호출 전후 변경이 허용 범위 안인지**와 기대 산출물을 확인한다. 로저의 피드백 작성은 역할 정책의 기존 발견 원문 보존 규칙을 따른다.
+- claude 어댑터 호출은 `~/.claude-worker`가 있으면 호출 단위로 `CLAUDE_CONFIG_DIR`을 붙이고, 한 세션의 모든 호출(새 세션·재개·export)에 같은 값을 쓴다. 앨리스 자기 세션에는 적용하지 않는다.
 - 세션 운용·ID 조회·결과 계약·adapter별 관측 방법은 프로젝트의 `tmt-cli` 프로토콜과 CLI 문서를 따른다. 결과의 업무상 적합성 판단은 앨리스가 맡는다.
