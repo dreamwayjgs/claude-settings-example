@@ -24,7 +24,6 @@
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `opencode.json.example` | OpenCode V1 global config 참고본 (Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`) |
-| `opencode-plugins/caveman-v2/` | caveman V2 임시 패치. 기존 upstream helper·스킬 위에 설치 (설치·제약·철수 조건은 내부 README) |
 | `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
 
 ## 설치 상태 확인 (진행 전 체크)
@@ -37,7 +36,7 @@
 
 caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 여부 확인 요청. 임의 설치 금지. (karpathy는 옵셔널 — 위 노트 참조.)
 
-정본 출처 — three-man-team만 개인 포크(`dreamwayjgs/three-man-team`)이고 나머지는 원본을 쓴다: caveman `JuliusBrussee/caveman`, ponytail `DietrichGebert/ponytail`, karpathy `multica-ai/andrej-karpathy-skills` (구 `forrestchang/andrej-karpathy-skills`, GitHub 리다이렉트로 같은 레포). `opencode-plugins/caveman-v2`·`ponytail-v2`는 이 repo가 관리하는 OpenCode V2 로컬 호환 패치이지 upstream이 아니다 — 재설치·업데이트 때 upstream 설치기로 덮어쓰지 말고 각 README의 절차와 철수 조건을 따른다. 순서는 repo 패치 수정 → 설치 → 검증.
+정본 출처 — three-man-team만 개인 포크(`dreamwayjgs/three-man-team`)이고 나머지는 원본을 쓴다: caveman `JuliusBrussee/caveman`, ponytail `DietrichGebert/ponytail`, karpathy `multica-ai/andrej-karpathy-skills` (구 `forrestchang/andrej-karpathy-skills`, GitHub 리다이렉트로 같은 레포). `opencode-plugins/ponytail-v2`는 이 repo가 관리하는 OpenCode V2 로컬 호환 패치이지 upstream이 아니다 — 재설치·업데이트 때 upstream 설치기로 덮어쓰지 말고 README의 절차와 철수 조건을 따른다. caveman은 4.0.0부터 upstream이 OpenCode V2를 지원해 임시 패치를 철수했다(2026-10-14). 설치는 `opencode-v2-migration.md` 절차 4. 순서는 repo 패치 수정 → 설치 → 검증.
 
 ---
 
@@ -48,7 +47,7 @@ caveman·three-man-team 중 하나라도 없으면 → 사용자에게 설치 �
 - 훅(`SessionStart`·`SubagentStart`·`UserPromptSubmit`)은 플러그인 manifest가 등록한다. `settings.json`에 caveman 훅을 따로 넣지 않는다 — 2026-10-13까지 같은 훅이 `~/.claude/hooks/` 사본으로 중복 등록돼 있었고, v3 업그레이드 때 제거했다. 플러그인 훅은 `node`를 PATH에서 찾으니 nvm 환경에서는 nvm이 로드된 셸에서 Claude를 띄운다 (없으면 조용히 건너뛴다).
 - `~/.claude/hooks/caveman-*`는 statusline 배지(`statusline.sh` → `hooks/caveman-statusline.sh`)만 쓴다. 플러그인 업데이트 뒤 `~/.claude/plugins/cache/caveman/caveman/<version>/src/hooks/`의 `caveman-activate.js`·`caveman-config.js`·`caveman-mode-tracker.js`·`caveman-stats.js`·`caveman-statusline.sh`·`caveman-statusline.ps1`를 다시 복사한다.
 - `<HOME>` → 홈 디렉토리 절대경로로 치환 (statusLine)
-- 버전: 플러그인 3.2.0 (2026-10-13). `agent-skills.txt`의 caveman ref와 같이 올린다.
+- 버전: 플러그인 4.0.1 (2026-10-14). `agent-skills.txt`의 caveman ref와 같이 올린다.
 
 사용법:
 

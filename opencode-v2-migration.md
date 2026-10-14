@@ -27,7 +27,7 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
 | 항목 | V1 | V2 |
 |---|---|---|
 | config | `opencode.json.example` (`plugin`) | `opencode.v2.json.example` (`plugins`, 로컬 플러그인 폴더) |
-| caveman | `plugins/caveman/plugin.js` (V1) | `opencode-plugins/caveman-v2/` 임시 패치 (기존 upstream helper·스킬 필요) |
+| caveman | `plugins/caveman/plugin.js` (V1) | upstream v4.0.1 `src/plugins/opencode/` (`server.js`가 V2 진입점). 임시 패치는 2026-10-14 철수 |
 | ponytail | npm `@dietrichgebert/ponytail` (V1 API, V2에서 크래시) | `opencode-plugins/ponytail-v2/` 임시 패치 |
 | `commands/*.md` | `description`만 사용 | 변경 없음 (`subtask` 미사용) |
 | `AGENTS.md`·스킬 | | 변경 없음 |
@@ -46,10 +46,31 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
    curl -fsSL https://opencode.ai/v2/install | bash -s -- --version 2.0.27  # 고정
    opencode --version   # 2.x
    ```
-4. caveman — `opencode-plugins/caveman-v2/README.md` 설치 절차. 기존 helper·스킬을 보존하고
-   repo의 `index.js`·`package.json`을 설치한다. 2026-10-08 upstream `main` (`2e08b91`)은
-   V1 API이며 설치기도 V2 `index.js`를 생성하지 않는다. upstream 설치기 재실행만으로
-   전환하지 말 것. 이 패치는 `/caveman` prompt 파싱을 생략하며 역할 모드는 스킬 로드로 적용한다.
+4. caveman — upstream 파일만 복사한다. **upstream 설치기(`installer/install.js`)는 쓰지 않는다**:
+   `~/.config/opencode/AGENTS.md`에 상시 caveman ruleset 블록을 넣고 skills·agents까지 깔아
+   기본 off 정책과 `~/.agents/skills` 단일 경로를 깬다. ref는 `agent-skills.txt`의 caveman ref와 같게.
+   ```bash
+   git clone -q --depth 1 --branch v4.0.1 https://github.com/JuliusBrussee/caveman /tmp/caveman-src
+   S=/tmp/caveman-src; P=~/.config/opencode/plugins/caveman; mkdir -p $P ~/.config/opencode/commands
+   cp $S/src/plugins/opencode/{plugin.js,server.js,package.json} $P/
+   cp $S/src/hooks/caveman-config.js $P/caveman-config.cjs
+   cp $S/src/hooks/caveman-parse.js $P/caveman-parse.cjs
+   rm -f $P/index.js   # 옛 임시 패치 진입점
+   cp $S/src/plugins/opencode/commands/*.md ~/.config/opencode/commands/
+   ```
+   ```powershell
+   git clone -q --depth 1 --branch v4.0.1 https://github.com/JuliusBrussee/caveman $env:TEMP\caveman-src
+   $S = "$env:TEMP\caveman-src"; $P = "$HOME\.config\opencode\plugins\caveman"
+   New-Item -ItemType Directory -Force $P, "$HOME\.config\opencode\commands" | Out-Null
+   Copy-Item "$S\src\plugins\opencode\plugin.js", "$S\src\plugins\opencode\server.js", "$S\src\plugins\opencode\package.json" $P
+   Copy-Item "$S\src\hooks\caveman-config.js" "$P\caveman-config.cjs"
+   Copy-Item "$S\src\hooks\caveman-parse.js" "$P\caveman-parse.cjs"
+   Remove-Item "$P\index.js" -ErrorAction SilentlyContinue
+   Copy-Item "$S\src\plugins\opencode\commands\*.md" "$HOME\.config\opencode\commands"
+   ```
+   ruleset 본문은 `~/.config/opencode/skills`가 없으므로 주입되지 않고 배너+thesis 한 줄만 들어간다.
+   역할 세션은 `~/.agents/skills/caveman/SKILL.md`를 직접 읽으므로 영향 없음.
+   설치 후 백그라운드 서비스(`opencode serve --service`)를 재시작해야 새 플러그인을 확실히 읽는다.
 5. ponytail — `opencode-plugins/ponytail-v2/README.md` 설치 절차.
 6. config — `opencode.v2.json.example`을 `~/.config/opencode/opencode.json`으로. 기존 `opencode.jsonc`는 제거 (둘 다 두지 말 것).
 7. caveman·Ponytail 기본 off 유지 확인: `~/.config/{caveman,ponytail}/config.json` = `{"defaultMode":"off"}` (`claude-settings.md` §5-1).
@@ -77,7 +98,8 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
 
 - V1 세션 기록이 V2에서 보이는지
 - 서버 V2의 실제 응답 톤 (크레딧 부족으로 모델 호출 실패, 플러그인·플래그 수준만 확인)
-- caveman 어댑터의 ruleset 주입: 로컬·서버의 upstream helper `caveman-config.cjs`(5-26·7-03 설치본) 모두 `loadFilteredRuleset`이 없어 배너만 주입된다. 기본 off라 실사용 영향은 없음. 서버의 `plugins/caveman/index.js`(9-30, 9057B)는 repo `caveman-v2/index.js`(10-08, 6407B)와 다른 구현이라 정본 확정이 필요하다.
+- caveman upstream 4.0.1 어댑터의 서브에이전트 가드(`parentID` 세션은 모드 전환 무시)는 코드로만 확인, 실측 안 함.
+- 서버에 4.0.1 어댑터 적용 여부 (절차 4).
 
 ## 롤백
 
