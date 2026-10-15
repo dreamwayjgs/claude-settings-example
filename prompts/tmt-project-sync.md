@@ -29,6 +29,7 @@
 6. 파일별 주의:
    - ROGER.md: 17dec33은 Role 절 교체다. 옛 "Read handoff/REVIEW-FEEDBACK.md before you begin"과 "Flag only what Richard missed" 문장은 남기지 말고 새 문장으로 바꾼다. 로저의 탐색 범위를 좁히는 문장이 남으면 안 된다.
    - c78ae4e 반영 점검(2026-10-14): REVIEWER·ROGER의 Session Start에 `Read handoff/ARCHITECT-BRIEF.md`가 있는지 grep한다. 없으면 REVIEW-REQUEST 다음 단계로 넣고 뒤 번호를 민다. 같은 뜻의 단계가 이미 있으면 건너뛴다. `<!-- tmt-cli:start -->`~`<!-- tmt-cli:end -->` 블록은 `tmt init` 소유라 고치지 않는다.
+   - bbe78fc 반영 점검(2026-10-15, Roger Dissent 처리 경로): ARCHITECT의 "Briefing Richard" 절은 "Briefing Reviewers" 절(로저 투입, 재리뷰 규칙, `## Arch Ruling`)로 교체하고 Deploy Gate 트리거·보고 문장을 바꾼다. BUILDER의 대기 문장과 "Handling Richard's Feedback" 절을 "Handling Review Feedback"으로 교체한다. REVIEWER의 마지막 신호 문장, ROGER의 Additions 형식(Must Fix·Should Fix 분리)·Dissent·Ready·신호 문장을 바꾼다. 옛 "signal Arch: \"Step N is clear.\""와 "When Richard signals" 문장이 남으면 안 된다.
    - OPERATOR.md: 환경 좌표가 채워진 프로젝트 파일이다. 템플릿으로 덮지 않는다. 템플릿 변경 중 규칙에 해당하는 것만 제안 목록으로 보고하고 적용하지 않는다.
    - ARCHITECT.md 버전 체크: 포크는 비활성화했다. 프로젝트에 upstream 버전 체크 단계가 있으면 같은 한 줄("disabled in this fork. Skip.")로 바꾼다.
    - 프로젝트에 `_temp/ARCHITECT.md`가 있으면 삭제를 제안만 한다.
