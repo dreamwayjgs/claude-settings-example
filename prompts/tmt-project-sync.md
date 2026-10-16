@@ -17,7 +17,7 @@
 4. 반영할 변경 = `git -C <checkout> diff <base> origin/main -- templates/`.
    - `<base>`는 manifest.md의 `version`에 포크 커밋 해시가 있으면 그 값이다.
    - 없으면 `837bc2f`다. 로저·karpathy·Tests 절은 옛 셋업 절차로 이미 들어가 있는 것으로 보고, 그 뒤의 변경만 반영한다.
-   - 단, 프로젝트 파일에 837bc2f 항목(로저 Role 절, karpathy 블록, 리뷰어 `## Tests` 절, deploy gate의 "고지된 green == 커밋 상태" 확인)이 빠져 있으면 그것도 대상에 넣는다.
+   - 단, 프로젝트 파일에 837bc2f 항목(로저 Role 절, karpathy 블록, 리뷰어 `## Tests` 절, deploy gate 0단계의 테스트 결과 확인)이 빠져 있으면 그것도 대상에 넣는다.
 5. 각 hunk를 프로젝트 파일에 의미 단위로 적용한다.
    - 템플릿의 이름(Arch·Bob·Richard)은 그 프로젝트의 이름으로 바꾼다.
    - 경로(`handoff/`)는 그 프로젝트의 handoff 경로로 바꾼다.
@@ -30,7 +30,9 @@
    - ROGER.md: 17dec33은 Role 절 교체다. 옛 "Read handoff/REVIEW-FEEDBACK.md before you begin"과 "Flag only what Richard missed" 문장은 남기지 말고 새 문장으로 바꾼다. 로저의 탐색 범위를 좁히는 문장이 남으면 안 된다.
    - c78ae4e 반영 점검(2026-10-14): REVIEWER·ROGER의 Session Start에 `Read handoff/ARCHITECT-BRIEF.md`가 있는지 grep한다. 없으면 REVIEW-REQUEST 다음 단계로 넣고 뒤 번호를 민다. 같은 뜻의 단계가 이미 있으면 건너뛴다. `<!-- tmt-cli:start -->`~`<!-- tmt-cli:end -->` 블록은 `tmt init` 소유라 고치지 않는다.
    - bbe78fc 반영 점검(2026-10-15, Roger Dissent 처리 경로): ARCHITECT의 "Briefing Richard" 절은 "Briefing Reviewers" 절(로저 투입, 재리뷰 규칙, `## Arch Ruling`)로 교체하고 Deploy Gate 트리거·보고 문장을 바꾼다. BUILDER의 대기 문장과 "Handling Richard's Feedback" 절을 "Handling Review Feedback"으로 교체한다. REVIEWER의 마지막 신호 문장, ROGER의 Additions 형식(Must Fix·Should Fix 분리)·Dissent·Ready·신호 문장을 바꾼다. 옛 "signal Arch: \"Step N is clear.\""와 "When Richard signals" 문장이 남으면 안 된다.
-   - 41deda5 반영 점검(2026-10-16, 역할 호출 방식): ARCHITECT의 Bob·Richard/Roger 모델 지정 문장을 "switch to that model before pasting, or set it in the external CLI orchestrator"로 바꾼다. new-setup.md가 프로젝트에 남아 있으면 "one Claude Code session" 안내와 Agent tool `model` 문장도 템플릿 문장으로 바꾼다. 역할 파일에서 `Agent tool`·`subagent`·`spin up`·`run_in_background`를 grep해 Agent tool로 역할을 띄우라는 문장이 남으면 안 된다. 단 `<!-- tmt-cli:start -->`~`<!-- tmt-cli:end -->` 블록과 "Spin up Bob" 같은 붙여넣기용 프롬프트 제목은 고치지 않는다.
+   - 41deda5 반영 점검(2026-10-16, 역할 호출 방식): ARCHITECT의 Bob·Richard/Roger 모델 지정 문장을 "switch to that model before pasting, or set it in the external CLI orchestrator"로 바꾼다. new-setup.md가 프로젝트에 남아 있으면 "one Claude Code session" 안내와 Agent tool `model` 문장도 템플릿 문장으로 바꾼다. 역할 파일에서 `Agent tool`·`subagent`·`spin up`·`run_in_background`를 grep해 Agent tool로 역할을 띄우라는 문장이 남으면 안 된다. 단 `<!-- tmt-cli:start -->`~`<!-- tmt-cli:end -->` 블록은 고치지 않는다. "Spin up" 프롬프트 제목은 1ce21c7 점검에서 바꾼다.
+   - 1ce21c7 반영 점검(2026-10-16, 전역 지침 정합): 역할 파일 Session Start의 `Load token-optimizer skill` 문장을 템플릿의 "Load skills per the <역할> row of the role token-optimization table in the global rules. Skip any that are absent."로 바꾼다. ARCHITECT의 "Spin up Bob/Roger"·"spin up Richard" 문장과 붙여넣기 프롬프트 안의 "Load token-optimizer skill first."를 템플릿 문장으로 바꾼다. 프로젝트 `CLAUDE.md`·`AGENTS.md`에 `@.claude/skills/token-optimization.md` import가 있으면 그 줄을 지운다(파일 삭제는 제안만). ARCHITECT의 "named after the Reno Arch/Reno <이름>" 문장은 템플릿 문장("You are a landmark that people orient around.")으로 바꾼다.
+   - dc4dd12 반영 점검(2026-10-16, 테스트·컨텍스트 비용): BUILDER의 Tests 항목·Test results 문장·완료 4단계, ARCHITECT의 brief 테스트 정책 문장·Continued sessions·Ruling의 final full suite 지시·라운드 상태 줄·Deploy Gate 0단계(test fingerprint)·7단계 새 세션 권고·Anti-Drift diff 위생을 넣는다. fingerprint 명령의 `handoff` 경로는 그 프로젝트의 handoff 경로로 바꾼다. 프로젝트 고유 테스트 정책(예: 특정 test 명령 지정)이 있으면 지우지 말고 충돌 목록으로 보고한다.
    - OPERATOR.md: 환경 좌표가 채워진 프로젝트 파일이다. 템플릿으로 덮지 않는다. 템플릿 변경 중 규칙에 해당하는 것만 제안 목록으로 보고하고 적용하지 않는다.
    - ARCHITECT.md 버전 체크: 포크는 비활성화했다. 프로젝트에 upstream 버전 체크 단계가 있으면 같은 한 줄("disabled in this fork. Skip.")로 바꾼다.
    - 프로젝트에 `_temp/ARCHITECT.md`가 있으면 삭제를 제안만 한다.
