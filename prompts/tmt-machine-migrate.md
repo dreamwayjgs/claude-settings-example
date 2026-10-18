@@ -9,6 +9,11 @@
 Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지원하지 않는다). 아래 `~`는 `$HOME`(`C:\Users\<user>`)이고, 하위 경로는 Linux와 같다.
 
 1. claude-settings-example repo를 찾아 `git pull`. 워킹트리가 더러우면 멈추고 보고.
+   머신 실행 맥락 확인 (이후 설치·빌드 전에):
+   - 공통 경로는 `~/.config/machine-context/local.md`다. 모든 harness가 공유하며 repo 위치에 의존하지 않는다.
+   - 파일이 있으면 먼저 읽고 실행 제약을 따른다. 기존 내용은 보존한다.
+   - repo의 예전 `machine-context/local.md`도 있으면 확인한다. 공통 경로가 없으면 부모 디렉터리를 만들고 복사한다. 양쪽이 다르면 덮어쓰지 말고 사용자에게 확인한다. 원본 삭제는 별도 승인을 받는다.
+   - 양쪽 모두 없으면 필요한 머신 제약을 사용자에게 확인하고, 동의한 내용만 공통 경로에 작성한다. 불필요하면 생성하지 않는다. 다른 머신의 RAM 수치·경로를 복사하거나 비밀값을 기록하지 않는다.
 2. three-man-team checkout을 **전부** 찾는다. Claude 계정 분리(`CLAUDE_CONFIG_DIR`)를 쓰면 계정 폴더마다 따로 있다.
    - bash: `ls -d ~/.claude*/skills/three-man-team`
    - pwsh: `Get-ChildItem $HOME -Directory -Force -Filter '.claude*' | ForEach-Object { Join-Path $_.FullName 'skills/three-man-team' } | Where-Object { Test-Path $_ }`
@@ -34,6 +39,7 @@ Windows면 pwsh 7 기준으로 바꿔 실행한다(Windows PowerShell 5는 지�
    omp 마켓플레이스 플러그인 정리(2026-10-13): `omp plugin list`에 `ponytail@ponytail`·`caveman@...` 같은 스킬 플러그인이 있으면 `omp plugin uninstall <id>`로 지운다. 스킬 소스는 `agent-skills.txt` 하나이고, omp 플러그인 사본이 있으면 `~/.agents/skills`와 name collision을 내며 bare 이름을 가져간다. `omp plugin doctor`의 `package_manifest: Not created yet`는 정보성 경고라 그대로 둔다.
    qmd 폐기(2026-10-13, 세션 규칙에서 제외): Claude Code에 `qmd@qmd` 플러그인이 있으면 `claude plugin disable qmd@qmd`로 끄고, `~/.claude/settings.json`의 `permissions.allow`에서 `mcp__plugin_qmd_qmd__*` 항목을 지운다. 계정 분리 폴더(`~/.claude-personal` 등)와 워커 폴더(`~/.claude-worker`)의 `settings.json`도 같은 항목을 확인한다. `enabledPlugins`의 `"qmd@qmd": false`와 `extraKnownMarketplaces`의 `qmd`는 비활성 기록이라 남겨도 된다. `~/.agents/skills/qmd`가 있으면 삭제한다(build가 더는 만들지 않는 잔여물). qmd CLI 자체와 인덱스는 지우지 않는다 — 레포 밖 문서 검색용으로 `~/ops/CLAUDE.md`에서만 안내한다.
 7. 검증:
+   - 생성된 전역 규칙 파일들에 `~/.config/machine-context/local.md`를 작업 전에 읽는 지침이 있음. 실제 파일을 만들거나 이전했다면 합의한 내용과 일치하며, 기존 파일을 임의로 덮어쓰거나 삭제하지 않았음. 파일을 두지 않기로 했다면 선택 사항으로 보고
    - checkout마다 `git -C <checkout> remote -v`: origin = 포크, upstream = 원본
    - checkout마다 `git -C <checkout> status -sb`: `main...origin/main`, ahead/behind 없음
    - `templates/project-folder/ROGER.md`, `templates/optional/OPERATOR.md` 존재
