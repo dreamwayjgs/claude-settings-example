@@ -23,17 +23,17 @@
 
 ### 프로젝트 셋업 절차
 
-three-man-team checkout(`~/.claude/skills/three-man-team`, 계정 분리면 `$CLAUDE_CONFIG_DIR/skills/three-man-team`)은 개인 포크(`dreamwayjgs/three-man-team`, `origin`)이고 원본은 `upstream`이다. 로저·Oz·karpathy 블록·테스트 정책·리뷰어 규칙은 포크 템플릿에 들어 있다. 프로젝트 셋업 중에는 checkout을 수정하지 않는다.
+공통 템플릿 경로는 `~/.config/agent-rules/`다 (harness 무관, build가 배포). `three-man-team/templates/`는 개인 포크(`dreamwayjgs/three-man-team`) 템플릿의 복사본이고, 원본 git clone 위치와 커밋은 `three-man-team/SOURCE`에 있다. 로저·Oz·karpathy 블록·테스트 정책·리뷰어 규칙은 포크 템플릿에 들어 있다. 프로젝트 셋업 중에는 복사본도 clone도 수정하지 않는다.
 
 "three-man-team 세팅해줘" 요청 시:
-1. checkout의 `templates/project-folder/`를 현재 프로젝트 루트에 복사.
+1. `~/.config/agent-rules/three-man-team/templates/project-folder/`를 현재 프로젝트 루트에 복사.
 2. 이름 치환 (복사본만): `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`ROGER.md`·`new-setup.md`에서 단어 `Arch`를 `Alice`로 대소문자 구분·워드바운더리 치환한다. 역할명 `Architect`/`ARCHITECT.md`는 보존. 현재 셸에 맞는 도구(pwsh 7 `-creplace '\bArch\b'`, bash `sed` 등)나 편집 도구를 쓴다. Windows는 pwsh 7만 지원한다.
-3. 현재 harness의 전역 템플릿 경로에서 `project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. Claude Code는 `~/.claude/templates/`, OpenCode는 `~/.config/opencode/templates/`, omp는 `~/.omp/agent/templates/`, Crush는 `~/.config/crush/templates/`를 사용한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다. 템플릿의 `<!-- tmt-rules:start -->`~`<!-- tmt-rules:end -->` 마커를 그대로 유지하고, 프로젝트 고유 지침은 마커 밖에 둔다. `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
+3. `~/.config/agent-rules/project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다. 템플릿의 `<!-- tmt-rules:start -->`~`<!-- tmt-rules:end -->` 마커를 그대로 유지하고, 프로젝트 고유 지침은 마커 밖에 둔다. `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
 4. 앨리스로서 `new-setup.md` 읽기
 
-"tmt 템플릿 동기화해줘" 요청 시: 현재 harness 전역 템플릿 `project-rules.md`의 마커 블록으로 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`의 마커 블록을 통째로 교체한다. 마커 밖은 건드리지 않는다. 마커가 없는 프로젝트는 템플릿 유래 절을 찾아 마커로 감싼 뒤 교체하고, 판단이 애매한 절은 목록으로 보고한다. diff를 보여주고 커밋은 소유자 승인 후.
+"tmt 템플릿 동기화해줘" 요청 시: `~/.config/agent-rules/project-rules.md`의 마커 블록으로 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`의 마커 블록을 통째로 교체한다. 마커 밖은 건드리지 않는다. 마커가 없는 프로젝트는 템플릿 유래 절을 찾아 마커로 감싼 뒤 교체하고, 판단이 애매한 절은 목록으로 보고한다. diff를 보여주고 커밋은 소유자 승인 후.
 
-"operator 세팅해줘" 요청 시에만 checkout의 `templates/optional/OPERATOR.md`를 프로젝트 루트에 복사한다. Oz는 선택 역할이다. 환경 좌표를 실측으로 채우기 전에는 운영 조작을 수행하지 않는다.
+"operator 세팅해줘" 요청 시에만 `~/.config/agent-rules/three-man-team/templates/optional/OPERATOR.md`를 프로젝트 루트에 복사한다. Oz는 선택 역할이다. 환경 좌표를 실측으로 채우기 전에는 운영 조작을 수행하지 않는다.
 
 롤백: 이름은 ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md·new-setup.md에서 단어 `Alice`를 `Arch`로 워드바운더리 치환.
 

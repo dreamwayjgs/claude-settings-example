@@ -21,6 +21,14 @@ if (-not (Get-Command npx -ErrorAction SilentlyContinue)) {
   throw 'npx (node) is required to install agent skills; nothing written'
 }
 
+# The three-man-team fork is cloned next to this repo by dev-base (repos.txt +
+# bootstrap.sh); its templates are deployed to a harness-neutral path below.
+$devBase = Split-Path -Parent $repo
+$tmt = Join-Path $devBase 'three-man-team'
+if (-not (Test-Path -LiteralPath (Join-Path $devBase 'repos.txt')) -or -not (Test-Path -LiteralPath (Join-Path $tmt 'templates'))) {
+  throw 'this repo must sit in dev-base next to three-man-team (run dev-base/bootstrap.sh); nothing written'
+}
+
 if (Test-Path -LiteralPath $config) {
   $setting = (Get-Content -LiteralPath $config -Raw -Encoding utf8).Trim()
   if ($setting -notmatch '^INCLUDE_FOREMAN=(true|false)$') {
@@ -66,12 +74,20 @@ foreach ($rel in @('.omp/agent/AGENTS.md', '.config/crush/CRUSH.md')) {
   Write-Out (Join-Path $TargetHome $rel) $activation
 }
 
+# Templates -> ~/.config/agent-rules (harness-neutral, like ~/.config/machine-context).
+# three-man-team is a plain copy of the fork's templates/ (no .git); SOURCE records
+# the clone path and commit so sync prompts can diff against the git clone.
+$rules = Join-Path $TargetHome '.config/agent-rules'
 foreach ($template in @('project-rules.md', '.claudeignore')) {
   $text = [System.IO.File]::ReadAllText((Join-Path $repo "templates/$template"), $utf8NoBom)
-  foreach ($dir in @('.claude/templates', '.config/opencode/templates', '.omp/agent/templates', '.config/crush/templates')) {
-    Write-Out (Join-Path $TargetHome "$dir/$template") $text
-  }
+  Write-Out (Join-Path $rules $template) $text
 }
+$tmtOut = Join-Path $rules 'three-man-team'
+if (Test-Path -LiteralPath $tmtOut) { Remove-Item -LiteralPath $tmtOut -Recurse -Force }
+New-Item -ItemType Directory -Path $tmtOut -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $tmt 'templates') -Destination (Join-Path $tmtOut 'templates') -Recurse
+$commit = (& git -C $tmt rev-parse --short HEAD).Trim()
+Write-Out (Join-Path $tmtOut 'SOURCE') "clone=$tmt`ncommit=$commit`n"
 
 # Agent skills -> ~/.agents/skills (read by OpenCode v2, omp, and Crush; Claude Code
 # uses its own plugins). Source = agent-skills.txt, fetched at the pinned ref with the

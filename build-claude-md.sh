@@ -18,6 +18,15 @@ if ! command -v npx >/dev/null; then
   exit 1
 fi
 
+# The three-man-team fork is cloned next to this repo by dev-base (repos.txt +
+# bootstrap.sh); its templates are deployed to a harness-neutral path below.
+DEVBASE="$(dirname "$REPO")"
+TMT="$DEVBASE/three-man-team"
+if [[ ! -f "$DEVBASE/repos.txt" || ! -d "$TMT/templates" ]]; then
+  echo "this repo must sit in dev-base next to three-man-team (run dev-base/bootstrap.sh); nothing written" >&2
+  exit 1
+fi
+
 if [[ -f "$CONFIG" ]]; then
   read -r setting < "$CONFIG"
   if [[ "$setting" != INCLUDE_FOREMAN=* ]]; then
@@ -80,11 +89,18 @@ for dest in "$HOME/.omp/agent/AGENTS.md" "$HOME/.config/crush/CRUSH.md"; do
   write "$ACT" "$dest"
 done
 
+# Templates -> ~/.config/agent-rules (harness-neutral, like ~/.config/machine-context).
+# three-man-team is a plain copy of the fork's templates/ (no .git); SOURCE records
+# the clone path and commit so sync prompts can diff against the git clone.
+RULES="$HOME/.config/agent-rules"
 for template in project-rules.md .claudeignore; do
-  for dir in "$HOME/.claude/templates" "$HOME/.config/opencode/templates" "$HOME/.omp/agent/templates" "$HOME/.config/crush/templates"; do
-    write "$REPO/templates/$template" "$dir/$template"
-  done
+  write "$REPO/templates/$template" "$RULES/$template"
 done
+rm -rf "$RULES/three-man-team"
+mkdir -p "$RULES/three-man-team"
+cp -R "$TMT/templates" "$RULES/three-man-team/templates"
+printf 'clone=%s\ncommit=%s\n' "$TMT" "$(git -C "$TMT" rev-parse --short HEAD)" > "$RULES/three-man-team/SOURCE"
+echo "wrote $RULES/three-man-team (templates + SOURCE)"
 
 # Agent skills -> ~/.agents/skills (read by OpenCode v2, omp, and Crush; Claude Code
 # uses its own plugins). Source = agent-skills.txt, fetched at the pinned ref with the

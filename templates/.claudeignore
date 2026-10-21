@@ -2,7 +2,7 @@
 # .claudeignore — Global template
 # Source patterns: https://github.com/github/gitignore
 # Purpose: Exclude build artifacts & deps from Claude review
-# Usage: cp ~/.claude/templates/.claudeignore <project-root>/.claudeignore
+# Usage: cp ~/.config/agent-rules/.claudeignore <project-root>/.claudeignore
 # ============================================================
 
 # ── Dependencies ─────────────────────────────────────────────

@@ -9,6 +9,6 @@
 ## three-man-team 포크
 
 - 포크 = `github.com/dreamwayjgs/three-man-team` (**public**, 개인 계정). upstream = `russelleNVy/three-man-team`.
-- checkout = `~/.claude/skills/three-man-team` (`origin` = 포크, `upstream` = 원본). 포크 작업·push는 항상 이 세션(claude-settings-example)에서 한다.
+- clone = dev-base의 `three-man-team/` (이 repo의 형제 폴더, `origin` = 포크, `upstream` = 원본). 포크 작업·push는 이 clone에서 하고, 반영은 build가 `~/.config/agent-rules/three-man-team/`로 복사한다.
 - public이므로 push 전 `git diff upstream/main` 결과에서 회사 식별자(회사명·사내 프로젝트명·경로·호스트·이메일)를 grep하고, 실험 근거·사례는 넣지 않는다. 근거는 이 repo `three-man-team-model-allocation.md`에 둔다.
 - 커스텀 커밋은 소유자 확인 후 push.

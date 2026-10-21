@@ -29,13 +29,13 @@
 | `omp/hooks/pre/openai-personal-warning.ts` | 머신 선택 참고본 (build 대상 아님). omp에서 OpenAI 계열 모델 첫 요청 시 "개인 작업이 맞나요?" Y/N 확인 — 아니오는 취소 후 재질문, 화면 없는 실행(`-p`)은 취소. 개인 OpenAI 로그인을 쓰는 머신만 `~/.omp/agent/hooks/pre/`로 복사 |
 | `templates/` | harness와 무관한 프로젝트 bootstrap 템플릿 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md` 공통 router 템플릿 |
-| `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). build가 네 harness의 `templates/`에 배치 → "저장된 .claudeignore 적용해줘" 시 거기서 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
-| `prompts/` | 필요할 때 다른 모델에 붙여 넣는 일회성 프롬프트. 빌드 대상 아님 (`translation-review.md`: 번역 교차검증 · `tmt-machine-migrate.md`: 머신별 tmt 포크 전환 · `tmt-project-sync.md`: 기존 프로젝트 역할 파일 동기화) |
+| `templates/.claudeignore` | 프로젝트용 ignore 템플릿 (deps/build/secrets 등). build가 `~/.config/agent-rules/`에 배치 → "저장된 .claudeignore 적용해줘" 시 거기서 프로젝트 루트로 복사 (`fragments/00-core.md` 참조) |
+| `prompts/` | 필요할 때 다른 모델에 붙여 넣는 일회성 프롬프트. 빌드 대상 아님 (`translation-review.md`: 번역 교차검증 · `tmt-machine-migrate.md`: 머신별 전역 규칙·템플릿 빌드 (dev-base `MIGRATE.md` 다음) · `tmt-project-sync.md`: 기존 프로젝트 역할 파일 동기화) |
 | `three-man-team-model-allocation.md` | 역할별 모델 기준·등급 시나리오·판정 원칙·리처드 벤더 실험 (모델명 미고정) |
 
 ## 사용법
 
-**global rules 고칠 때:** 생성된 `CLAUDE.md`·`AGENTS.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`에 동일하게, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md`에는 같은 내용 + 활성화 블록(세션 시작 hook이 없어서)으로 반영된다. `project-rules.md`·`.claudeignore`는 네 harness의 template 경로(`~/.claude/templates/`, `~/.config/opencode/templates/`, `~/.omp/agent/templates/`, `~/.config/crush/templates/`)에 복사된다. `agent-skills.txt`의 스킬(caveman·ponytail·karpathy, 고정 ref)은 `npx skills add`로 `~/.agents/skills/`에 설치된다 — OpenCode V2·omp·Crush가 기본으로 읽는 경로. node·네트워크 필요, Claude 불필요. ref를 올리면 모든 머신에서 build 재실행. 최초 실행은 Foreman 포함 여부를 묻고 선택을 `.claude-settings.local`에 저장한다. 선택을 바꾸려면 이 파일의 값을 수정하거나 파일을 삭제하고 다시 실행한다.
+**global rules 고칠 때:** 생성된 `CLAUDE.md`·`AGENTS.md`를 직접 고치지 않는다. `fragments/*.md`를 고치고 `./build-claude-md.sh` 실행 — `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`에 동일하게, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md`에는 같은 내용 + 활성화 블록(세션 시작 hook이 없어서)으로 반영된다. `project-rules.md`·`.claudeignore`와 dev-base 형제 폴더 `three-man-team/templates/`(+ 원본 위치·커밋을 적은 `SOURCE`)는 harness 공통 경로 `~/.config/agent-rules/`에 복사된다. 이 repo가 dev-base 안에 없으면(`../repos.txt`·`../three-man-team/templates` 없음) build는 아무것도 쓰지 않고 멈춘다. `agent-skills.txt`의 스킬(caveman·ponytail·karpathy, 고정 ref)은 `npx skills add`로 `~/.agents/skills/`에 설치된다 — OpenCode V2·omp·Crush가 기본으로 읽는 경로. node·네트워크 필요, Claude 불필요. ref를 올리면 모든 머신에서 build 재실행. 최초 실행은 Foreman 포함 여부를 묻고 선택을 `.claude-settings.local`에 저장한다. 선택을 바꾸려면 이 파일의 값을 수정하거나 파일을 삭제하고 다시 실행한다.
 
 **다른 머신에 세팅할 때:** `claude-settings.md` 참고. 설치 여부(caveman/three-man-team)는 파일 존재로 확인하고, 없으면 임의 설치하지 말고 사용자에게 확인.
 

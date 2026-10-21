@@ -23,4 +23,4 @@
 Grep before Read. 한 가지를 찾으려고 파일 전체를 읽지 말 것.
 이미 컨텍스트에 있는 파일은 다시 읽지 말 것.
 
-`.claudeignore` 템플릿을 적용할 때는 프로젝트 루트에 복사 후 프로젝트 특화 패턴을 추가한다.
+`.claudeignore` 템플릿(`~/.config/agent-rules/.claudeignore`)을 적용할 때는 프로젝트 루트에 복사 후 프로젝트 특화 패턴을 추가한다.

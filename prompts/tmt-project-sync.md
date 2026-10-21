@@ -1,6 +1,6 @@
 # 프로젝트 동기화 프롬프트 — 역할 파일을 포크 템플릿에 맞추기
 
-이미 three-man-team이 세팅된 프로젝트에서, 역할 없는 세션에 붙여 넣는다. 먼저 그 머신에서 `tmt-machine-migrate.md`를 끝내야 한다.
+이미 three-man-team이 세팅된 프로젝트에서, 역할 없는 세션에 붙여 넣는다. 먼저 그 머신에서 dev-base `MIGRATE.md`와 `tmt-machine-migrate.md`를 끝내야 한다.
 스텝 사이에 실행한다. 리뷰가 진행 중일 때는 하지 않는다.
 
 쓰는 법: 코드블록 안쪽을 붙여 넣거나, 세션에 "`<이 파일 경로>` 보고 진행해"라고 한다. 파일을 받은 세션은 코드블록 안을 지시로, 그 밖은 실행 조건으로 읽는다.
@@ -9,7 +9,7 @@
 이 프로젝트의 three-man-team 역할 파일에 개인 포크 템플릿의 변경을 반영해줘. 덮어쓰지 말고 필요한 부분만 넣는다. 커밋은 내가 diff를 본 뒤에 한다.
 
 준비
-1. 이 세션이 쓰는 three-man-team checkout(기본 `~/.claude/skills/three-man-team`, 계정 분리면 `$CLAUDE_CONFIG_DIR/skills/three-man-team`)의 origin이 `dreamwayjgs/three-man-team`이고 최신인지 확인한다. 아니면 멈추고 "머신 전환 먼저"라고 보고.
+1. `~/.config/agent-rules/three-man-team/SOURCE`의 `clone=` 경로를 `<checkout>`으로 쓴다 (dev-base의 포크 git clone). 그 clone의 origin이 `dreamwayjgs/three-man-team`이고 최신인지, `SOURCE`의 `commit=`이 clone HEAD와 같은지(다르면 build 재실행 필요) 확인한다. 아니면 멈추고 "머신 전환 먼저"라고 보고.
 2. 진행 중인 리뷰가 있는지 확인한다: handoff 디렉터리(세션 스코프면 `handoff-*`도)의 REVIEW-REQUEST가 `Ready for Review: YES`인데 REVIEW-FEEDBACK이 아직 없으면 멈추고 보고.
 3. 역할 파일 목록을 확정한다: 프로젝트 루트(또는 manifest.md)에서 ARCHITECT·BUILDER·REVIEWER·ROGER·OPERATOR에 해당하는 파일과 각 역할 이름(기본 Alice·Bob·Richard·Roger·Oz, 한국어 이름일 수 있다)을 찾는다. 파일이 여러 세트(v2/v3 등)면 세트별로 진행한다.
 

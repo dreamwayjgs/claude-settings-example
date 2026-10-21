@@ -11,7 +11,7 @@ You are reviewing a Korean→English translation of an AI agent role file. Read-
 
 Files:
 - Original (Korean): /tmp/OPERATOR.ko.md
-- Translation (English): ~/.claude/skills/three-man-team/templates/optional/OPERATOR.md
+- Translation (English): ~/.config/agent-rules/three-man-team/templates/optional/OPERATOR.md
 
 Context: The reader of this file is an LLM agent acting as an operator (SRE) with access to production systems. A translation error that changes what the agent is allowed to do is far worse than awkward prose.
 

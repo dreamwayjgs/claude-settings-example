@@ -20,7 +20,7 @@
 | `fragments/90-activation.md` | omp·Crush 전용 블록 (caveman·Ponytail 기본 off, 역할 표로 위임) |
 | `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md` 생성 + 플러그인 스킬을 `~/.agents/skills/`로 복사 |
 | `build-rules.ps1` | `pwsh` 7용 동일 생성기 (Windows PowerShell 5 미지원). UTF-8 without BOM 출력 |
-| `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 네 harness의 `templates/`에 복사 |
+| `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 `~/.config/agent-rules/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
 | `opencode.json.example` | OpenCode V1 global config 참고본 (Ponytail npm plugin). 실제 파일명은 `opencode.json` 또는 `opencode.jsonc` |
 | `opencode.v2.json.example` | OpenCode V2 global config 참고본 (로컬 플러그인 `./plugins/caveman`·`./plugins/ponytail`) |
@@ -29,7 +29,7 @@
 ## 설치 상태 확인 (진행 전 체크)
 
 - caveman: `~/.claude/hooks/caveman-activate.js` 존재 + `settings.json`의 `enabledPlugins`에 `caveman@caveman`
-- three-man-team: `~/.claude/skills/three-man-team/` 존재. 개인 포크 `dreamwayjgs/three-man-team`을 clone한다 (원본 `russelleNVy/three-man-team`은 `upstream` remote)
+- three-man-team: dev-base(`github.com/dreamwayjgs/dev-base`)의 `bootstrap.sh`가 이 repo 옆에 개인 포크를 clone한다 (원본은 `upstream` remote). build가 템플릿을 `~/.config/agent-rules/three-man-team/`에 복사하므로 확인은 그 경로로 한다
 - karpathy-skills (옵셔널): `settings.json`의 `enabledPlugins`에 `andrej-karpathy-skills@karpathy-skills` + `extraKnownMarketplaces`에 `karpathy-skills`. 역할별 Karpathy 적용은 포크 템플릿 역할 파일의 karpathy 블록이 담당한다. 플러그인은 Claude Code 전용이고, 다른 하네스용 스킬은 build가 `agent-skills.txt`로 설치한다
 - ponytail (옵셔널): Claude Code·OpenCode·Crush의 설치 경로가 다르다. Claude Code는 플러그인 마켓플레이스(github `DietrichGebert/ponytail`), OpenCode는 V1이면 npm 플러그인 `@dietrichgebert/ponytail`, V2면 `opencode-plugins/ponytail-v2` 로컬 패치, omp·Crush·OpenCode V2가 읽는 `~/.agents/skills`는 build가 `agent-skills.txt`에서 설치한다 (§5 참조). Claude 플러그인은 Claude Code에만 적용된다
 - Foreman (옵셔널): 최초 `build-claude-md.sh` 실행에서 전역 연동 여부를 묻는다. 포함하려면 `foreman` 명령이 먼저 설치되어 있어야 한다
@@ -183,7 +183,7 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
 | 항목 | omp | Crush |
 |---|---|---|
 | 전역 규칙 | `~/.omp/agent/AGENTS.md` (최우선, 사용자 단위 1개만 로드) | `~/.config/crush/CRUSH.md` (기본 `global_context_paths`) |
-| 템플릿 | `~/.omp/agent/templates/` | `~/.config/crush/templates/` |
+| 템플릿 | `~/.config/agent-rules/` (harness 공통) | 동일 |
 | 스킬 | `~/.agents/skills/` (기본 스캔) | `~/.agents/skills/` (기본 스캔) |
 | caveman·Ponytail | 기본 off, 규칙 끝 블록이 역할 표로 위임 (hook 없음) | 동일 |
 
