@@ -20,12 +20,11 @@ Python을 uv 하나로 통일한 머신의 `~/.config/machine-context/local.md` 
 2. **쓰는 도구 확인:** 전역·사용자 site-packages(`%APPDATA%\Python`)에 poetry·cookiecutter 같은 CLI가 있으면 계속 쓸지 소유자에게 묻는다. 쓰면 `uv tool install`, 가끔 쓰면 `uvx`로 실행한다. pypdf·openpyxl 같은 라이브러리는 `uv run --with <pkg>`로 대체한다.
 3. **제거 (Windows):**
    - 사용자 범위(일반 권한): `%APPDATA%\Python`, Store 스텁(suggestions-windows.md), 사용자 PATH의 Python 경로.
-   - 시스템 범위(관리자): Python 설치본, Python Launcher, 시스템 PATH의 Python 경로.
+   - 시스템 범위: Python 설치본·Python Launcher는 MSI이므로 소유자가 먼저 설정 > 앱에서 제거하고, 에이전트는 남은 흔적(`C:\PythonXY`, PATH, `HKLM\Software\Python\PythonCore`)만 확인한다 (suggestions-windows.md).
 4. **기본 인터프리터:** bare `python`이 필요하면 `uv python install <ver> --default`로 `~/.local/bin`에 shim을 만든다. 실험 기능이라 경고가 나온다.
 5. **검증:** `Get-Command python,python3,py,pip -All`가 uv shim만 가리키는지, `uv python list`에 레지스트리 경고가 없는지 확인한다.
 
 ## 함정 (Windows)
 
-- **chocolatey와 MSI의 버전 불일치:** chocolatey 패키지 버전(예: 3.12.0)과 실제 설치본(예: 3.12.10)이 다르면 `choco uninstall`이 파일만 지우고 MSI 등록을 남긴다. 그러면 `HKLM\Software\Python\PythonCore\<ver>`도 남아서, uv가 `Failed to inspect Python interpreter from registry` 경고를 계속 낸다. 설치된 프로그램 목록의 각 MSI 제품 코드에 대해 관리자 권한으로 `msiexec /x {GUID} /qn /l*v <log>`를 실행한 뒤 그 레지스트리 키를 지운다.
-- **MSI가 `AppSearch`에서 죽는 경우:** 로그에 `Internal Exception during install operation: 0xc00000fd`(스택 오버플로)가 나오고 1603으로 끝나면 제거·복구·재설치 모두 같은 단계에서 막힌다. 파일이 이미 없다면 `HKLM\Software\Python\PythonCore`만 지워 uv 경고를 없애고, 설치된 프로그램 목록 항목은 남겨 둔다. 표시만 남을 뿐 동작에는 영향이 없다. MSDT 기반 "프로그램 설치 및 제거 문제 해결사"는 Windows 11 24H2 이후 실행되지 않을 수 있다.
-- **Python Launcher는 여러 개일 수 있다:** 버전별로 따로 등록돼 있을 수 있어서 각각 `msiexec /x`로 지워야 한다. 다 지운 뒤 `HKCU\Software\Python\PyLauncher`가 남아 있으면 삭제한다.
+- **chocolatey로 깐 Python:** chocolatey 패키지 버전(예: 3.12.0)과 실제 설치본(예: 3.12.10)이 다르면 `choco uninstall`은 파일만 지우고 MSI 등록을 남긴다. `choco uninstall`보다 설정 > 앱에서 제거하는 쪽을 먼저 쓴다.
+- **흔적 확인:** 제거 후 `HKLM\Software\Python\PythonCore\<ver>`가 남으면 uv가 `Failed to inspect Python interpreter from registry` 경고를 계속 낸다. 남은 흔적은 소유자에게 보고하고, 지울지 정한다.
