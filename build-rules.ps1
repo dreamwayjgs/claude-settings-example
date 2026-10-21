@@ -3,6 +3,10 @@
 param(
   [ValidateSet('true', 'false')]
   [string]$IncludeForeman,
+  # Omit for legacy all-harness output. Claude/Crush targets: TODO (GitHub issue #1).
+  [ValidateNotNullOrEmpty()]
+  [ValidateSet('omp', 'opencode')]
+  [string[]]$Targets = @('omp', 'opencode'),
   # Rule files and templates go under -TargetHome. Agent skills are installed by the
   # `skills` CLI, which only targets the real $HOME; when -TargetHome differs the
   # skills step is skipped and reported, so an isolated run never touches $HOME.
@@ -10,6 +14,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$allTargets = -not $PSBoundParameters.ContainsKey('Targets')
 
 $repo = $PSScriptRoot
 $config = Join-Path $repo '.claude-settings.local'
@@ -67,11 +72,19 @@ function Write-Out([string]$Destination, [string]$Text) {
   "wrote $Destination"
 }
 
-foreach ($rel in @('.claude/CLAUDE.md', '.claude-personal/CLAUDE.md', '.config/opencode/AGENTS.md')) {
-  Write-Out (Join-Path $TargetHome $rel) $content
+if ($allTargets) {
+  foreach ($rel in @('.claude/CLAUDE.md', '.claude-personal/CLAUDE.md')) {
+    Write-Out (Join-Path $TargetHome $rel) $content
+  }
 }
-foreach ($rel in @('.omp/agent/AGENTS.md', '.config/crush/CRUSH.md')) {
-  Write-Out (Join-Path $TargetHome $rel) $activation
+if ($Targets -contains 'opencode') {
+  Write-Out (Join-Path $TargetHome '.config/opencode/AGENTS.md') $content
+}
+if ($Targets -contains 'omp') {
+  Write-Out (Join-Path $TargetHome '.omp/agent/AGENTS.md') $activation
+}
+if ($allTargets) {
+  Write-Out (Join-Path $TargetHome '.config/crush/CRUSH.md') $activation
 }
 
 # Templates -> ~/.config/agent-rules (harness-neutral, like ~/.config/machine-context).

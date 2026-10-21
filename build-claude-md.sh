@@ -10,6 +10,16 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$REPO/.claude-settings.local"
 
+# Omit --targets for legacy all-harness output. Claude/Crush targets: TODO (GitHub issue #1).
+TARGETS=all
+if [[ $# -gt 0 ]]; then
+  if [[ $# -ne 2 || "$1" != --targets || ! "$2" =~ ^(omp|opencode)(,(omp|opencode))*$ ]]; then
+    echo "usage: $0 [--targets omp,opencode] (individual claude/crush targets: TODO)" >&2
+    exit 1
+  fi
+  TARGETS="$2"
+fi
+
 # Skills are installed with the `skills` CLI via npx; without it the build would
 # leave ~/.agents/skills stale, so fail before writing anything (including the
 # first-run config file).
@@ -82,12 +92,19 @@ done
 
 write() { mkdir -p "$(dirname "$2")"; cp "$1" "$2"; echo "wrote $2"; }
 
-for dest in "$HOME/.claude/CLAUDE.md" "$HOME/.claude-personal/CLAUDE.md" "$HOME/.config/opencode/AGENTS.md"; do
-  write "$OUT" "$dest"
-done
-for dest in "$HOME/.omp/agent/AGENTS.md" "$HOME/.config/crush/CRUSH.md"; do
-  write "$ACT" "$dest"
-done
+if [[ "$TARGETS" == all ]]; then
+  write "$OUT" "$HOME/.claude/CLAUDE.md"
+  write "$OUT" "$HOME/.claude-personal/CLAUDE.md"
+fi
+if [[ "$TARGETS" == all || ",$TARGETS," == *,opencode,* ]]; then
+  write "$OUT" "$HOME/.config/opencode/AGENTS.md"
+fi
+if [[ "$TARGETS" == all || ",$TARGETS," == *,omp,* ]]; then
+  write "$ACT" "$HOME/.omp/agent/AGENTS.md"
+fi
+if [[ "$TARGETS" == all ]]; then
+  write "$ACT" "$HOME/.config/crush/CRUSH.md"
+fi
 
 # Templates -> ~/.config/agent-rules (harness-neutral, like ~/.config/machine-context).
 # three-man-team is a plain copy of the fork's templates/ (no .git); SOURCE records
