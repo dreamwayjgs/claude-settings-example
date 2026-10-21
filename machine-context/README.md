@@ -13,7 +13,7 @@
 - 임시 파일은 /path/to/scratch에 둔다.
 ```
 
-플랫폼·도구별 제안은 `suggestions-*.md`(`suggestions-windows.md`, `suggestions-python.md`)에 있습니다.
+환경·도구별 제안은 `suggestions-*.md`(`suggestions-windows.md`, `suggestions-python.md`, `suggestions-lowend.md`)에 있습니다.
 
 위 내용은 예시이며 이 머신에 자동 적용되는 기본값이 아닙니다. 필요한 항목만 실제 환경에 맞게 작성하세요. 비밀값은 넣지 마세요.
 
