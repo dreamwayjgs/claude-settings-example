@@ -75,6 +75,12 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
 6. config — `opencode.v2.json.example`을 `~/.config/opencode/opencode.json`으로. 기존 `opencode.jsonc`는 제거 (둘 다 두지 말 것).
 7. caveman·Ponytail 기본 off 유지 확인: `~/.config/{caveman,ponytail}/config.json` = `{"defaultMode":"off"}` (`claude-settings.md` §5-1).
 
+## Windows TUI 탭
+
+Windows TUI에서 세션 탭 스트립이 뜨면 `~/.config/opencode/cli.json`에
+`{"tabs": {"mode": "off"}}`. `auto`는 Herdr 안에서는 숨지만(그래서 Linux/Herdr에선 안 뜸)
+Windows 터미널에선 뜨는 경우가 있다. build는 `cli.json`을 건드리지 않으므로 머신별 수동 설정.
+
 ## 검증
 
 - 플러그인 로드: `opencode debug config`에 `plugins` 두 개가 보이고, 서버 로그 `~/.local/share/opencode/log/opencode.log`에 `loading plugin id=.../plugins/caveman`·`.../plugins/ponytail`이 찍힌다. **`opencode plugin list`는 2.0.27에서 `cli.json`(`plugin add`로 등록한 것)만 보여 주므로 config 경로 플러그인 확인에 쓸 수 없다.**
