@@ -26,5 +26,6 @@ Python을 uv 하나로 통일한 머신의 `~/.config/machine-context/local.md` 
 
 ## 함정 (Windows)
 
-- **chocolatey와 MSI의 버전 불일치:** chocolatey 패키지 버전(예: 3.12.0)과 실제 설치본(예: 3.12.10)이 다르면 `choco uninstall`이 파일만 지우고 MSI 등록을 남긴다. 그러면 `HKLM\Software\Python\PythonCore\<ver>`도 남아서, uv가 `Failed to inspect Python interpreter from registry` 경고를 계속 낸다. 설치된 프로그램 목록의 각 MSI 제품 코드에 대해 관리자 권한으로 `msiexec /x {GUID} /qn`을 실행한 뒤 그 레지스트리 키를 지운다.
+- **chocolatey와 MSI의 버전 불일치:** chocolatey 패키지 버전(예: 3.12.0)과 실제 설치본(예: 3.12.10)이 다르면 `choco uninstall`이 파일만 지우고 MSI 등록을 남긴다. 그러면 `HKLM\Software\Python\PythonCore\<ver>`도 남아서, uv가 `Failed to inspect Python interpreter from registry` 경고를 계속 낸다. 설치된 프로그램 목록의 각 MSI 제품 코드에 대해 관리자 권한으로 `msiexec /x {GUID} /qn /l*v <log>`를 실행한 뒤 그 레지스트리 키를 지운다.
+- **MSI가 `AppSearch`에서 죽는 경우:** 로그에 `Internal Exception during install operation: 0xc00000fd`(스택 오버플로)가 나오고 1603으로 끝나면 제거·복구·재설치 모두 같은 단계에서 막힌다. 파일이 이미 없다면 `HKLM\Software\Python\PythonCore`만 지워 uv 경고를 없애고, 설치된 프로그램 목록 항목은 남겨 둔다. 표시만 남을 뿐 동작에는 영향이 없다. MSDT 기반 "프로그램 설치 및 제거 문제 해결사"는 Windows 11 24H2 이후 실행되지 않을 수 있다.
 - **Python Launcher는 여러 개일 수 있다:** 버전별로 따로 등록돼 있을 수 있어서 각각 `msiexec /x`로 지워야 한다. 다 지운 뒤 `HKCU\Software\Python\PyLauncher`가 남아 있으면 삭제한다.
