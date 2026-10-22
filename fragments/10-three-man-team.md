@@ -41,7 +41,7 @@
 
 이 표는 전역 규칙에만 둔다. 프로젝트 `CLAUDE.md`·`AGENTS.md`에 복사하지 않는다 — 표가 바뀌면 build 재실행만으로 모든 프로젝트에 적용된다. 프로젝트 지침에 옛 Token Optimization 절이 남아 있으면 이 표가 우선한다.
 
-caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.config/ponytail/config.json`의 `defaultMode: off`). 역할 없는 세션은 둘 다 미적용. 역할 세션은 Session Start에서, 역할 작업 전에 아래 표대로 스킬을 로드한다. 스킬이 없으면 건너뛴다.
+caveman·Ponytail은 머신 기본 off (`~/.config/caveman/config.json`·`~/.config/ponytail/config.json`, Windows는 `%APPDATA%\caveman\config.json`·`%APPDATA%\ponytail\config.json`의 `defaultMode: off`). 역할 없는 세션은 둘 다 미적용. 역할 세션은 Session Start에서, 역할 작업 전에 아래 표대로 스킬을 로드한다. 스킬이 없으면 건너뛴다.
 
 | 역할 | caveman | Ponytail |
 |---|---|---|
