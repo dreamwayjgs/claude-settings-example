@@ -167,6 +167,8 @@ Windows는 경로가 `%APPDATA%\caveman\config.json`·`%APPDATA%\ponytail\config
 foreach ($t in 'caveman','ponytail') { New-Item -ItemType Directory -Force "$env:APPDATA\$t" | Out-Null; '{"defaultMode":"off"}' | Set-Content -Encoding utf8NoBOM "$env:APPDATA\$t\config.json" }
 ```
 
+ponytail 5.3부터 Claude Code 플러그인에 band(프롬프트 위 비용·토큰·재사용 표시)와 ledger(매 턴 `~/.config/ponytail/band/<프로젝트>.csv`에 비용·토큰·작업 이름 기록)가 있고, 둘 다 모드 off와 무관하게 동작한다. 기본 off 원칙에 맞춰 끈다: ledger는 `settings.json`의 `pluginConfigs."ponytail@ponytail".options.ledger = false`(`settings.json.example`에 있음. 기존 머신은 `echo '{"ledger":"false"}' | claude plugin configure ponytail@ponytail --values-stdin`), band는 `<CLAUDE_CONFIG_DIR 또는 ~/.claude>/.ponytail-band` 파일 내용 `off`(`/ponytail band off`와 같다). `claude -p`(tmt 워커)에는 band가 뜨지 않는다. 필요해지면 `/ponytail band import`로 남아 있는 과거 transcript를 board에 넣을 수 있다.
+
 역할 세션의 Session Start는 스킬 로드로만 모드를 맞춘다 (`/caveman`·`/ponytail` 명령으로 전환하지 않는다). 사용자가 직접 명령을 쓰는 건 자유지만, 모드 플래그(`~/.claude/.caveman-active` 등)가 머신 전역이라 동시에 떠 있는 다른 세션에도 적용된다. 스킬 미설치면 건너뛴다.
 
 ## 6. OpenCode 추가 파일

@@ -33,14 +33,14 @@ https://opencode.ai/v2/docs/build/plugins/migrate-v1/
 
 ## 설치 (다른 머신 / 다른 agent)
 
-`index.js`는 같은 폴더의 `node_modules/@dietrichgebert/ponytail`(upstream 스킬·커맨드·hooks)을 읽는다. 복사만 하면 로드 실패.
+`index.js`는 같은 폴더의 `node_modules/@dietrichgebert/ponytail`(upstream 스킬·커맨드·hooks)을 읽는다. 복사만 하면 로드 실패. 런타임 버전은 `agent-skills.txt`의 ponytail 태그와 같게 고정한다 (ref를 올리면 여기 버전도 같이 올리고 각 머신에서 재설치).
 
 ```sh
 mkdir -p ~/.config/opencode/plugins/ponytail && cd ~/.config/opencode/plugins/ponytail
 cat > package.json <<'EOF'
 { "name": "ponytail-opencode-plugin", "version": "0.1.0", "type": "module", "main": "index.js", "private": true }
 EOF
-npm install --no-save @dietrichgebert/ponytail
+npm install --no-save @dietrichgebert/ponytail@5.3.2   # = agent-skills.txt ponytail tag without "v"
 cp <repo>/opencode-plugins/ponytail-v2/index.js ./index.js
 ```
 

@@ -1,8 +1,8 @@
 # Skills installed into ~/.agents/skills by build-claude-md.sh / build-rules.ps1 (npx skills add).
 # One line per source: <github owner/repo> <ref: tag or FULL commit sha (the CLI runs git clone --branch <ref>)> <skill names...>
 # Pinned 2026-10-13 to the revisions of the Claude plugins installed on the WSL machine
-# (caveman v4.0.1 = plugin 4.0.1, bumped 2026-10-14; ponytail 16f29800 = plugin '4.8.4', newer than tag v4.8.4; karpathy 2c606141 = plugin 1.0.0).
+# (caveman v4.0.1 = plugin 4.0.1, bumped 2026-10-14; ponytail v5.3.2 = plugin 5.3.2, bumped 2026-10-22; karpathy 2c606141 = plugin 1.0.0).
 # Bump a ref here and re-run build on every machine; on Claude machines also `claude plugin update`.
 JuliusBrussee/caveman v4.0.1 caveman cavecrew caveman-commit caveman-compress caveman-help caveman-review caveman-stats
-DietrichGebert/ponytail 16f29800fd2681bdf24f3eb4ccffe38be3baec6b ponytail ponytail-audit ponytail-debt ponytail-gain ponytail-help ponytail-review
+DietrichGebert/ponytail v5.3.2 ponytail ponytail-audit ponytail-debt ponytail-gain ponytail-help ponytail-review
 multica-ai/andrej-karpathy-skills 2c606141936f1eeef17fa3043a72095b4765b9c2 karpathy-guidelines

@@ -41,6 +41,13 @@
     "caveman@caveman": true,
     "ponytail@ponytail": true
   },
+  "pluginConfigs": {
+    "ponytail@ponytail": {
+      "options": {
+        "ledger": false
+      }
+    }
+  },
   "extraKnownMarketplaces": {
     "karpathy-skills": {
       "source": {
