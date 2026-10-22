@@ -3,10 +3,14 @@
 param(
   [ValidateSet('true', 'false')]
   [string]$IncludeForeman,
-  # Omit for legacy all-harness output. Claude/Crush targets: TODO (GitHub issue #1).
   [ValidateNotNullOrEmpty()]
-  [ValidateSet('omp', 'opencode')]
-  [string[]]$Targets = @('omp', 'opencode'),
+  [ValidateSet('claude', 'crush', 'omp', 'opencode')]
+  [string[]]$Targets = @('claude', 'crush', 'omp', 'opencode'),
+  # The one Claude config folder under -TargetHome written per run; run again for
+  # another account folder.
+  [ValidatePattern('^[^/\\]+$')]
+  [ValidateScript({ $_ -notin '.', '..' })]
+  [string]$ClaudeDir = '.claude',
   # Rule files and templates go under -TargetHome. Agent skills are installed by the
   # `skills` CLI, which only targets the real $HOME; when -TargetHome differs the
   # skills step is skipped and reported, so an isolated run never touches $HOME.
@@ -14,7 +18,9 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$allTargets = -not $PSBoundParameters.ContainsKey('Targets')
+if ($PSBoundParameters.ContainsKey('ClaudeDir') -and $Targets -notcontains 'claude') {
+  throw '-ClaudeDir requires the claude target'
+}
 
 $repo = $PSScriptRoot
 $config = Join-Path $repo '.claude-settings.local'
@@ -72,10 +78,8 @@ function Write-Out([string]$Destination, [string]$Text) {
   "wrote $Destination"
 }
 
-if ($allTargets) {
-  foreach ($rel in @('.claude/CLAUDE.md', '.claude-personal/CLAUDE.md')) {
-    Write-Out (Join-Path $TargetHome $rel) $content
-  }
+if ($Targets -contains 'claude') {
+  Write-Out (Join-Path $TargetHome "$ClaudeDir/CLAUDE.md") $content
 }
 if ($Targets -contains 'opencode') {
   Write-Out (Join-Path $TargetHome '.config/opencode/AGENTS.md') $content
@@ -83,7 +87,9 @@ if ($Targets -contains 'opencode') {
 if ($Targets -contains 'omp') {
   Write-Out (Join-Path $TargetHome '.omp/agent/AGENTS.md') $activation
 }
-if ($allTargets) {
+if ($Targets -contains 'crush') {
+  # Crush on Windows may read another config path; this one is unverified there.
+  if ($IsWindows) { Write-Warning 'Crush on Windows is unverified (claude-settings-example#1)' }
   Write-Out (Join-Path $TargetHome '.config/crush/CRUSH.md') $activation
 }
 

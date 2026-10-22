@@ -18,7 +18,7 @@
 | `fragments/00-core.md`, `fragments/10-three-man-team.md` | 동일 내용의 global `CLAUDE.md`·`AGENTS.md` source of truth |
 | `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙 |
 | `fragments/90-activation.md` | omp·Crush 전용 블록 (caveman·Ponytail 기본 off, 역할 표로 위임) |
-| `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`, `~/.claude-personal/CLAUDE.md`, `~/.config/opencode/AGENTS.md`, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md` 생성 + 플러그인 스킬을 `~/.agents/skills/`로 복사 |
+| `build-claude-md.sh` | fragments를 이어붙여 `~/.claude/CLAUDE.md`(`--claude-dir`로 변경), `~/.config/opencode/AGENTS.md`, `~/.omp/agent/AGENTS.md`, `~/.config/crush/CRUSH.md` 생성 + 플러그인 스킬을 `~/.agents/skills/`로 복사 |
 | `build-rules.ps1` | `pwsh` 7용 동일 생성기 (Windows PowerShell 5 미지원). UTF-8 without BOM 출력 |
 | `templates/.claudeignore` | 프로젝트용 ignore 템플릿. build 스크립트가 `~/.config/agent-rules/`에 복사 |
 | `templates/project-rules.md` | 프로젝트 `CLAUDE.md`·`AGENTS.md`에 동일하게 복사할 공통 router |
@@ -100,9 +100,9 @@ caveman 배지도 동일 방식 — `hooks/caveman-statusline.ps1` 존재 시에
 pwsh -File ./build-rules.ps1  # Windows: same output, UTF-8 without BOM
 ```
 
-배포 대상을 제한하려면 PowerShell 7에서 `./build-rules.ps1 -Targets omp,opencode`, Bash에서 `./build-claude-md.sh --targets omp,opencode`를 쓴다. `omp` 또는 `opencode` 하나만 지정할 수도 있다. 선택하지 않은 harness 경로는 생성·수정하지 않으며 기존 파일도 지우지 않는다. 공통 템플릿·스킬 설치는 그대로 수행한다. 옵션 생략 시 기존처럼 Claude Code·OpenCode·omp·Crush 모두 배포한다. TODO: [Claude·Crush 개별 타깃 지원과 CLI 검증 (#1)](https://github.com/dreamwayjgs/claude-settings-example/issues/1).
+배포 대상을 제한하려면 PowerShell 7에서 `./build-rules.ps1 -Targets omp,opencode`, Bash에서 `./build-claude-md.sh --targets omp,opencode`를 쓴다. 대상은 `claude`·`crush`·`omp`·`opencode` 중 하나 이상이다. 선택하지 않은 harness 경로는 생성·수정하지 않으며 기존 파일도 지우지 않는다. 공통 템플릿·스킬 설치는 그대로 수행한다. 옵션 생략 시 네 대상 모두 배포한다. `claude` 대상은 실행당 Claude 설정 폴더 하나(`$HOME` 아래 폴더 이름, 기본 `.claude`)에만 쓴다. 다른 계정 폴더는 `--targets claude --claude-dir .claude-personal`(PowerShell `-Targets claude -ClaudeDir .claude-personal`)로 따로 한 번 더 실행한다. Crush는 Windows에서 미검증이다 — `build-rules.ps1`이 Windows에서 crush 대상을 쓸 때 경고를 출력한다.
 
-선택 배포의 격리 회귀 테스트: `pwsh -File tests/build-targets.ps1`, `bash tests/build-targets.sh`. 파일 생성·내용·비선택 파일 보존·잘못된 대상 거부를 확인하며 harness CLI 연동은 검증하지 않는다. Bash 테스트의 스킬 설치는 stub 처리한다.
+선택 배포의 격리 회귀 테스트: `pwsh -File tests/build-targets.ps1`, `bash tests/build-targets.sh`. 파일 생성·내용·비선택 파일 보존·잘못된 인자 거부를 확인하며 harness CLI 연동은 검증하지 않는다. Bash 테스트의 스킬 설치는 stub 처리한다.
 
 build는 마지막에 `agent-skills.txt`(repo·ref·스킬 이름)의 스킬을 `npx skills add`로 `~/.agents/skills`에 설치한다. node와 네트워크가 필요하고, Claude Code 설치 여부와 무관하다. `npx`가 없으면 규칙 파일을 쓰기 전에 실패한다. `build-rules.ps1 -TargetHome <경로>`는 규칙·템플릿만 그 경로에 쓰고 스킬 설치는 건너뛴다(skills CLI가 실제 HOME에만 설치하므로). ref는 full commit sha 또는 태그만 된다(CLI가 `git clone --branch <ref>`를 쓴다). 설치 출처·ref·해시는 `~/.agents/.skill-lock.json`에 남는다. ref와 Claude 플러그인 버전은 같게 유지한다. `claude plugin update`는 항상 마켓플레이스 최신으로 가므로, 올릴 땐 이 repo 세션에서 매니페스트 ref를 먼저 그 버전으로 바꿔 커밋하고, 각 머신에서 `claude plugin update` + build를 한다. 플러그인만 앞서 있으면 매니페스트를 따라 올리는 커밋을 같이 하고, 매니페스트만 올리고 플러그인을 안 올리는 상태는 두지 않는다.
 
@@ -263,7 +263,7 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   }
   ```
   - 폴더는 완전히 독립 — 인증(`.credentials.json`)·`settings.json`·플러그인·스킬·세션 이력을 따로 가진다. 첫 실행에서 로그인하고, 플러그인(caveman·ponytail 등)은 그 계정으로 다시 설치한다.
-  - `build-claude-md.sh`·`build-rules.ps1`은 `~/.claude-personal/CLAUDE.md`만 대상으로 쓴다. 다른 폴더명(예: works 서버의 `aclaude` → `~/.claude-admin`)을 쓰면 build 대상에 추가하거나 `~/.claude/CLAUDE.md`를 복사한다.
+  - build 기본값은 `~/.claude/CLAUDE.md`만 쓴다. 계정 폴더(`.claude-personal`, works 서버의 `aclaude` → `.claude-admin` 등)는 `./build-claude-md.sh --targets claude --claude-dir <폴더명>`으로 폴더마다 따로 실행한다.
   - statusline과 caveman·Ponytail 모드 플래그는 `CLAUDE_CONFIG_DIR`을 따른다 — 계정 폴더 사이에서는 모드가 새지 않는다.
 
 - **Claude 워커 디렉터리 (`wclaude`, tmt-cli 전용)** — 앨리스가 CLI로 밥·리처드·로저를 호출할 때 쓰는 두 번째 설정 폴더. 계정 분리와 같은 `CLAUDE_CONFIG_DIR` 방식이지만 계정은 같다. 목적은 워커 첫 호출 컨텍스트 축소(tmt-cli Step K 실측 -27%, 비용은 중립)이며 statusLine·플러그인·소유자용 지침이 빠진다:

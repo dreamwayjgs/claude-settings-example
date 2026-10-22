@@ -11,8 +11,12 @@ function Assert([bool]$Condition, [string]$Message) {
 
 try {
   $cases = @(
-    @{ Name = 'default'; Args = @{}; Expected = $paths },
+    @{ Name = 'default'; Args = @{}; Expected = $paths[0, 2, 3, 4] },
+    @{ Name = 'all'; Args = @{ Targets = @('claude', 'crush', 'omp', 'opencode') }; Expected = $paths[0, 2, 3, 4] },
     @{ Name = 'both'; Args = @{ Targets = @('omp', 'opencode') }; Expected = $paths[2..3] },
+    @{ Name = 'claude'; Args = @{ Targets = @('claude') }; Expected = @($paths[0]) },
+    @{ Name = 'personal'; Args = @{ Targets = @('claude'); ClaudeDir = '.claude-personal' }; Expected = @($paths[1]) },
+    @{ Name = 'crush'; Args = @{ Targets = @('crush') }; Expected = @($paths[4]) },
     @{ Name = 'omp'; Args = @{ Targets = @('omp') }; Expected = @($paths[3]) },
     @{ Name = 'opencode'; Args = @{ Targets = @('opencode') }; Expected = @($paths[2]) }
   )
@@ -24,7 +28,9 @@ try {
       $file = Join-Path $homeDir $rel
       Assert ((Test-Path $file) -eq ($rel -in $case.Expected)) "$($case.Name): unexpected output $rel"
       if ((Test-Path $file) -and $case.Name -ne 'default') {
-        Assert ((Get-FileHash $file).Hash -eq (Get-FileHash (Join-Path "$root/default" $rel)).Hash) "changed content: $rel"
+        # Any Claude config folder gets the same content as the default .claude one.
+        $reference = Join-Path "$root/default" ($rel -replace '^\.claude-personal/', '.claude/')
+        Assert ((Get-FileHash $file).Hash -eq (Get-FileHash $reference).Hash) "changed content: $rel"
       }
     }
     foreach ($rel in @('project-rules.md', '.claudeignore', 'three-man-team/SOURCE', 'three-man-team/templates/project-folder/ROGER.md')) {
@@ -42,15 +48,20 @@ try {
   Assert ((Get-Content $sentinel -Raw).Trim() -eq 'keep') 'non-selected file was modified'
   Write-Output 'PASS: non-selected file preserved'
 
-  foreach ($targets in @(@{ Value = @('typo') }, @{ Value = @('omp', 'claude') }, @{ Value = @('crush') }, @{ Value = @() }, @{ Value = @('') })) {
+  $invalid = @(
+    @{ Targets = @('typo') }, @{ Targets = @('omp', 'typo') }, @{ Targets = @() }, @{ Targets = @('') },
+    @{ ClaudeDir = '' }, @{ ClaudeDir = 'a/b' }, @{ ClaudeDir = 'a\b' }, @{ ClaudeDir = '..' }, @{ ClaudeDir = '.' },
+    @{ Targets = @('omp'); ClaudeDir = '.claude-personal' }
+  )
+  foreach ($arguments in $invalid) {
     $homeDir = Join-Path $root 'invalid'
     $failed = $false
-    try { & "$repo/build-rules.ps1" -Targets $targets.Value -TargetHome $homeDir -IncludeForeman false | Out-Null }
+    try { & "$repo/build-rules.ps1" @arguments -TargetHome $homeDir -IncludeForeman false | Out-Null }
     catch { $failed = $true }
-    Assert $failed 'invalid target accepted'
-    Assert (-not (Test-Path $homeDir)) 'invalid target wrote files'
+    Assert $failed "invalid arguments accepted: $($arguments | ConvertTo-Json -Compress)"
+    Assert (-not (Test-Path $homeDir)) 'invalid arguments wrote files'
   }
-  Write-Output 'PASS: invalid and deferred targets fail before writing'
+  Write-Output 'PASS: invalid arguments fail before writing'
 } finally {
   if (Test-Path $root) { Remove-Item $root -Recurse -Force }
 }

@@ -16,11 +16,15 @@ export -f npx
 BUILD="$ROOT/dev-base/settings/build-claude-md.sh"
 paths=(.claude/CLAUDE.md .claude-personal/CLAUDE.md .config/opencode/AGENTS.md .omp/agent/AGENTS.md .config/crush/CRUSH.md)
 
-for name in default both omp opencode; do
+for name in default all both claude personal crush omp opencode; do
   args=()
   case "$name" in
-    default) expected='0 1 2 3 4' ;;
+    default) expected='0 2 3 4' ;;
+    all) args=(--targets claude,crush,omp,opencode); expected='0 2 3 4' ;;
     both) args=(--targets omp,opencode); expected='2 3' ;;
+    claude) args=(--targets claude); expected='0' ;;
+    personal) args=(--targets claude --claude-dir .claude-personal); expected='1' ;;
+    crush) args=(--targets crush); expected='4' ;;
     omp) args=(--targets omp); expected='3' ;;
     opencode) args=(--targets opencode); expected='2' ;;
   esac
@@ -29,7 +33,8 @@ for name in default both omp opencode; do
     file="$ROOT/$name/${paths[$i]}"
     if [[ " $expected " == *" $i "* ]]; then
       [[ -f "$file" ]]
-      [[ "$name" == default ]] || cmp "$file" "$ROOT/default/${paths[$i]}"
+      # Any Claude config folder gets the same content as the default .claude one.
+      [[ "$name" == default ]] || cmp "$file" "$ROOT/default/${paths[$i]/.claude-personal/.claude}"
     else
       [[ ! -e "$file" ]]
     fi
@@ -42,13 +47,16 @@ printf keep > "$ROOT/both/.config/crush/CRUSH.md"
 HOME="$ROOT/both" bash "$BUILD" --targets omp,opencode > /dev/null
 [[ "$(cat "$ROOT/both/.config/crush/CRUSH.md")" == keep ]]
 echo 'PASS: non-selected file preserved'
-for value in typo omp,claude crush '' omp,; do
-  if HOME="$ROOT/invalid" bash "$BUILD" --targets "$value" > /dev/null 2>&1; then
-    echo "invalid target accepted: $value" >&2; exit 1
+invalid=(
+  "--targets typo" "--targets omp,typo" "--targets ''" "--targets omp," "--targets"
+  "--claude-dir" "--claude-dir ''" "--claude-dir a/b" "--claude-dir .." "--claude-dir ."
+  "--targets omp --claude-dir .claude-personal" "--unknown"
+)
+for value in "${invalid[@]}"; do
+  eval "args=($value)"
+  if HOME="$ROOT/invalid" bash "$BUILD" "${args[@]}" > /dev/null 2>&1; then
+    echo "invalid arguments accepted: $value" >&2; exit 1
   fi
   [[ ! -e "$ROOT/invalid" ]]
 done
-if HOME="$ROOT/invalid" bash "$BUILD" --targets > /dev/null 2>&1; then
-  echo 'missing targets accepted' >&2; exit 1
-fi
-echo 'PASS: invalid and deferred targets fail before writing'
+echo 'PASS: invalid arguments fail before writing'

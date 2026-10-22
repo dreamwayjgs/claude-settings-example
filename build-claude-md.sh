@@ -10,15 +10,31 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$REPO/.claude-settings.local"
 
-# Omit --targets for legacy all-harness output. Claude/Crush targets: TODO (GitHub issue #1).
-TARGETS=all
-if [[ $# -gt 0 ]]; then
-  if [[ $# -ne 2 || "$1" != --targets || ! "$2" =~ ^(omp|opencode)(,(omp|opencode))*$ ]]; then
-    echo "usage: $0 [--targets omp,opencode] (individual claude/crush targets: TODO)" >&2
-    exit 1
-  fi
-  TARGETS="$2"
+# Omit --targets for all harnesses. --claude-dir picks the one Claude config folder
+# under HOME written per run (default .claude); run again for another account folder.
+TARGETS=claude,crush,omp,opencode
+CLAUDE_DIR=
+usage() {
+  echo "usage: $0 [--targets claude,crush,omp,opencode] [--claude-dir .claude]" >&2
+  exit 1
+}
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --targets)
+      [[ $# -ge 2 && "$2" =~ ^(claude|crush|omp|opencode)(,(claude|crush|omp|opencode))*$ ]] || usage
+      TARGETS="$2"; shift 2 ;;
+    --claude-dir)
+      [[ $# -ge 2 && -n "$2" && "$2" != */* && "$2" != . && "$2" != .. ]] || usage
+      CLAUDE_DIR="$2"; shift 2 ;;
+    *) usage ;;
+  esac
+done
+has() { [[ ",$TARGETS," == *,"$1",* ]]; }
+if [[ -n "$CLAUDE_DIR" ]] && ! has claude; then
+  echo "--claude-dir requires the claude target" >&2
+  exit 1
 fi
+CLAUDE_DIR="${CLAUDE_DIR:-.claude}"
 
 # Skills are installed with the `skills` CLI via npx; without it the build would
 # leave ~/.agents/skills stale, so fail before writing anything (including the
@@ -92,19 +108,10 @@ done
 
 write() { mkdir -p "$(dirname "$2")"; cp "$1" "$2"; echo "wrote $2"; }
 
-if [[ "$TARGETS" == all ]]; then
-  write "$OUT" "$HOME/.claude/CLAUDE.md"
-  write "$OUT" "$HOME/.claude-personal/CLAUDE.md"
-fi
-if [[ "$TARGETS" == all || ",$TARGETS," == *,opencode,* ]]; then
-  write "$OUT" "$HOME/.config/opencode/AGENTS.md"
-fi
-if [[ "$TARGETS" == all || ",$TARGETS," == *,omp,* ]]; then
-  write "$ACT" "$HOME/.omp/agent/AGENTS.md"
-fi
-if [[ "$TARGETS" == all ]]; then
-  write "$ACT" "$HOME/.config/crush/CRUSH.md"
-fi
+if has claude; then write "$OUT" "$HOME/$CLAUDE_DIR/CLAUDE.md"; fi
+if has opencode; then write "$OUT" "$HOME/.config/opencode/AGENTS.md"; fi
+if has omp; then write "$ACT" "$HOME/.omp/agent/AGENTS.md"; fi
+if has crush; then write "$ACT" "$HOME/.config/crush/CRUSH.md"; fi
 
 # Templates -> ~/.config/agent-rules (harness-neutral, like ~/.config/machine-context).
 # three-man-team is a plain copy of the fork's templates/ (no .git); SOURCE records
