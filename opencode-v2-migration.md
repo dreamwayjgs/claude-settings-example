@@ -83,10 +83,10 @@ Windows 터미널에선 뜨는 경우가 있다. build는 `cli.json`을 건드�
 
 ## 검증
 
-- 플러그인 로드: `opencode debug config`에 `plugins` 두 개가 보이고, 서버 로그 `~/.local/share/opencode/log/opencode.log`에 `loading plugin id=.../plugins/caveman`·`.../plugins/ponytail`이 찍힌다. **`opencode plugin list`는 2.0.27에서 `cli.json`(`plugin add`로 등록한 것)만 보여 주므로 config 경로 플러그인 확인에 쓸 수 없다.**
-- 역할 없는 `opencode run` → `~/.config/opencode/.caveman-active`·`.ponytail-active` 생성 안 됨, 응답 평문
-- 역할 세션(예: 밥) → caveman·ponytail full 로드
-- 1일 이상 사용 후 위 표와 같은 방식으로 RSS 측정: `ps -eo pid,rss,etime,args | grep '[o]pencode'`
+- (즉시) 플러그인 로드: `opencode debug config`에 `plugins` 두 개가 보이고, 서버 로그 `~/.local/share/opencode/log/opencode.log`에 `loading plugin id=.../plugins/caveman`·`.../plugins/ponytail`이 찍힌다. **`opencode plugin list`는 2.0.27에서 `cli.json`(`plugin add`로 등록한 것)만 보여 주므로 config 경로 플러그인 확인에 쓸 수 없다.**
+- (행동, 승인 필요) 역할 없는 `opencode run` → `~/.config/opencode/.caveman-active`·`.ponytail-active` 생성 안 됨, 응답 평문
+- (행동, 역할 세션 별도 승인) 역할 세션(예: 밥) → caveman·ponytail full 로드
+- (지연) 1일 이상 사용 후 위 표와 같은 방식으로 RSS 측정: `ps -eo pid,rss,etime,args | grep '[o]pencode'`
 
 ### 로컬 WSL 실측 — 2026-10-13, V2 2.0.27, `openai/gpt-5-nano`, 새 세션마다 `opencode run`
 
