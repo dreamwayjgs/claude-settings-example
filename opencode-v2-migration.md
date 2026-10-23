@@ -71,6 +71,7 @@ Bun → Node 런타임 전환으로 메모리 개선 (공식 명시 사유). 202
    ruleset 본문은 `~/.config/opencode/skills`가 없으므로 주입되지 않고 배너+thesis 한 줄만 들어간다.
    역할 세션은 `~/.agents/skills/caveman/SKILL.md`를 직접 읽으므로 영향 없음.
    설치 후 백그라운드 서비스(`opencode serve --service`)를 재시작해야 새 플러그인을 확실히 읽는다.
+   재시작은 모든 설치·설정을 마친 뒤 마지막에 한 번 한다. OpenCode 세션 안에서 재시작하면 그 세션이 끊긴다(`Command cancelled`). 재개하면 앞 단계를 반복하지 말고 서비스 상태·`opencode debug config`·서버 로그의 plugin 로드 기록부터 확인한다.
 5. ponytail — `opencode-plugins/ponytail-v2/README.md` 설치 절차.
 6. config — `opencode.v2.json.example`을 `~/.config/opencode/opencode.json`으로. 기존 `opencode.jsonc`는 제거 (둘 다 두지 말 것).
 7. caveman·Ponytail 기본 off 유지 확인: `~/.config/{caveman,ponytail}/config.json` = `{"defaultMode":"off"}` (`claude-settings.md` §5-1).
@@ -83,7 +84,7 @@ Windows 터미널에선 뜨는 경우가 있다. build는 `cli.json`을 건드�
 
 ## 검증
 
-- (즉시) 플러그인 로드: `opencode debug config`에 `plugins` 두 개가 보이고, 서버 로그 `~/.local/share/opencode/log/opencode.log`에 `loading plugin id=.../plugins/caveman`·`.../plugins/ponytail`이 찍힌다. **`opencode plugin list`는 2.0.27에서 `cli.json`(`plugin add`로 등록한 것)만 보여 주므로 config 경로 플러그인 확인에 쓸 수 없다.**
+- (즉시) 플러그인 로드: `opencode debug config`에 `plugins` 두 개가 보이고(출력의 최상위 형태는 버전마다 다르다 — 2.1.3은 JSON 배열. 객체로 가정하지 말고 `grep -A5 '"plugins'`처럼 형태 무관하게 찾는다), 서버 로그 `~/.local/share/opencode/log/opencode.log`에 `loading plugin id=.../plugins/caveman`·`.../plugins/ponytail`이 찍힌다. **`opencode plugin list`는 2.0.27에서 `cli.json`(`plugin add`로 등록한 것)만 보여 주므로 config 경로 플러그인 확인에 쓸 수 없다.**
 - (행동, 승인 필요) 역할 없는 `opencode run` → `~/.config/opencode/.caveman-active`·`.ponytail-active` 생성 안 됨, 응답 평문
 - (행동, 역할 세션 별도 승인) 역할 세션(예: 밥) → caveman·ponytail full 로드
 - (지연) 1일 이상 사용 후 위 표와 같은 방식으로 RSS 측정: `ps -eo pid,rss,etime,args | grep '[o]pencode'`
