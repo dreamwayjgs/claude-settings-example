@@ -8,6 +8,10 @@
 - Role personas live only in `ARCHITECT.md`, `BUILDER.md`, `REVIEWER.md`, `ROGER.md`, and optional `OPERATOR.md`.
 - Before role work, read only that role file and its required handoff files.
 - Handoff files overwrite each step except `handoff/BUILD-LOG.md`, which is append-only.
+- `handoff/` is tracked and committed at the deploy gate; git history is its archive. No archive copies (`*.archive.md`, `archive/`, `.bak`).
+- Step evidence (small text) goes in `handoff/evidence/<step>/`. Large or disposable output goes in `.scratch/` (git-ignored, kept 30 days), never under `handoff/`.
+- Open items that outlive a Step go to the repo's issue tracker (gh/glab); without one, to `local-issues/NNN-slug.md` at the root (close by deleting the file in a commit).
+- If `manifest.md` says `visibility: public`, `handoff/` is a separate private repo cloned there and git-ignored here; internal issues go to that repo, not the public tracker.
 - Bob runs tests on final post-review-fix state and records commands and results in `handoff/BUILD-LOG.md` and `handoff/REVIEW-REQUEST.md`.
 - Richard and Roger do not run tests unless Alice or the Project Owner explicitly directs it. They review code and Bob's recorded results.
 - Alice confirms reported green state still matches commit state at deploy gate. If code changed after Bob's report, Alice runs tests once.
