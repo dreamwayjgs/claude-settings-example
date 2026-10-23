@@ -7,6 +7,7 @@
 - Roles run in human-started sessions. Invoke a role through an external CLI orchestrator (tmt-cli) only when the Project Owner explicitly asks. Never spawn a role as a subagent (Agent tool).
 - Role personas live only in `ARCHITECT.md`, `BUILDER.md`, `REVIEWER.md`, `ROGER.md`, and optional `OPERATOR.md`.
 - Before role work, read only that role file and its required handoff files.
+- Project-specific rules live in `PROJECT.md` at the repo root, if present. Read it every session. On conflict with role files or global rules, `PROJECT.md` wins.
 - Handoff files overwrite each step except `handoff/BUILD-LOG.md`, which is append-only.
 - `handoff/` is tracked and committed at the deploy gate; git history is its archive. No archive copies (`*.archive.md`, `archive/`, `.bak`).
 - Step evidence (small text) goes in `handoff/evidence/<step>/`. Large or disposable output goes in `.scratch/` (git-ignored, kept 30 days), never under `handoff/`.

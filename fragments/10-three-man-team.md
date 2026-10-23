@@ -7,7 +7,7 @@
 
 ### 테스트 검증 정책
 
-- **밥**: 구현·수정 턴은 fast checks. full suite는 Step당 2회 — 첫 리뷰 제출 시, `Ready for Builder: YES` 후 최종(리뷰 수정 반영) 상태. brief가 다른 정책을 정하면 그것을 따른다. 결과와 test fingerprint(HEAD + handoff 제외 추적 파일 diff)를 handoff/BUILD-LOG.md·REVIEW-REQUEST.md에 고지.
+- **밥**: 구현·수정 턴은 fast checks. full suite는 첫 리뷰 제출 시 1회, `Ready for Builder: YES` 후 최종(리뷰 수정 반영) 상태의 fingerprint가 마지막 green full run과 다를 때만 1회 더. brief가 다른 정책을 정하면 그것을 따른다. 결과와 test fingerprint(HEAD + handoff 제외 추적 파일 diff)를 handoff/BUILD-LOG.md·REVIEW-REQUEST.md에 고지.
 - **리처드·로저**: 별도 지시(앨리스·소유자) 없는 한 직접 테스트 실행 금지 — 밥 고지 참조. 코드(버그/스코프/단순성) 리뷰에 집중. 커버리지 의심은 읽어서 untested path를 플래그(돌리지 않음).
 - **앨리스**: deploy gate에서 현재 test fingerprint를 밥의 최종 green full suite와 비교. 일치하면 fingerprint만 기록, 고지 후 코드 변경이 있으면 그때만 1회 재실행.
 
