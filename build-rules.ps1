@@ -3,9 +3,10 @@
 param(
   [ValidateSet('true', 'false')]
   [string]$IncludeForeman,
+  # Omitted: every harness whose CLI is on PATH (skipped ones are printed).
   [ValidateNotNullOrEmpty()]
   [ValidateSet('claude', 'crush', 'omp', 'opencode')]
-  [string[]]$Targets = @('claude', 'crush', 'omp', 'opencode'),
+  [string[]]$Targets,
   # The one Claude config folder under -TargetHome written per run; run again for
   # another account folder.
   [ValidatePattern('^[^/\\]+$')]
@@ -18,6 +19,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+if (-not $PSBoundParameters.ContainsKey('Targets')) {
+  $Targets = @(foreach ($t in 'claude', 'crush', 'omp', 'opencode') {
+      if ((Get-Command $t -ErrorAction SilentlyContinue) -or ($t -eq 'claude' -and $PSBoundParameters.ContainsKey('ClaudeDir'))) { $t }
+      else { Write-Host "skip $t (not on PATH)" }
+    })
+}
 if ($PSBoundParameters.ContainsKey('ClaudeDir') -and $Targets -notcontains 'claude') {
   throw '-ClaudeDir requires the claude target'
 }

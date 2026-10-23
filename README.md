@@ -16,7 +16,7 @@
 | `fragments/05-foreman.md` | 선택적 Foreman 전역 규칙. 최초 빌드에서 포함 여부 결정 |
 | `fragments/10-three-man-team.md` | `CLAUDE.md`의 Three Man Team 전체 블록. 안정적, 거의 안 바뀜 |
 | `fragments/90-activation.md` | omp·Crush 전용 블록 — caveman·Ponytail 기본 off, 역할 표로 위임. build가 두 harness 규칙 끝에 붙임 |
-| `build-claude-md.sh` | fragments를 이어붙여 네 harness global rules에 씀 + Claude 플러그인 스킬을 `~/.agents/skills/`로 복사 |
+| `build-claude-md.sh` | fragments를 이어붙여 네 harness global rules에 씀(기본: PATH에 있는 harness만, 건너뛴 것은 출력. `--targets`로 지정) + Claude 플러그인 스킬을 `~/.agents/skills/`로 복사 |
 | `build-rules.ps1` | `pwsh` 7용 동일 생성기 (Windows PowerShell 5 미지원). UTF-8 without BOM 출력 |
 | `agent-skills.txt` | build가 `~/.agents/skills`에 설치하는 스킬 매니페스트 (repo·고정 ref·스킬 이름). Claude 플러그인 버전과 맞춰 둔다 |
 | `opencode.json.example` | OpenCode V1 global config 참고본. Ponytail npm plugin. 실제 파일명은 `opencode.json`/`opencode.jsonc` |

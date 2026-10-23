@@ -10,9 +10,10 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="$REPO/.claude-settings.local"
 
-# Omit --targets for all harnesses. --claude-dir picks the one Claude config folder
-# under HOME written per run (default .claude); run again for another account folder.
-TARGETS=claude,crush,omp,opencode
+# Omit --targets for every harness whose CLI is on PATH (skipped ones are printed).
+# --claude-dir picks the one Claude config folder under HOME written per run
+# (default .claude); run again for another account folder.
+TARGETS=
 CLAUDE_DIR=
 usage() {
   echo "usage: $0 [--targets claude,crush,omp,opencode] [--claude-dir .claude]" >&2
@@ -29,6 +30,15 @@ while [[ $# -gt 0 ]]; do
     *) usage ;;
   esac
 done
+if [[ -z "$TARGETS" ]]; then
+  for t in claude crush omp opencode; do
+    if command -v "$t" >/dev/null || [[ $t == claude && -n "$CLAUDE_DIR" ]]; then
+      TARGETS+="${TARGETS:+,}$t"
+    else
+      echo "skip $t (not on PATH)"
+    fi
+  done
+fi
 has() { [[ ",$TARGETS," == *,"$1",* ]]; }
 if [[ -n "$CLAUDE_DIR" ]] && ! has claude; then
   echo "--claude-dir requires the claude target" >&2
