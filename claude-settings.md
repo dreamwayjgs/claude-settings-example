@@ -250,6 +250,26 @@ caveman 지침은 `instructions`로 상시 주입하지 않는다 (기본 off, �
   ```
   `-pro` 변형(`gpt-5.6-sol-pro` 등)은 함수를 만들지 않았다. 필요하면 `omp --model gpt-5.6-sol-pro`로 직접 쓴다.
 
+- **OpenCode 함수 (`opnc`·`opncs`·`opncl`·`opncm`·`opncd`·`opncf`)** — `opnc`는 기본 `mini` TUI를 실행한다. 기본 TUI는 시작 시 `--model`을 받지 않으므로 모델 지정 함수는 `mini`를 사용한다. 접미사는 모델 머리글자이며, `f`는 대표 free 모델이다. 인자는 그대로 전달한다:
+  ```bash
+  # ~/.bash_aliases
+  opnc() { command opencode mini "$@"; }
+  opncs() { command opencode mini --model openai/gpt-6.1-sol "$@"; }
+  opncl() { command opencode mini --model openai/gpt-6-luna "$@"; }
+  opncm() { command opencode mini --model opencode-go/muse-spark-1.3-contributor "$@"; }
+  opncd() { command opencode mini --model opencode-go/deepseek-v4.1-flash "$@"; }
+  opncf() { command opencode mini --model opencode-go/iceman-contributor-free "$@"; }
+  ```
+  Windows pwsh (`$PROFILE`):
+  ```powershell
+  function opnc { opencode mini @args }
+  function opncs { opencode mini --model openai/gpt-6.1-sol @args }
+  function opncl { opencode mini --model openai/gpt-6-luna @args }
+  function opncm { opencode mini --model opencode-go/muse-spark-1.3-contributor @args }
+  function opncd { opencode mini --model opencode-go/deepseek-v4.1-flash @args }
+  function opncf { opencode mini --model opencode-go/iceman-contributor-free @args }
+  ```
+
 - **Claude 계정 분리 (`pclaude`·`aclaude` 등)** — 계정마다 설정 폴더를 따로 두고 `CLAUDE_CONFIG_DIR`로 바꿔 띄운다. alias보다 함수가 인자 전달이 깔끔하다. 별칭·함수는 `~/.bash_aliases`에 모은다 (Ubuntu 기본 `.bashrc`가 자동 로드):
   ```bash
   pclaude() { CLAUDE_CONFIG_DIR="$HOME/.claude-personal" command claude "$@"; }
