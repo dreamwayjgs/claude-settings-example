@@ -7,7 +7,7 @@
 - Roles run in human-started sessions. Invoke a role through an external CLI orchestrator (tmt-cli) only when the Project Owner explicitly asks. Never spawn a role as a subagent (Agent tool).
 - Role personas live only in `ARCHITECT.md`, `BUILDER.md`, `REVIEWER.md`, `ROGER.md`, and optional `OPERATOR.md`.
 - Before role work, read only that role file and its required handoff files.
-- Project-specific rules live in `PROJECT.md` at the repo root, if present. Read it every session. On conflict with role files or global rules, `PROJECT.md` wins.
+- Project-specific rules live in `PROJECT.md` next to this file (also when the session starts in a subdirectory). Read it every session; Claude Code loads it through the `@PROJECT.md` import at the end of this block. On conflict with role files or global rules, `PROJECT.md` wins.
 - Role files (`ARCHITECT.md`, `BUILDER.md`, `REVIEWER.md`, `ROGER.md`) and this router are generated from templates. Do not edit them in a project; put project rules in `PROJECT.md`. Sync overwrites them.
 - Handoff files overwrite each step except `handoff/BUILD-LOG.md`, which is append-only.
 - `handoff/` is tracked and committed at the deploy gate; git history is its archive. No archive copies (`*.archive.md`, `archive/`, `.bak`).
@@ -22,4 +22,6 @@
 
 - Oz is optional. Use `OPERATOR.md` only after its environment coordinates are filled from observed facts.
 - Oz does not write repository code. Oz writes operational reports and performs only actions allowed by `OPERATOR.md` tiers.
+
+@PROJECT.md
 <!-- tmt-rules:end -->
