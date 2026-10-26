@@ -7,7 +7,7 @@
 
 ### 테스트 검증 정책
 
-- **밥**: 구현·수정 턴은 fast checks. full suite는 첫 리뷰 제출 시 1회, `Ready for Builder: YES` 후 최종(리뷰 수정 반영) 상태의 fingerprint가 마지막 green full run과 다를 때만 1회 더. brief가 다른 정책을 정하면 그것을 따른다. 결과와 test fingerprint(HEAD + handoff 제외 추적 파일 diff)를 handoff/BUILD-LOG.md·REVIEW-REQUEST.md에 고지.
+- **밥**: 구현·수정 턴은 fast checks. full suite는 첫 리뷰 제출 시 1회, `Ready for Builder: YES` 후 최종(리뷰 수정 반영) 상태의 fingerprint가 마지막 green full run과 다를 때만 1회 더. brief가 다른 정책을 정하면 그것을 따른다. 결과와 test fingerprint(handoff 제외 작업 트리의 tree hash, untracked 포함 — 명령은 BUILDER.md)를 handoff/BUILD-LOG.md·REVIEW-REQUEST.md에 고지.
 - **리처드·로저**: 별도 지시(앨리스·소유자) 없는 한 직접 테스트 실행 금지 — 밥 고지 참조. 코드(버그/스코프/단순성) 리뷰에 집중. 커버리지 의심은 읽어서 untested path를 플래그(돌리지 않음).
 - **앨리스**: deploy gate에서 현재 test fingerprint를 밥의 최종 green full suite와 비교. 일치하면 fingerprint만 기록, 고지 후 코드 변경이 있으면 그때만 1회 재실행.
 
@@ -28,10 +28,10 @@
 "three-man-team 세팅해줘" 요청 시:
 1. `~/.config/agent-rules/three-man-team/templates/project-folder/`를 현재 프로젝트 루트에 복사.
 2. 이름 치환 (복사본만): `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`ROGER.md`·`new-setup.md`에서 단어 `Arch`를 `Alice`로 대소문자 구분·워드바운더리 치환한다. 역할명 `Architect`/`ARCHITECT.md`는 보존. 현재 셸에 맞는 도구(pwsh 7 `-creplace '\bArch\b'`, bash `sed` 등)나 편집 도구를 쓴다. Windows는 pwsh 7만 지원한다.
-3. `~/.config/agent-rules/project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. 기존 프로젝트 지침이 있으면 canonical 공통 파일에 병합한 뒤 두 파일에 같은 내용으로 쓴다. 템플릿의 `<!-- tmt-rules:start -->`~`<!-- tmt-rules:end -->` 마커를 그대로 유지하고, 프로젝트 고유 지침은 마커 밖에 둔다. `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
+3. `~/.config/agent-rules/project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. 기존 `CLAUDE.md`·`AGENTS.md`에 프로젝트 지침이 있으면 먼저 루트 `PROJECT.md`로 옮긴다. router는 템플릿 그대로 두고(`tmt-rules` 마커 유지, 이후 `tmt init`이 넣는 `tmt-cli` 블록만 추가) 프로젝트 지침을 넣지 않는다. 역할 파일과 router는 생성된 사본이라 프로젝트에서 고치지 않는다. `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
 4. 앨리스로서 `new-setup.md` 읽기
 
-"tmt 템플릿 동기화해줘" 요청 시: `~/.config/agent-rules/project-rules.md`의 마커 블록으로 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`의 마커 블록을 통째로 교체한다. 마커 밖은 건드리지 않는다. 마커가 없는 프로젝트는 템플릿 유래 절을 찾아 마커로 감싼 뒤 교체하고, 판단이 애매한 절은 목록으로 보고한다. diff를 보여주고 커밋은 소유자 승인 후.
+"tmt 템플릿 동기화해줘" 요청 시: `~/.config/agent-rules/project-rules.md`의 마커 블록으로 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`를 템플릿 블록 + `tmt-cli` 블록으로 덮어쓴다(`tmt-cli` 블록은 `tmt init --apply`로 다시 넣는다). 덮어쓰기 전에 템플릿과 다른 줄(마커 밖 포함)을 목록으로 보여주고, 프로젝트 지침은 `PROJECT.md`로 옮긴다. 삭제는 소유자 승인 후. 역할 파일까지 맞추는 절차는 dev-base `prompts/tmt-project-sync.md`. diff를 보여주고 커밋은 소유자 승인 후.
 
 "operator 세팅해줘" 요청 시에만 `~/.config/agent-rules/three-man-team/templates/optional/OPERATOR.md`를 프로젝트 루트에 복사한다. Oz는 선택 역할이다. 환경 좌표를 실측으로 채우기 전에는 운영 조작을 수행하지 않는다.
 
@@ -57,7 +57,7 @@ caveman v3부터 강도 레벨(lite·full·ultra)이 없고 `caveman`·`ultracav
 caveman은 응답을 줄이고 Ponytail은 필요한 구현만 남긴다. 필수 검증·보안·접근성·오류 처리는 줄이지 않는다. Karpathy는 역할 파일의 karpathy 블록으로 적용되며 별도 스킬 로드는 하지 않는다.
 
 **사용자가 세팅 시 특정 옵티마이저 지정한 경우:**
-그 프로젝트에 한해 루트 CLAUDE.md·AGENTS.md와 역할 파일의 `## Session Start` 섹션에 해당 스킬 로드 지시를 같은 의미로 추가한다 (이 표보다 우선).
+그 프로젝트의 `PROJECT.md`에 역할별 스킬 로드 지시를 적는다 (이 표보다 우선). router와 역할 파일에는 넣지 않는다.
 
 ### tmt-cli 턴 호출 (앨리스 전용)
 
