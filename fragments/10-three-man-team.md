@@ -33,7 +33,7 @@
 
 "tmt 템플릿 동기화해줘" 요청 시: `~/.config/agent-rules/project-rules.md`의 마커 블록으로 프로젝트 루트 `CLAUDE.md`·`AGENTS.md`를 템플릿 블록 + `tmt-cli` 블록으로 덮어쓴다(`tmt-cli` 블록은 `tmt init --apply`로 다시 넣는다). 덮어쓰기 전에 템플릿과 다른 줄(마커 밖 포함)을 목록으로 보여주고, 프로젝트 지침은 `PROJECT.md`로 옮긴다. 삭제는 소유자 승인 후. 역할 파일까지 맞추는 절차는 dev-base `prompts/tmt-project-sync.md`. diff를 보여주고 커밋은 소유자 승인 후.
 
-"operator 세팅해줘" 요청 시에만 `~/.config/agent-rules/three-man-team/templates/optional/OPERATOR.md`를 프로젝트 루트에 복사한다. Oz는 선택 역할이다. 환경 좌표를 실측으로 채우기 전에는 운영 조작을 수행하지 않는다.
+"operator 세팅해줘" 요청 시에만 `~/.config/agent-rules/three-man-team/templates/optional/OPERATOR.md`를 프로젝트 루트에, `templates/optional/ops/ENV.md`를 프로젝트 `ops/ENV.md`로 복사한다(이미 있으면 덮어쓰지 않는다). Oz는 선택 역할이다. 환경 좌표는 `ops/ENV.md`에만 두고, 실측으로 채우기 전에는 운영 조작을 수행하지 않는다. `OPERATOR.md`는 다른 역할 파일과 같은 템플릿 사본이라 프로젝트에서 고치지 않고 동기화가 덮어쓴다.
 
 롤백: 이름은 ARCHITECT.md·BUILDER.md·REVIEWER.md·ROGER.md·new-setup.md에서 단어 `Alice`를 `Arch`로 워드바운더리 치환.
 

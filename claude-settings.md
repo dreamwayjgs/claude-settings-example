@@ -111,7 +111,7 @@ build는 마지막에 `agent-skills.txt`(repo·ref·스킬 이름)의 스킬을 
 사용법:
 
 - 프로젝트 루트에서 "three-man-team 세팅해줘" → fragment의 셋업 절차 실행 (포크 템플릿 복사, Alice 치환, 공통 `CLAUDE.md`·`AGENTS.md`)
-- "operator 세팅해줘" → 선택적으로 Oz `OPERATOR.md` 추가. 환경 좌표를 실측으로 채우기 전에는 운영 조작 금지
+- "operator 세팅해줘" → 선택적으로 Oz `OPERATOR.md`와 `ops/ENV.md` 추가. 환경 좌표는 `ops/ENV.md`에만, 실측으로 채우기 전에는 운영 조작 금지
 - 역할: 앨리스(설계)·밥(구현)·리처드(1차 리뷰)·로저(2차 리뷰)·선택적 Oz(운영) — 대화는 한국어
 - handoff 파일은 BUILD-LOG.md 제외하고 매 스텝 덮어쓰기
 - 테스트는 밥만 실행, 리뷰어들은 밥의 고지 참조 (fragment의 테스트 검증 정책 참조)
