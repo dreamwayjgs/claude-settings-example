@@ -1,4 +1,4 @@
-# claude-settings-example — 프로젝트 지침
+# agent-rules — 프로젝트 지침
 
 이 repo는 개인 Claude Code 세팅의 source-of-truth (설정 export용). 작업 대상이 아니라 설정 보관소다.
 

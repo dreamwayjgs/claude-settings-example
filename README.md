@@ -1,4 +1,4 @@
-# claude-settings-example
+# agent-rules
 
 > **Public repo.** 사내 정책상 Internal 가시성 사용 불가해 Public으로 둠. 시크릿·고객사 정보 없음(확인 완료) — 그래도 fragment 추가할 때마다 커밋 전에 한 번 더 훑어볼 것.
 
