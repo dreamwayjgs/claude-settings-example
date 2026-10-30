@@ -7,7 +7,7 @@
 
 ### 테스트 검증 정책
 
-- **밥**: 구현·수정 턴은 fast checks. full suite는 첫 리뷰 제출 시 1회, `Ready for Builder: YES` 후 최종(리뷰 수정 반영) 상태의 fingerprint가 마지막 green full run과 다를 때만 1회 더. brief가 다른 정책을 정하면 그것을 따른다. 결과와 test fingerprint(handoff 제외 작업 트리의 tree hash, untracked 포함 — 명령은 BUILDER.md)를 handoff/BUILD-LOG.md·REVIEW-REQUEST.md에 고지.
+- **밥**: 구현·수정 턴은 fast checks. full suite는 첫 리뷰 제출 시 1회, `Ready for Builder: YES` 후 최종(리뷰 수정 반영) 상태의 fingerprint가 마지막 green full run과 다를 때만 1회 더. brief가 다른 정책을 정하면 그것을 따른다. 결과와 test fingerprint(handoff 제외 작업 트리의 tree hash, untracked 포함 — 명령은 BUILDER.md. "repo root"는 코드 repo 루트이며 umbrella 루트가 아니다)를 handoff/BUILD-LOG.md·REVIEW-REQUEST.md에 고지.
 - **리처드·로저**: 별도 지시(앨리스·소유자) 없는 한 직접 테스트 실행 금지 — 밥 고지 참조. 코드(버그/스코프/단순성) 리뷰에 집중. 커버리지 의심은 읽어서 untested path를 플래그(돌리지 않음).
 - **앨리스**: deploy gate에서 현재 test fingerprint를 밥의 최종 green full suite와 비교. 일치하면 fingerprint만 기록, 고지 후 코드 변경이 있으면 그때만 1회 재실행.
 
@@ -25,7 +25,7 @@
 
 공통 템플릿 경로는 `~/.config/agent-rules/`다 (harness 무관, build가 배포). `three-man-team/templates/`는 개인 포크(`dreamwayjgs/three-man-team`) 템플릿의 복사본이고, 원본 git clone 위치와 커밋은 `three-man-team/SOURCE`에 있다. 로저·Oz·karpathy 블록·테스트 정책·리뷰어 규칙은 포크 템플릿에 들어 있다. 프로젝트 셋업 중에는 복사본도 clone도 수정하지 않는다.
 
-"three-man-team 세팅해줘" 요청 시:
+"three-man-team 세팅해줘" 요청 시 (기본 레이아웃은 umbrella: 절차는 umbrella 루트 `<repo>-tmt/`에서 실행하고, 코드 repo `<repo>/`는 그 안의 git-ignore된 clone으로 두며 건드리지 않는다. 역할 파일의 "repo root"와 지칭 없는 repo·`main`·git 명령은 코드 repo를 뜻하고, umbrella에 git 명령을 치는 것은 앨리스의 deploy gate 커밋뿐이다. 상세·마이그레이션은 dev-base `prompts/tmt-umbrella.md`):
 1. `~/.config/agent-rules/three-man-team/templates/project-folder/`를 현재 프로젝트 루트에 복사.
 2. 이름 치환 (복사본만): `ARCHITECT.md`·`BUILDER.md`·`REVIEWER.md`·`ROGER.md`·`new-setup.md`에서 단어 `Arch`를 `Alice`로 대소문자 구분·워드바운더리 치환한다. 역할명 `Architect`/`ARCHITECT.md`는 보존. 현재 셸에 맞는 도구(pwsh 7 `-creplace '\bArch\b'`, bash `sed` 등)나 편집 도구를 쓴다. Windows는 pwsh 7만 지원한다.
 3. `~/.config/agent-rules/project-rules.md`를 프로젝트 루트 `CLAUDE.md`와 `AGENTS.md`에 동일하게 복사한다. 기존 `CLAUDE.md`·`AGENTS.md`에 프로젝트 지침이 있으면 먼저 루트 `PROJECT.md`로 옮긴다. router는 템플릿 그대로 두고(`tmt-rules` 마커 유지, 이후 `tmt init`이 넣는 `tmt-cli` 블록만 추가) 프로젝트 지침을 넣지 않는다. 역할 파일과 router는 생성된 사본이라 프로젝트에서 고치지 않는다. `AGENTS.md`를 Roger 역할 파일로 쓰지 않는다.
